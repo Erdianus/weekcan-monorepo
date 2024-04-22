@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
+    "dev": "dotenv -- turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ui:add": "pnpm --filter @repo/ui ui:add"
@@ -14,7 +14,9 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "prettier": "^3.1.1",
-    "turbo": "latest"
+    "turbo": "latest",
+    "dotenv-cli": "latest"
+
   },
   "packageManager": "pnpm@8.9.0",
   "engines": {

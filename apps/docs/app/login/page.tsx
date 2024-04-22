@@ -1,11 +1,9 @@
-import Axios from "@repo/utils/axios";
+import { LoginForm } from "@repo/ui/pages/login/login-form";
+
 export default async function LoginPage() {
-  const res = await Axios<{title: string; body: string}[]>('https://jsonplaceholder.typicode.com/posts');
   return (
-    <>
-      {res.data.map(post => <div>
-        {post.body}
-      </div> )}
-    </>
+    <div className="w-full h-screen flex items-center justify-center">
+      <LoginForm />
+    </div>
   );
 }

@@ -11,7 +11,8 @@
     "noEmit": true,
     "paths": {
       "@ui/*": ["../../packages/ui/src/*"],
-      "@utils/*": ["../../packages/utils/src/*"]
+      "@utils/*": ["../../packages/utils/src/*"],
+      "@auth/*": ["../../packages/auth/src/*"]
     }
   }
 }
