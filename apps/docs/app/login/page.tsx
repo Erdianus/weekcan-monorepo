@@ -3,8 +3,8 @@ import { auth } from "@repo/auth";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
-  const sesh = auth();
-  if (!!sesh) {
+  const sesh = await auth();
+  if (sesh) {
     redirect('/dashboard')
   }
 
