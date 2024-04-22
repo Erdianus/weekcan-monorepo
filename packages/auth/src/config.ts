@@ -1,6 +1,6 @@
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 type UserSession = {
   id: string;
@@ -21,7 +21,7 @@ declare module "next-auth" {
 export const authConfig = {
   providers: [
     Credentials({
-      async authorize(credential) {
+      async authorize(credential: { username: string; password: string }) {
         try {
           const res = await axios.post<{ data: UserSession }>(
             `${process.env.BASE_API}/api/login`,

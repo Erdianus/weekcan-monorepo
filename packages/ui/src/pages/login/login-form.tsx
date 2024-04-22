@@ -24,8 +24,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginAction } from "./login-action";
 import { useFormStatus } from "react-dom";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import Spinner from "@ui/components/ui/spinner";
+import { Checkbox } from "@ui/components/ui/checkbox";
+import { useState } from "react";
 
 const formSchema = z.object({
   username: z.string().min(1, "Tolong Isi Username"),
@@ -34,11 +36,14 @@ const formSchema = z.object({
 
 const ButtonSubmit = () => {
   const { pending } = useFormStatus();
-  return <Button className="w-full">{pending ? <Spinner /> : 'Sign In'}</Button>
-}
+  return (
+    <Button className="w-full">{pending ? <Spinner /> : "Sign In"}</Button>
+  );
+};
 
 function LoginForm() {
-  const router = useRouter()
+  const router = useRouter();
+  const [viewPassword, setViewPassword] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,9 +69,8 @@ function LoginForm() {
               return;
             }
 
-            router.push('/dashboard')
+            router.push("/dashboard");
             toast.success(res.message);
-
           }}
           className="space-y-4"
         >
@@ -102,7 +106,7 @@ function LoginForm() {
                       <Input
                         id="password"
                         placeholder="Masukkan Password"
-                        type="password"
+                        type={viewPassword ? 'text': 'password'}
                         required
                         {...field}
                       />
@@ -111,6 +115,17 @@ function LoginForm() {
                   </FormItem>
                 )}
               />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox checked={viewPassword} onClick={(e) => {
+                setViewPassword((o) => !o)
+              }} id="terms" />
+              <label
+                htmlFor="terms"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Lihat Password
+              </label>
             </div>
           </CardContent>
           <CardFooter>

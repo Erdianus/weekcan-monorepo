@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@repo/auth/index";
+import { signIn } from "@repo/auth";
 
 export async function loginAction(formdata: FormData) {
   try {
