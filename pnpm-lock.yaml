@@ -35,9 +35,15 @@ importers:
       '@repo/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      axios:
+        specifier: ^1.6.8
+        version: 1.6.8
       next:
         specifier: ^14.2.0
         version: 14.2.2(react-dom@18.2.0)(react@18.2.0)
+      next-themes:
+        specifier: ^0.3.0
+        version: 0.3.0(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -202,6 +208,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@types/node':
         specifier: ^20.10.6
         version: 20.11.6
@@ -229,10 +238,16 @@ importers:
       axios:
         specifier: ^1.6.8
         version: 1.6.8
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
     devDependencies:
       '@types/node':
         specifier: ^20.10.6
         version: 20.11.6
+      '@types/react':
+        specifier: ^18.2.46
+        version: 18.2.48
 
 packages:
 

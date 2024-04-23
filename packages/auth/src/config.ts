@@ -18,7 +18,7 @@ declare module "next-auth" {
   }
 }
 
-export const authConfig = {
+export const authConfig: NextAuthConfig = {
   providers: [
     Credentials({
       async authorize(credential: { username: string; password: string }) {
@@ -38,6 +38,7 @@ export const authConfig = {
           );
           const { data: user } = res.data;
 
+          console.log("Halo config auth");
           console.log(user);
 
           if (!user) throw new Error("Akun Tidak Ditemukan");
@@ -52,5 +53,16 @@ export const authConfig = {
   secret: "nCD9KYO42/6NESGwYuW6zPjYGPLJwFqC/LoKDTfWsCEW",
   pages: {
     signIn: "/login",
+  },
+  callbacks: {
+    // @ts-ignore
+    jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+    // @ts-ignore
+    async session({ session, token }) {
+      session.user = token;
+      return session;
+    },
   },
 } satisfies NextAuthConfig;

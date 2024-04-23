@@ -4,7 +4,7 @@ import { signIn } from "@repo/auth";
 
 export async function loginAction(formdata: FormData) {
   try {
-    const res = await signIn("credentials", {
+     await signIn("credentials", {
       username: formdata.get("username"),
       password: formdata.get("password"),
       redirect: false,

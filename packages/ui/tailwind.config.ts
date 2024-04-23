@@ -1,4 +1,5 @@
-import type { Config } from "tailwindcss";
+import type {Config} from 'tailwindcss';
+import { sky } from "tailwindcss/colors";
 import tailwindcssAnimate from "tailwindcss-animate";
 
 const config = {
@@ -30,6 +31,7 @@ const config = {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
+        main: sky,
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
