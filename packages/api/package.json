@@ -1,5 +1,5 @@
 {
-  "name": "@repo/auth",
+  "name": "@repo/api",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -9,22 +9,22 @@
     "lint": "echo 'Add lint script here'"
   },
   "dependencies": {
-    "@auth/core": "^0.30.0",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/utils": "workspace:*",
-    "axios": "^1.6.8",
-    "next": "^14.2.0",
-    "next-auth": "5.0.0-beta.16",
+    "@tanstack/react-query": "^5.31.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-query-kit": "^3.2.2",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.28.11",
-    "@types/node": "^20.10.6",
-    "@types/react": "^18.2.48"
+    "@types/react": "^18.2.79"
   },
   "exports": {
-    ".": "./src/index.ts"
+    "./provider": "./src/providers.tsx",
+    "./kit": "./src/routers/index.ts",
+    "./router/*": "./src/routers/*.ts"
   }
 }

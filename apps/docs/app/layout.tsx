@@ -2,8 +2,8 @@ import "@repo/ui/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@repo/ui/components/ui/sonner";
-import { ThemeProvider } from "next-themes";
 import { cn } from "@repo/ui/lib/utils";
+import {ThemeProvider} from '@repo/ui/components/theme-provider';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn("", inter.className)}>
-        <ThemeProvider attribute="class">{children}</ThemeProvider>
+        <ThemeProvider disableTransitionOnChange attribute="class">{children}</ThemeProvider>
       </body>
       <Toaster richColors />
     </html>

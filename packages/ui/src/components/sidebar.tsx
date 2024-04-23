@@ -9,6 +9,8 @@ import { cn } from "@ui/lib/utils";
 import { logoutAction } from "@ui/pages/auth/logout-action";
 import { toast } from "sonner";
 import ButtonSubmit from "./ui/button-submit";
+import User from "./icon/user";
+import { ModeToggle } from "./theme-toggle";
 
 type SidebarItemProps = {
   link: string;
@@ -25,7 +27,7 @@ const SidebarItems = (props: SidebarItemProps) => {
       <Link
         href={props.link}
         className={cn(
-          "flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group",
+          "flex items-center p-2 text-base font-medium rounded-lg group",
           isActive && "dark:bg-main-500 dark:text-white",
         )}
       >
@@ -50,11 +52,11 @@ export default function Sidebar() {
   const router = useRouter();
   return (
     <aside
-      className="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-primary dark:border-gray-700"
+      className="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full border-r border-gray-200 md:translate-x-0 dark:border-gray-700"
       aria-label="Sidenav"
       id="drawer-navigation"
     >
-      <div className="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-primary">
+      <div className="overflow-y-auto py-5 px-3 h-full">
         <form action="#" method="GET" className="md:hidden mb-2">
           <label className="sr-only">Search</label>
           <div className="relative">
@@ -78,9 +80,10 @@ export default function Sidebar() {
         <ul className="space-y-2">
           <SidebarItems text="Dashboard" link="/dashboard" icon={Dashboard} />
           <SidebarItems text="Project" link="/project" icon={Project} />
+          <SidebarItems text="User" link="/user" icon={User} />
         </ul>
       </div>
-      <div className="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex bg-white dark:bg-primary z-20">
+      <div className="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex bg-background z-20">
         <form
           action={async () => {
             const res = await logoutAction();
@@ -97,6 +100,7 @@ export default function Sidebar() {
             <LogOut />
           </ButtonSubmit>
         </form>
+        <ModeToggle />
       </div>
     </aside>
   );

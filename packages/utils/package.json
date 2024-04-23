@@ -17,7 +17,7 @@
     "@types/react": "^18.2.46"
   },
   "exports": {
-    "./*": "./src/*.ts",
-    "./init": "./src/axios.tsx"
+    ".": "./src/*.ts",
+    "./axios": "./src/axios.ts"
   }
 }
