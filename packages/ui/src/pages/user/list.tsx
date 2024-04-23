@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { k } from "@repo/api/kit";
 import { User } from "@repo/api/router/user/index";
 import {
@@ -10,8 +9,7 @@ import {
 import PortalSearch from "@ui/components/portal-search";
 import { DataTable } from "@ui/components/ui/data-table";
 import { H3 } from "@ui/components/ui/typograhpy";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useDebouncedCallback } from "use-debounce";
+import { useSearchParams } from "next/navigation";
 
 const colHelper = createColumnHelper<User>();
 
@@ -33,20 +31,6 @@ const columns = [
 
 const ListUser = () => {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const handleSearch = useDebouncedCallback((term: string) => {
-    console.log(`Searching... ${term}`);
-
-    const params = new URLSearchParams(searchParams);
-    if (term) {
-      params.set("search", term);
-    } else {
-      params.delete("search");
-    }
-    replace(`${pathname}?${params.toString()}`);
-  }, 300);
 
   const { data: users, isLoading } = k.user.all.useQuery({
     variables: { search: searchParams.get("search") ?? "" },
@@ -61,13 +45,7 @@ const ListUser = () => {
   return (
     <div>
       <H3 className="mb-4">User</H3>
-      <PortalSearch
-        defaultValue={searchParams.get('search')?.toString()}
-        onChange={(e) => {
-          handleSearch(e.target.value);
-        }}
-        placeholder="Cari User..."
-      />
+      <PortalSearch placeholder="Cari User..." />
       <DataTable table={table} isloading={isLoading} columns={columns} />
     </div>
   );

@@ -4,12 +4,30 @@ import { createPortal } from "react-dom";
 import { Input, InputProps } from "./ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@ui/lib/utils";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function PortalSearch(props: InputProps) {
   const [mount, setMount] = useState(false);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const handleSearch = useDebouncedCallback((term: string) => {
+
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set("search", term);
+    } else {
+      params.delete("search");
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 300);
+
   useEffect(() => {
     setMount(true);
   }, []);
+
   return mount
     ? createPortal(
         <>
@@ -19,6 +37,10 @@ export default function PortalSearch(props: InputProps) {
             </div>
             <Input
               {...props}
+              defaultValue={searchParams.get("search")?.toString()}
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
               type="search"
               placeholder={props.placeholder ?? "Cari Sesuatu"}
               className={cn("pl-10", props.className)}
