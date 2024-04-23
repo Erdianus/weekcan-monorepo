@@ -11,8 +11,8 @@ type User = z.infer<typeof userSchema>;
 
 const user = router("user", {
   all: router.query({
-    fetcher: async () => {
-      const res = await Axios("/user");
+    fetcher: async (variables?: { search?: string }) => {
+      const res = await Axios("/user", { params: variables });
 
       return res.data as { data: User[] };
     },

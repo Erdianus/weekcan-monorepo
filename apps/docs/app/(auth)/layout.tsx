@@ -24,12 +24,9 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
     });
 
     if (res.status !== 200) {
-      await signOut({redirect: false})
       redirect("/login");
     }
   } catch (e) {
-    console.log(e);
-    await signOut({redirect: false})
     redirect("/login");
   }
 
