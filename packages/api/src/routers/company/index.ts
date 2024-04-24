@@ -17,9 +17,9 @@ type Company = z.infer<typeof companySchema>;
 const company = router("company", {
   all: router.query({
     fetcher: async (variables?: {
-      search?: string;
-      page?: number;
-      paginate?: number;
+      search?: string | null;
+      page?: number | string | null;
+      paginate?: string | null;
       project_id?: string | number;
       owner_id?: string | number;
     }) => {

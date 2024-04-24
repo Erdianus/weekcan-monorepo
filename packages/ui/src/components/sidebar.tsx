@@ -3,7 +3,7 @@ import { LogOut } from "lucide-react";
 import { Input } from "./ui/input";
 import Link from "next/link";
 import { SVGProps } from "react";
-import { Dashboard, Project } from "./icon";
+import { Company, Dashboard, Project } from "./icon";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@ui/lib/utils";
 import { logoutAction } from "@ui/pages/auth/logout-action";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import ButtonSubmit from "./ui/button-submit";
 import User from "./icon/user";
 import { ModeToggle } from "./theme-toggle";
+import { Muted } from "./ui/typograhpy";
 
 type SidebarItemProps = {
   link: string;
@@ -80,7 +81,9 @@ export default function Sidebar() {
         <ul className="space-y-2">
           <SidebarItems text="Dashboard" link="/dashboard" icon={Dashboard} />
           <SidebarItems text="Project" link="/project" icon={Project} />
+          <Muted>Master Data</Muted>
           <SidebarItems text="User" link="/user" icon={User} />
+          <SidebarItems text="Perusahaan" link="/company" icon={Company} />
         </ul>
       </div>
       <div className="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex bg-background z-20">

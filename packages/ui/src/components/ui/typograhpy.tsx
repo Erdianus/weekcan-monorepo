@@ -55,4 +55,13 @@ function Paragraph(props: ParagraphProps) {
   );
 }
 
-export { H1, H2, H3, Paragraph };
+function Muted(props: ParagraphProps) {
+  return (
+    <p
+      {...props}
+      className={cn("text-sm text-muted-foreground", props.className)}
+    />
+  );
+}
+
+export { H1, H2, H3, Paragraph, Muted };
