@@ -12,6 +12,7 @@ import {
 
 import { cn } from "@ui/lib/utils"
 import { Label } from "@ui/components/ui/label"
+import { Skeleton } from "./skeleton"
 
 const Form = FormProvider
 
@@ -103,9 +104,11 @@ FormLabel.displayName = "FormLabel"
 
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
-  React.ComponentPropsWithoutRef<typeof Slot>
+  React.ComponentPropsWithoutRef<typeof Slot> & {isloading?: boolean}
 >(({ ...props }, ref) => {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+
+  if (props.isloading) return <Skeleton className="w-full h-10" />;
 
   return (
     <Slot

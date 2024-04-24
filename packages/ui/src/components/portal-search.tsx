@@ -13,11 +13,13 @@ export default function PortalSearch(props: InputProps) {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const handleSearch = useDebouncedCallback((term: string) => {
+  const handleSearch = useDebouncedCallback((term?: string) => {
 
+    const hasPage = !!searchParams.get('page')
     const params = new URLSearchParams(searchParams);
     if (term) {
       params.set("search", term);
+      if (hasPage) params.delete("page");
     } else {
       params.delete("search");
     }

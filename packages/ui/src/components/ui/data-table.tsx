@@ -58,7 +58,7 @@ export function DataTable<TData>({
                 <TableRow>
                   {columns.map((_, i) => (
                     <TableCell key={`cellloading-${i}`}>
-                      <Skeleton className="h-5 w-full bg-gray-300/90" />
+                      <Skeleton className="h-5 w-full" />
                     </TableCell>
                   ))}
                 </TableRow>

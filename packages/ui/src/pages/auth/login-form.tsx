@@ -44,6 +44,7 @@ const ButtonSubmit = () => {
 function LoginForm() {
   const router = useRouter();
   const [viewPassword, setViewPassword] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,6 +52,7 @@ function LoginForm() {
       password: "",
     },
   });
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -106,7 +108,7 @@ function LoginForm() {
                       <Input
                         id="password"
                         placeholder="Masukkan Password"
-                        type={viewPassword ? 'text': 'password'}
+                        type={viewPassword ? "text" : "password"}
                         required
                         {...field}
                       />
@@ -117,9 +119,13 @@ function LoginForm() {
               />
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox checked={viewPassword} onClick={(e) => {
-                setViewPassword((o) => !o)
-              }} id="terms" />
+              <Checkbox
+                checked={viewPassword}
+                onClick={() => {
+                  setViewPassword((o) => !o);
+                }}
+                id="terms"
+              />
               <label
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -138,3 +144,5 @@ function LoginForm() {
 }
 
 export { LoginForm };
+
+export default LoginForm;

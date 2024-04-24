@@ -1,7 +1,6 @@
 import "@repo/ui/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Toaster } from "@repo/ui/components/ui/sonner";
 import { cn } from "@repo/ui/lib/utils";
 import {ThemeProvider} from '@repo/ui/components/theme-provider';
 
@@ -22,7 +21,6 @@ export default function RootLayout({
       <body className={cn("", inter.className)}>
         <ThemeProvider disableTransitionOnChange attribute="class">{children}</ThemeProvider>
       </body>
-      <Toaster richColors />
     </html>
   );
 }

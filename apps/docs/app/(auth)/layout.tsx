@@ -1,11 +1,13 @@
-import { auth, signOut } from "@repo/auth";
+import { auth } from "@repo/auth";
 import Navbar from "@repo/ui/components/navbar";
 import Sidebar from "@repo/ui/components/sidebar";
+import AlertConfirm from "@repo/ui/components/alert-confirm";
 import InitAxios from "@repo/ui/components/init-axios";
-import QueryProvider from '@repo/api/provider'
+import QueryProvider from "@repo/api/provider";
 import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 import axios from "axios";
+import { Toaster } from "@repo/ui/components/ui/sonner";
 
 export default async function AuthLayout({ children }: PropsWithChildren) {
   const sesh = await auth();
@@ -34,6 +36,8 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
     <>
       <InitAxios token={sesh.user.token} />
       <QueryProvider>
+        <AlertConfirm />
+      <Toaster richColors />
         <div className="antialiased">
           <Navbar />
           {/* <!-- Sidebar --> */}

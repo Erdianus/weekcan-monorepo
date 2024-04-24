@@ -14,8 +14,22 @@ const companyBaseSchema = z.object({
   owner_id: z.string().min(1, "Tolong Pilih Pemilik Perusahaan"),
 })
 
+// --NOTE: FORM
+const companyFormSchema = companyBaseSchema.pick({
+  company_name: true,
+  email: true,
+  picture_path: true,
+  owner_id: true,
+  address: true,
+  instagram: true,
+  facebook: true,
+  twitter: true,
+  no_telp: true,
+});
+
 export {
-  companyBaseSchema
+  companyBaseSchema,
+  companyFormSchema
 }
 
 export default companyBaseSchema;

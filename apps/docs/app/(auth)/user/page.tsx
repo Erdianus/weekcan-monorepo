@@ -5,6 +5,11 @@ import k, {
   inferVariables,
 } from "@repo/api/kit";
 import ListUser from "@repo/ui/pages/user/list";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "User",
+};
 
 export default async function UserPage({
   searchParams,

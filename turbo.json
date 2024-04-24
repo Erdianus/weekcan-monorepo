@@ -15,6 +15,7 @@
       "cache": false,
       "persistent": true,
       "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"]
-    }
+    },
+    "test": {}
   }
 }
