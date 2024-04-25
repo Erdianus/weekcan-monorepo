@@ -8,12 +8,18 @@ import { Meta } from "../meta";
 const companySchema = companyBaseSchema.extend({
   picture_link: z.string().nullish(),
   user: userBaseSchema.array(),
+  owner: userBaseSchema,
 });
 
 type Company = z.infer<typeof companySchema>;
 
 // --NOTE: FORM
-const companyFormSchema = companyForm.omit({ owner: true });
+const companyCreateFormSchema = companyForm.omit({ owner: true });
+const companyUpdateFormSchema = companyForm
+  .omit({ owner: true })
+  .extend({
+    picture_path: z.union([z.string(), z.instanceof(File)]).optional(),
+  });
 
 const company = router("company", {
   all: router.query({
@@ -31,14 +37,14 @@ const company = router("company", {
   }),
   single: router.query({
     fetcher: async (variables: { id: string | number }) => {
-      const res = await Axios(`/user/${variables.id}`);
+      const res = await Axios(`/company/${variables.id}`);
 
       return res.data as { data: Company };
     },
   }),
   create: router.mutation({
     mutationFn: async (variables: {
-      data: z.infer<typeof companyFormSchema>;
+      data: z.infer<typeof companyCreateFormSchema>;
     }) => {
       const res = await Axios.post(`/company`, variables.data, {
         headers: {
@@ -52,9 +58,9 @@ const company = router("company", {
   update: router.mutation({
     mutationFn: async (variables: {
       id: string | number;
-      data: z.infer<typeof companyFormSchema>;
+      data: z.infer<typeof companyUpdateFormSchema>;
     }) => {
-      const res = await Axios.post(`/company/${variables.id}`, variables.data, {
+      const res = await Axios.post(`/company/update-company/${variables.id}`, variables.data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

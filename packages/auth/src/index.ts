@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
+import { useSession } from "next-auth/react";
 
-import { authConfig } from "./config";
+import { UserSession, authConfig } from "./config";
 
 export type { Session } from "next-auth";
 
@@ -11,4 +12,4 @@ const {
   signOut,
 } = NextAuth(authConfig);
 
-export { GET, POST, auth, signIn, signOut };
+export { GET, POST, auth, signIn, signOut, useSession, type UserSession };

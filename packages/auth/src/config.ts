@@ -2,7 +2,7 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import axios from "axios";
 
-type UserSession = {
+export type UserSession = {
   id: string;
   name: string | null | undefined;
   username: string;

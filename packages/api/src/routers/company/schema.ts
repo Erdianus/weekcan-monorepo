@@ -34,7 +34,10 @@ const companyBaseSchema = z.object({
       },
       { message: "Nomor Telepon Tidak Sesuai" },
     ),
-  picture_path: z.union([z.string().min(1, "Tolong Pilih Gambar"), z.instanceof(File)]),
+  picture_path: z.union([
+    z.string().min(1, "Tolong Pilih Gambar"),
+    z.instanceof(File),
+  ]),
   owner_id: z.string().min(1, "Tolong Pilih Pemilik Perusahaan"),
 });
 
@@ -53,10 +56,13 @@ const companyFormSchema = companyBaseSchema
     no_telp: true,
   })
   .extend({
-    owner: z.object({
-      label: z.string(),
-      value: z.string(),
-    }, {invalid_type_error: 'Tolong Pilih Pemilik Perusahaan'}),
+    owner: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Pilih Pemilik Perusahaan" },
+    ),
   });
 
 export { companyBaseSchema, companyFormSchema };

@@ -33,7 +33,7 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
 
   return (
     <>
-      <InitAxios token={sesh.user.token} />
+      <InitAxios user={sesh.user} />
       <QueryProvider>
         <AlertConfirm />
         <div className="antialiased">
