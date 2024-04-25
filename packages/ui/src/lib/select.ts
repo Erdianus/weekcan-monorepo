@@ -1,7 +1,4 @@
-import Axios from "@repo/utils/axios";
 import { type LoadOptions } from "react-select-async-paginate";
-import { Meta } from "@repo/api/router/meta";
-import { UserBase } from "@repo/api/router/user/schema";
 import k, { inferVariables } from "@repo/api/kit";
 
 type OptionType =
@@ -23,14 +20,11 @@ const loadUserOptions: LoadOptions<
   GroupBase<OptionType>,
   inferVariables<typeof k.user.all>
 > = async (search, _, params) => {
-  const res = await Axios.get("/user", {
-    params: {
-      ...params,
-      search,
-    },
+  const users = await k.user.all.fetcher({
+    ...params,
+    search,
   });
 
-  const users = (await res.data) as { data: UserBase[]; meta: Meta };
   const options = users.data.map((d) => ({
     label: `${d.name}`,
     value: `${d.id}`,
@@ -41,7 +35,7 @@ const loadUserOptions: LoadOptions<
     hasMore: users.meta.current_page !== users.meta.last_page,
     additional: {
       ...params,
-      page: params?.page! + 1,
+      page: Number(params?.page!) + 1,
     },
   };
 };
@@ -63,7 +57,7 @@ const loadCompanyOptions: LoadOptions<
     hasMore: datas.meta.current_page !== datas.meta.last_page,
     additional: {
       ...params,
-      page: params?.page! + 1,
+      page: Number(params?.page!) + 1,
     },
   };
 };

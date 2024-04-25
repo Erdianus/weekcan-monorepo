@@ -7,7 +7,6 @@ import QueryProvider from "@repo/api/provider";
 import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 import axios from "axios";
-import { Toaster } from "@repo/ui/components/ui/sonner";
 
 export default async function AuthLayout({ children }: PropsWithChildren) {
   const sesh = await auth();
@@ -37,7 +36,6 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
       <InitAxios token={sesh.user.token} />
       <QueryProvider>
         <AlertConfirm />
-      <Toaster richColors />
         <div className="antialiased">
           <Navbar />
           {/* <!-- Sidebar --> */}

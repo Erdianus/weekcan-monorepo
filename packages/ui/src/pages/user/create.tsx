@@ -40,8 +40,10 @@ const CreateUser = () => {
       name: "",
       username: "",
       email: undefined,
-      company: [],
-      role: {},
+      // @ts-ignore
+      company: null,
+      // @ts-ignore
+      role: null,
       password: "password",
       confirmation_password: "password",
     },
@@ -147,6 +149,7 @@ const CreateUser = () => {
                     <SelectAsync
                       {...field}
                       isMulti
+                      selectRef={field.ref}
                       loadOptions={loadCompanyOptions}
                       placeholder="Pilih Perusahaan"
                       additional={{ page: 1 }}

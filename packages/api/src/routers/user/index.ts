@@ -28,6 +28,7 @@ const user = router("user", {
       page?: number | string | null;
       paginate?: string | null;
       company_id?: string | null;
+      isOwner?: boolean;
     }) => {
       const res = await Axios("/user", {
         params: { ...variables, company_id: [variables?.company_id] },

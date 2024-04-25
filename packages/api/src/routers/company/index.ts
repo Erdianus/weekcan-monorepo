@@ -1,6 +1,6 @@
 import Axios from "@repo/utils/axios";
 import { router } from "react-query-kit";
-import companyBaseSchema, { companyFormSchema } from "./schema";
+import companyBaseSchema, { companyFormSchema as companyForm } from "./schema";
 import z from "zod";
 import userBaseSchema from "../user/schema";
 import { Meta } from "../meta";
@@ -13,6 +13,7 @@ const companySchema = companyBaseSchema.extend({
 type Company = z.infer<typeof companySchema>;
 
 // --NOTE: FORM
+const companyFormSchema = companyForm.omit({ owner: true });
 
 const company = router("company", {
   all: router.query({
@@ -39,7 +40,11 @@ const company = router("company", {
     mutationFn: async (variables: {
       data: z.infer<typeof companyFormSchema>;
     }) => {
-      const res = await Axios.post(`/company`, variables.data);
+      const res = await Axios.post(`/company`, variables.data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return res.data as { message: string };
     },
@@ -49,7 +54,11 @@ const company = router("company", {
       id: string | number;
       data: z.infer<typeof companyFormSchema>;
     }) => {
-      const res = await Axios.post(`/company/${variables.id}`, variables.data);
+      const res = await Axios.post(`/company/${variables.id}`, variables.data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return res.data as { message: string };
     },

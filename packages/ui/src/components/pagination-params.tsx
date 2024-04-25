@@ -36,9 +36,9 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
                     const page = !Number.isNaN(searchParams.get("page"))
                       ? Number(searchParams.get("page"))
                       : 1;
+                    if (page <= 1) return;
                     console.log(page);
                     const params = new URLSearchParams(searchParams);
-                    if (page === 1) return;
                     params.set("page", `${page - 1}`);
                     replace(`${pathname}?${params.toString()}`);
                   }}

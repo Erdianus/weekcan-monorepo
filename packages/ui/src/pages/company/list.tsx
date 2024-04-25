@@ -35,10 +35,10 @@ const Actions = ({ row }: CellContext<Company, unknown>) => {
   const { original: data } = row;
 
   const client = useQueryClient();
-  const del = k.user.delete.useMutation({
+  const del = k.company.delete.useMutation({
     async onSuccess({ message }) {
       toast.success(message);
-      await client.invalidateQueries({ queryKey: k.user.all.getKey() });
+      await client.invalidateQueries({ queryKey: k.company.all.getKey() });
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -58,17 +58,19 @@ const Actions = ({ row }: CellContext<Company, unknown>) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <Link href={`/user/${data.id}/update`}>
-          <DropdownMenuItem>
+          <Link href={`/company/${data.id}/update`}>
+            <DropdownMenuItem>
               <Pencil className="mr-2 w-4 h-4" />
               <span>Edit</span>
-          </DropdownMenuItem>
-            </Link>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem
             onClick={() =>
               alert.setData({
                 open: true,
                 confirmText: "Ya, Hapus",
+                header: `Yakin ingin mengapus '${data.company_name}'?`,
+                desc: 'Perusahaan yang dihapus tidak dapat dikembalikan lagi',
                 onConfirm: () => {
                   del.mutate({ id: data.id });
                 },
@@ -127,7 +129,7 @@ const ListCompany = () => {
       <div className="flex w-full justify-between items-center mb-4">
         <H3>Perusahaan</H3>
         <Button size={"icon"} asChild>
-          <Link href="user/create">
+          <Link href="company/create">
             <Plus />
           </Link>
         </Button>
