@@ -1,10 +1,10 @@
 "use client";
 
 import { SelectAsync } from "@ui/components/select";
-import { loadCompanyOptions } from "@ui/lib/select";
+import { loadUserOptions } from "@ui/lib/select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const FilterUser = () => {
+const FilterCompany = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -13,15 +13,15 @@ const FilterUser = () => {
     <div className="flex items-center gap-4">
       <SelectAsync
         defaultValue={
-          searchParams.get("company_id")
+          searchParams.get("owner_id")
             ? {
-                label: searchParams.get("company_name")?.toString(),
-                value: searchParams.get("company_id")?.toString(),
+                label: searchParams.get("owner_name")?.toString(),
+                value: searchParams.get("owner_id")?.toString(),
               }
             : null
         }
-        loadOptions={loadCompanyOptions}
-        placeholder="Filter Perusahaan"
+        loadOptions={loadUserOptions}
+        placeholder="Filter Pemilik"
         additional={{
           page: 1,
         }}
@@ -32,11 +32,11 @@ const FilterUser = () => {
           const params = new URLSearchParams(searchParams);
 
           if (e) {
-            params.set("company_id", `${e.value}`);
-            params.set("company_name", `${e.label}`);
+            params.set("owner_id", `${e.value}`);
+            params.set("owner_name", `${e.label}`);
           } else {
-            params.delete("company_id");
-            params.delete("company_name");
+            params.delete("owner_id");
+            params.delete("owner_name");
           }
 
           if (hasPage) params.delete("page");
@@ -48,4 +48,4 @@ const FilterUser = () => {
   );
 };
 
-export default FilterUser;
+export default FilterCompany;

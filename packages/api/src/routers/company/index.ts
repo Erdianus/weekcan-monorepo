@@ -15,11 +15,9 @@ type Company = z.infer<typeof companySchema>;
 
 // --NOTE: FORM
 const companyCreateFormSchema = companyForm.omit({ owner: true });
-const companyUpdateFormSchema = companyForm
-  .omit({ owner: true })
-  .extend({
-    picture_path: z.union([z.string(), z.instanceof(File)]).optional(),
-  });
+const companyUpdateFormSchema = companyForm.omit({ owner: true }).extend({
+  picture_path: z.union([z.string(), z.instanceof(File)]).optional(),
+});
 
 const company = router("company", {
   all: router.query({
@@ -28,7 +26,8 @@ const company = router("company", {
       page?: number | string | null;
       paginate?: string | null;
       project_id?: string | number;
-      owner_id?: string | number;
+      owner_id?: string | number | null;
+      owner_name?: string | null;
     }) => {
       const res = await Axios("/company", { params: variables });
 
@@ -60,11 +59,15 @@ const company = router("company", {
       id: string | number;
       data: z.infer<typeof companyUpdateFormSchema>;
     }) => {
-      const res = await Axios.post(`/company/update-company/${variables.id}`, variables.data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const res = await Axios.post(
+        `/company/update-company/${variables.id}`,
+        variables.data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
 
       return res.data as { message: string };
     },

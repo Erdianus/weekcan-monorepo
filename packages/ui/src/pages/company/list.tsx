@@ -26,6 +26,7 @@ import {
 import useAlertStore from "@ui/lib/store/useAlertStore";
 import { toast } from "sonner";
 import Spinner from "@ui/components/ui/spinner";
+import FilterCompany from "./filter";
 
 const colHelper = createColumnHelper<Company>();
 
@@ -70,7 +71,7 @@ const Actions = ({ row }: CellContext<Company, unknown>) => {
                 open: true,
                 confirmText: "Ya, Hapus",
                 header: `Yakin ingin mengapus '${data.company_name}'?`,
-                desc: 'Perusahaan yang dihapus tidak dapat dikembalikan lagi',
+                desc: "Perusahaan yang dihapus tidak dapat dikembalikan lagi",
                 onConfirm: () => {
                   del.mutate({ id: data.id });
                 },
@@ -101,6 +102,9 @@ const columns = [
   colHelper.accessor("address", {
     header: "Alamat",
   }),
+  colHelper.accessor("owner.name", {
+    header: "Pemilik",
+  }),
   colHelper.display({
     id: "action",
     cell: Actions,
@@ -115,6 +119,8 @@ const ListCompany = () => {
       search: searchParams.get("search"),
       page: searchParams.get("page"),
       paginate: searchParams.get("paginate"),
+      owner_id: searchParams.get("owner_id"),
+      owner_name: searchParams.get("owner_name"),
     },
   });
 
@@ -128,13 +134,16 @@ const ListCompany = () => {
     <div>
       <div className="flex w-full justify-between items-center mb-4">
         <H3>Perusahaan</H3>
-        <Button size={"icon"} asChild>
-          <Link href="company/create">
-            <Plus />
-          </Link>
-        </Button>
+        <div className="flex items-center gap-4">
+          <FilterCompany />
+          <Button size={"icon"} asChild>
+            <Link href="company/create">
+              <Plus />
+            </Link>
+          </Button>
+        </div>
       </div>
-      <PortalSearch placeholder="Cari Company..." />
+      <PortalSearch placeholder="Cari Perusahaan..." />
       <DataTable table={table} isloading={isLoading} columns={columns} />
       <div className="mt-4 w-full flex items-center justify-end gap-5">
         <Paginate />

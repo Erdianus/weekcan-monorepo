@@ -130,7 +130,8 @@ const ListUser = () => {
       search: searchParams.get("search"),
       page: searchParams.get("page"),
       paginate: searchParams.get("paginate"),
-      company_id: searchParams.get("company_id")
+      company_id: searchParams.get("company_id"),
+      company_name: searchParams.get("company_name")
     },
   });
 
