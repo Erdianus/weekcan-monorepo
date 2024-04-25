@@ -16,10 +16,10 @@ const companyBaseSchema = z.object({
       },
       { message: "Email Tidak Sesuai" },
     ),
-  instagram: z.string().min(1, "Tolong Isi Akun Instagram").optional(),
-  facebook: z.string().min(1, "Tolong Isi Akun Facebook").optional(),
-  twitter: z.string().min(1, "Tolong Isi Akun Twitter").optional(),
-  tiktok: z.string().min(1, "Tolong Isi Akun Tiktok").optional(),
+  instagram: z.string().optional(),
+  facebook: z.string().optional(),
+  twitter: z.string().optional(),
+  tiktok: z.string().optional(),
   no_telp: z
     .string()
     .min(1, "Tolong Isi No. Telepon")

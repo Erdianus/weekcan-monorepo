@@ -2,8 +2,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import k, { useQueryClient } from "@repo/api/kit";
 import { companyFormSchema as companyForm } from "@repo/api/router/company/schema";
+import { Facebook, Instagram, Tiktok, Twitter } from "@ui/components/icon";
 import ImageUpload, { ImageUploadType } from "@ui/components/image-upload";
 import { SelectAsync } from "@ui/components/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@ui/components/ui/accordion";
 import { Button } from "@ui/components/ui/button";
 import {
   Form,
@@ -161,7 +168,7 @@ const CreateCompany = () => {
             <FormField
               control={form.control}
               name="picture_path"
-              render={({ field, formState }) => (
+              render={() => (
                 <FormItem className="col-span-2">
                   <FormLabel>Logo Perusahaan</FormLabel>
                   <FormControl>
@@ -179,6 +186,79 @@ const CreateCompany = () => {
               )}
             />
           </div>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>
+                <div className="flex flex-wrap gap-4">
+                  <div className="">Sosial Media</div>
+                  <div className="flex items-center gap-4 text-foreground">
+                    {!!form.watch("instagram") && <Instagram />}
+                    {!!form.watch("tiktok") && <Tiktok />}
+                    {!!form.watch("facebook") && <Facebook />}
+                    {!!form.watch("twitter") && <Twitter />}
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="space-y-4 p-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="instagram"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username Instagram</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Contoh: oystr_29" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tiktok"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username Tiktok</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Contoh: user_name" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="facebook"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username Facebook</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Contoh: user_name" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="twitter"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username Tiktok</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Contoh: user_name" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
           <Button>{create.isPending ? <Spinner /> : "Submit"}</Button>
         </form>
       </Form>

@@ -26,8 +26,8 @@ const ImageUpload = (props: Props) => {
           <button
             type="button"
             className={cn(
-              "flex h-40 w-40 flex-col items-center justify-center rounded-lg border bg-white px-2 text-gray-400",
-              isDragging && "bg-gray-50",
+              "flex h-40 w-40 flex-col items-center justify-center rounded-lg border bg-background px-2 text-foreground",
+              isDragging && "bg-muted",
             )}
             onClick={
               imageList.length > 0 ? () => onImageUpdate(0) : onImageUpload
