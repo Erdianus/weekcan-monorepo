@@ -3,7 +3,7 @@ import { LogOut } from "lucide-react";
 import { Input } from "./ui/input";
 import Link from "next/link";
 import { SVGProps } from "react";
-import { Company, Dashboard, Project } from "./icon";
+import { Client, Company, Dashboard, Project, Venue } from "./icon";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@ui/lib/utils";
 import { logoutAction } from "@ui/pages/auth/logout-action";
@@ -84,6 +84,8 @@ export default function Sidebar() {
           <Muted>Master Data</Muted>
           <SidebarItems text="User" link="/user" icon={User} />
           <SidebarItems text="Perusahaan" link="/company" icon={Company} />
+          <SidebarItems text="Tempat Acara" link="/venue" icon={Venue} />
+          <SidebarItems text="Klien" link="/client" icon={Client} />
         </ul>
       </div>
       <div className="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex bg-background z-20">

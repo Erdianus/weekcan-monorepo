@@ -1,6 +1,10 @@
 import { Logo } from "@repo/ui/components/logo";
-import Image from "next/image";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "weekcan",
+};
 
 export default function Page() {
   return (

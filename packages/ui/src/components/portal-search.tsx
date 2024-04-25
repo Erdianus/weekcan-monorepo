@@ -6,7 +6,6 @@ import { Search } from "lucide-react";
 import { cn } from "@ui/lib/utils";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
-import { Skeleton } from "./ui/skeleton";
 
 export default function PortalSearch(props: InputProps) {
   const [mount, setMount] = useState(false);
@@ -53,5 +52,5 @@ export default function PortalSearch(props: InputProps) {
         // @ts-ignore
         document.querySelector("#portal-search"),
       )
-    : <Skeleton className="h-10 w-40"  />;
+    : null
 }
