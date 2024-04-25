@@ -38,7 +38,7 @@ function classNames<
     placeholder: () => `text-gray-500 dark:text-gray-400 pl-1 py-0.5`,
     input: () => `pl-1 py-0.5`,
     valueContainer: () =>
-      `p-1 pb-1.5 gap-1 h-10 capitalize !overflow-x-auto scrollbar-thin scrollbar-track-gray-200 scrollbar-thumb-black dark:scrollbar-track-black dark:scrollbar-thumb-white w-80 !flex-nowrap`,
+      `p-1 pb-1.5 gap-1 h-10 capitalize !overflow-x-auto scrollbar-thin scrollbar-track-gray-200 scrollbar-thumb-black dark:scrollbar-track-black dark:scrollbar-thumb-white !flex-nowrap`,
     singleValue: (props) => {
       const data = props.data as { label: string; value: string };
       const { name: status } = props.selectProps;
@@ -108,7 +108,7 @@ function styles<
     multiValueLabel: (base) => ({
       ...base,
       whiteSpace: "nowrap",
-      overflow: "visible",
+      overflow: "hidden",
     }),
     control: (base) => ({
       ...base,
@@ -150,7 +150,7 @@ function Select<
       }}
       menuPosition="fixed"
       unstyled
-      hideSelectedOptions={false}
+      hideSelectedOptions={true}
     />
   );
 }
@@ -165,7 +165,7 @@ function SelectAsync<
     <AsyncPaginate
       {...props}
       menuPortalTarget={typeof window !== "undefined" ? document.body : null}
-      className="w-full"
+      className={cn("w-full", props.className)}
       menuPosition="fixed"
       components={{ DropdownIndicator }}
       classNames={classNames<OptionType, IsMulti, Group>()}

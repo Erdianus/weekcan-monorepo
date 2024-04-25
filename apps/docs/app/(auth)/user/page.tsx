@@ -19,11 +19,7 @@ export default async function UserPage({
   const client = new QueryClient();
 
   await client.prefetchQuery(
-    k.user.all.getFetchOptions({
-      search: searchParams?.search,
-      page: searchParams?.page,
-      paginate: searchParams?.paginate,
-    }),
+    k.user.all.getFetchOptions(searchParams),
   );
 
   return (

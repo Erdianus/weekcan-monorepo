@@ -27,8 +27,11 @@ const user = router("user", {
       search?: string | null;
       page?: number | string | null;
       paginate?: string | null;
+      company_id?: string | null;
     }) => {
-      const res = await Axios("/user", { params: variables });
+      const res = await Axios("/user", {
+        params: { ...variables, company_id: [variables?.company_id] },
+      });
 
       return res.data as { data: User[]; meta: Meta };
     },
@@ -52,7 +55,10 @@ const user = router("user", {
       id: string | number;
       data: z.infer<typeof userUpdateForm>;
     }) => {
-      const res = await Axios.put(`/user/update/${variables.id}`, variables.data);
+      const res = await Axios.put(
+        `/user/update/${variables.id}`,
+        variables.data,
+      );
 
       return res.data as { message: string };
     },

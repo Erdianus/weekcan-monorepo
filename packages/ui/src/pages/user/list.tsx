@@ -26,6 +26,8 @@ import {
 import useAlertStore from "@ui/lib/store/useAlertStore";
 import { toast } from "sonner";
 import Spinner from "@ui/components/ui/spinner";
+import { Badge } from "@ui/components/ui/badge";
+import FilterUser from "./filter";
 
 const colHelper = createColumnHelper<User>();
 
@@ -58,12 +60,12 @@ const Actions = ({ row }: CellContext<User, unknown>) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <Link href={`/user/${data.id}/update`}>
-          <DropdownMenuItem>
+          <Link href={`/user/${data.id}/update`}>
+            <DropdownMenuItem>
               <Pencil className="mr-2 w-4 h-4" />
               <span>Edit</span>
-          </DropdownMenuItem>
-            </Link>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem
             onClick={() =>
               alert.setData({
@@ -99,6 +101,21 @@ const columns = [
   colHelper.accessor("role_name", {
     header: "Jabatan",
   }),
+  colHelper.accessor("company", {
+    header: "Perusahaan",
+    cell: ({ getValue }) => {
+      if (!getValue().length) return "-";
+
+      return (
+        <div className="flex items-center gap-4">
+          {getValue()[0]?.company_name}
+          {getValue().length > 1 && (
+            <Badge variant={"secondary"}>{getValue().length - 1}+</Badge>
+          )}
+        </div>
+      );
+    },
+  }),
   colHelper.display({
     id: "action",
     cell: Actions,
@@ -113,6 +130,7 @@ const ListUser = () => {
       search: searchParams.get("search"),
       page: searchParams.get("page"),
       paginate: searchParams.get("paginate"),
+      company_id: searchParams.get("company_id")
     },
   });
 
@@ -126,11 +144,14 @@ const ListUser = () => {
     <div>
       <div className="flex w-full justify-between items-center mb-4">
         <H3>User</H3>
-        <Button size={"icon"} asChild>
-          <Link href="user/create">
-            <Plus />
-          </Link>
-        </Button>
+        <div className="flex items-center gap-4">
+          <FilterUser />
+          <Button size={"icon"} asChild>
+            <Link href="user/create">
+              <Plus />
+            </Link>
+          </Button>
+        </div>
       </div>
       <PortalSearch placeholder="Cari User..." />
       <DataTable table={table} isloading={isLoading} columns={columns} />
