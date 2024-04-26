@@ -19,6 +19,7 @@ const Paginate = () => {
     <div className="flex items-center gap-4">
       <Label className="whitespace-nowrap">Per halaman:</Label>
       <Select
+        defaultValue={searchParams.get('paginate')?.toString()}
         onValueChange={(v) => {
           const params = new URLSearchParams(searchParams);
           params.set('paginate', v);

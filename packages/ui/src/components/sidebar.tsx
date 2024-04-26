@@ -80,7 +80,7 @@ export default function Sidebar() {
         </form>
         <ul className="space-y-2">
           <SidebarItems text="Dashboard" link="/dashboard" icon={Dashboard} />
-          <SidebarItems text="Project" link="/project" icon={Project} />
+          <SidebarItems text="Proyek/Event" link="/project" icon={Project} />
           <Muted>Master Data</Muted>
           <SidebarItems text="User" link="/user" icon={User} />
           <SidebarItems text="Perusahaan" link="/company" icon={Company} />

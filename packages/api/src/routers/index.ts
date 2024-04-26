@@ -16,8 +16,10 @@ import {
 } from "@tanstack/react-query";
 import venue from "./venue";
 import client from "./client";
+import project from "./project";
 
 const k = {
+  project,
   user,
   company,
   role,

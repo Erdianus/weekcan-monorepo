@@ -7,8 +7,11 @@ import { Meta } from "../meta";
 type Venue = z.infer<typeof venueBaseSchema>;
 const venue = router("venue", {
   all: router.query({
-    fetcher: async () => {
-      const res = await Axios("/venue");
+    fetcher: async (variables?: {
+      paginate?: string | null;
+      page?: string | null;
+    }) => {
+      const res = await Axios("/venue", { params: variables });
 
       return res.data as { data: Venue[]; meta: Meta };
     },

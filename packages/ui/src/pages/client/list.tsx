@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import k, { useQueryClient } from "@repo/api/kit";
-import { venueFormSchema } from "@repo/api/router/venue/schema";
+import { clientFormSchema } from "@repo/api/router/client/schema";
 import Flashlist from "@ui/components/flashlist";
 import Loading from "@ui/components/loading";
 import Paginate from "@ui/components/paginate";
@@ -26,14 +26,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-const EditVenue = (props: {
+const EditClient = (props: {
   data: { name: string; id: number };
   onClose: () => void;
 }) => {
   const [name, setName] = useState(props.data.name);
 
   const client = useQueryClient();
-  const update = k.venue.update.useMutation({
+  const update = k.client.update.useMutation({
     onSuccess: async ({ message }) => {
       await client.invalidateQueries({ queryKey: k.venue.all.getKey() });
       toast.success(message);
@@ -76,20 +76,20 @@ const EditVenue = (props: {
   );
 };
 
-const ListVenue = () => {
+const ListClient = () => {
   const searchParams = useSearchParams();
   const alert = useAlertStore();
   const [editID, setEditID] = useState(0);
 
-  const form = useForm<z.infer<typeof venueFormSchema>>({
-    resolver: zodResolver(venueFormSchema),
+  const form = useForm<z.infer<typeof clientFormSchema>>({
+    resolver: zodResolver(clientFormSchema),
     values: {
       name: "",
     },
   });
 
   const client = useQueryClient();
-  const { data: venues } = k.venue.all.useQuery({
+  const { data: clients } = k.client.all.useQuery({
     variables: {
       paginate: searchParams.get("paginate"),
       page: searchParams.get("page"),
@@ -97,20 +97,20 @@ const ListVenue = () => {
   });
 
   //--NOTE: Create Mutation
-  const create = k.venue.create.useMutation({
+  const create = k.client.create.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
       form.reset();
-      await client.invalidateQueries({ queryKey: k.venue.all.getKey() });
+      await client.invalidateQueries({ queryKey: k.client.all.getKey() });
     },
     onError: ({ message }) => toast.error(message),
   });
 
   //--NOTE: Delete Mutation
-  const del = k.venue.delete.useMutation({
+  const del = k.client.delete.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
-      await client.invalidateQueries({ queryKey: k.venue.all.getKey() });
+      await client.invalidateQueries({ queryKey: k.client.all.getKey() });
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -119,7 +119,7 @@ const ListVenue = () => {
     <>
       <PortalSearch placeholder="Cari Tempat..." />
       <div className="flex items-center justify-between">
-        <H3 className="mb-4">Tempat Acara</H3>
+        <H3 className="mb-4">Client</H3>
         <Popover>
           <PopoverTrigger asChild className="relative">
             <Button className="relative" size={"icon"}>
@@ -154,7 +154,7 @@ const ListVenue = () => {
         </Popover>
       </div>
       <Flashlist
-        isloading={!venues}
+        isloading={!clients}
         loading={
           <Loading>
             <div className="border-border flex items-center justify-between p-4 border-b gap-4">
@@ -163,28 +163,28 @@ const ListVenue = () => {
             </div>
           </Loading>
         }
-        isfallback={venues?.data.length === 0}
+        isfallback={clients?.data.length === 0}
         fallback={<div>Tidak Ada Data Tempat</div>}
       >
-        {venues?.data.map((venue) => (
+        {clients?.data.map((client) => (
           <div className="border-border flex items-center justify-between p-4 border-b gap-4">
-            {editID === venue.id && (
-              <EditVenue
-                data={venue}
+            {editID === client.id && (
+              <EditClient
+                data={client}
                 onClose={() => {
                   setEditID(0);
                 }}
               />
             )}
-            {editID !== venue.id && (
+            {editID !== client.id && (
               <>
-                <div>{venue.name}</div>
+                <div>{client.name}</div>
                 <div className="flex items-center gap-4">
                   {/* <Button
                     variant={"ghost"}
                     size={"icon"}
                     type="button"
-                    onClick={() => setEditID(venue.id)}
+                    onClick={() => setEditID(client.id)}
                   >
                     <Pencil size={20} />
                   </Button> */}
@@ -195,16 +195,16 @@ const ListVenue = () => {
                     onClick={() => {
                       alert.setData({
                         open: true,
-                        header: `Yakin ingin menghapus '${venue.name}'?`,
-                        desc: "Tempat acara yang sudah dihapus tidak dapat dikembalikan lagi.",
+                        header: `Yakin ingin menghapus '${client.name}'?`,
+                        desc: "Data klien yang sudah dihapus tidak dapat dikembalikan lagi.",
                         confirmText: "Ya, Hapus",
                         onConfirm: () => {
-                          del.mutate({ id: `${venue.id}` });
+                          del.mutate({ id: `${client.id}` });
                         },
                       });
                     }}
                   >
-                    {del.isPending && del.variables.id === `${venue.id}` ? (
+                    {del.isPending && del.variables.id === `${client.id}` ? (
                       <Spinner />
                     ) : (
                       <Trash2 size={20} />
@@ -218,10 +218,10 @@ const ListVenue = () => {
       </Flashlist>
       <div className="w-full flex items-center gap-4 justify-end mt-4">
         <Paginate />
-        <PaginationParams meta={venues?.meta} />
+        <PaginationParams meta={clients?.meta} />
       </div>
     </>
   );
 };
 
-export default ListVenue;
+export default ListClient;

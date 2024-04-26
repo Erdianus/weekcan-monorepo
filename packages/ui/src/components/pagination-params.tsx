@@ -17,7 +17,7 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  if (!meta) return <Skeleton className="w-44" />;
+  if (!meta) return <Skeleton className="w-1/5 h-8" />;
 
   return (
     <Pagination className="justify-start w-auto mx-0">

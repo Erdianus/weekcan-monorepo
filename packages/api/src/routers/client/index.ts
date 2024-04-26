@@ -5,10 +5,14 @@ import { clientBaseSchema, clientFormSchema } from "./schema";
 import { Meta } from "../meta";
 
 type Client = z.infer<typeof clientBaseSchema>;
+
 const client = router("client", {
   all: router.query({
-    fetcher: async () => {
-      const res = await Axios("/client");
+    fetcher: async (variables: {
+      paginate?: string | null;
+      page?: string | null;
+    }) => {
+      const res = await Axios("/client", { params: variables });
 
       return res.data as { data: Client[]; meta: Meta };
     },
@@ -21,7 +25,9 @@ const client = router("client", {
     },
   }),
   create: router.mutation({
-    mutationFn: async (variable: { data: z.infer<typeof clientFormSchema> }) => {
+    mutationFn: async (variable: {
+      data: z.infer<typeof clientFormSchema>;
+    }) => {
       const res = await Axios.post(`/client`, variable.data);
 
       return res.data as { message: string };

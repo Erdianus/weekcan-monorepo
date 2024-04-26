@@ -665,7 +665,7 @@ export default function Page() {
               </p>
               <div className="my-8 flex items-baseline justify-center">
                 <span className="mr-2 text-5xl font-extrabold">$99</span>
-                <span className="text-gray-500 dark:text-gray-400 dark:text-gray-400">
+                <span className="text-gray-500 dark:text-gray-400">
                   /month
                 </span>
               </div>
