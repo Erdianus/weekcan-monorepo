@@ -56,7 +56,7 @@ function classNames<
     multiValue: (props) => {
       return `bg-gray-100 dark:bg-gray-700 rounded items-center py-0.5 pl-2 pr-1.5 gap-1.5 !min-w-max ${
         props.selectProps.placeholder === "Pilih Perusahaan"
-          ? "first:bg-main-600 dark:first:bg-main-400"
+          ? "first:bg-main-500 first:text-white dark:first:bg-main-900 dark:first:text-main-400"
           : ""
       }`;
     },

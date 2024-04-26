@@ -14,14 +14,18 @@ const projectBaseSchema = z.object({
     z.string().min(1, "Tolong Pilih PIC"),
     z.number().positive("Tolong Pilih PIC"),
   ]),
-  venue_id: z.union([
-    z.string().min(1, "Tolong Pilih PIC"),
-    z.number().positive("Tolong Pilih PIC"),
-  ]),
-  client_id: z.union([
-    z.string().min(1, "Tolong Pilih PIC"),
-    z.number().positive("Tolong Pilih PIC"),
-  ]),
+  venue_id: z
+    .union([
+      z.string().min(1, "Tolong Pilih PIC"),
+      z.number().positive("Tolong Pilih PIC"),
+    ])
+    .nullish(),
+  client_id: z
+    .union([
+      z.string().min(1, "Tolong Pilih PIC"),
+      z.number().positive("Tolong Pilih PIC"),
+    ])
+    .nullish(),
   city: z.string().min(1, "Tolong Pilih Kota").nullish(),
   province: z.string().min(1, "Tolong Pilih Kota").nullish(),
   status: z.string().min(1, "Tolong Pilih Status"),
@@ -61,10 +65,26 @@ const projectFormSchema = projectBaseSchema
       },
       { invalid_type_error: "Tolong Pilih PIC" },
     ),
-    venue: z.string(),
-    cleint: z.string(),
+    venue: z.string().optional(),
+    client: z.string().optional(),
+    venue_select: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+        __isNew__: z.boolean(),
+      },
+      { invalid_type_error: "Tolong Pilih Tempat" },
+    ),
+    client_select: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+        __isNew__: z.boolean(),
+      },
+      { invalid_type_error: "Tolong Pilih Klien" },
+    ),
   });
 
-export { projectFormSchema };
+export { projectFormSchema, projectStatus, projectProgress, projectType };
 
 export default projectBaseSchema;

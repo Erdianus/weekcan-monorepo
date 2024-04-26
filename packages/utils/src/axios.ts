@@ -69,7 +69,8 @@ export const axiosError = (error: AxiosError) => {
 };
 
 export {
-  Axios
+  Axios,
+  axios,
 }
 
 export default Axios;

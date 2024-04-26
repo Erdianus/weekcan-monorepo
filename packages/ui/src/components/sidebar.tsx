@@ -28,16 +28,14 @@ const SidebarItems = (props: SidebarItemProps) => {
       <Link
         href={props.link}
         className={cn(
-          "flex items-center p-2 text-base font-medium rounded-lg group",
-          isActive && "dark:bg-main-500 dark:text-white",
+          "flex items-center p-2 text-base font-medium rounded-lg group hover:bg-muted",
+          isActive &&
+            "dark:bg-main-900 dark:text-main-500 bg-main-500 text-white dark:hover:bg-main-950 hover:bg-main-600",
         )}
       >
         <props.icon
           aria-hidden="true"
-          className={cn(
-            "w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white",
-            isActive && "dark:text-white",
-          )}
+          className={cn("w-6 h-6")}
           fill="currentColor"
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"

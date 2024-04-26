@@ -27,12 +27,12 @@ const user = router("user", {
       search?: string | null;
       page?: number | string | null;
       paginate?: string | null;
-      company_id?: string | null;
-      company_name?: string | null;
+      company_id?: string[] | null;
+      company_name?: string[] | null;
       isOwner?: boolean;
     }) => {
       const res = await Axios("/user", {
-        params: { ...variables, company_id: [variables?.company_id] },
+        params: { ...variables, company_id: variables?.company_id },
       });
 
       return res.data as { data: User[]; meta: Meta };

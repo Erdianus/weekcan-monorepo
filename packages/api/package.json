@@ -13,6 +13,7 @@
     "@repo/typescript-config": "workspace:*",
     "@repo/utils": "workspace:*",
     "@tanstack/react-query": "^5.31.0",
+    "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-query-kit": "^3.2.2",
@@ -20,11 +21,13 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.28.11",
+    "@types/node": "^20.10.6",
     "@types/react": "^18.2.79"
   },
   "exports": {
     "./provider": "./src/providers.tsx",
     "./kit": "./src/routers/index.ts",
-    "./router/*": "./src/routers/*.ts"
+    "./router/*": "./src/routers/*.ts",
+    "./route-handler/*": "./src/route-handler/*.ts"
   }
 }

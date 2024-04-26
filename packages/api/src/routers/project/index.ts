@@ -33,7 +33,12 @@ const projectSchema = projectBaseSchema.extend({
 type Project = z.infer<typeof projectSchema>;
 
 // NOTE: FORM
-const projectForm = projectFormSchema.omit({ company: true, picSelect: true });
+const projectForm = projectFormSchema.omit({
+  company: true,
+  picSelect: true,
+  venue_select: true,
+  client_select: true,
+});
 
 const project = router("project", {
   all: router.query({
@@ -76,8 +81,6 @@ const project = router("project", {
   }),
 });
 
-export {
-  type Project
-}
+export { type Project };
 
 export default project;

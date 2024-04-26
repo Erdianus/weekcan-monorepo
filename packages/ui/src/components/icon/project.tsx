@@ -5,6 +5,7 @@ export default function Project(props: SVGProps<SVGSVGElement>) {
     <svg
       {...props}
       xmlns="http://www.w3.org/2000/svg"
+      fill="none"
       width="24px"
       height="24px"
       viewBox="0 0 1024 1024"

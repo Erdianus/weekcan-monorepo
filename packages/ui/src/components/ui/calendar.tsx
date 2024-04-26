@@ -18,6 +18,9 @@ function Calendar({
 }: CalendarProps) {
   return (
     <DayPicker
+      captionLayout="dropdown-buttons"
+      fromYear={dayjs().subtract(10, 'year').get('year')}
+      toYear={dayjs().add(3, 'year').get('year')}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
@@ -52,7 +55,7 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
-        caption_dropdowns: 'flex gap-1 item-centers',
+        caption_dropdowns: "flex gap-1 item-centers",
         ...classNames,
       }}
       components={{
@@ -61,7 +64,7 @@ function Calendar({
         Dropdown: (props) => {
           const { fromDate, fromMonth, fromYear, toDate, toMonth, toYear } =
             useDayPicker();
-          const {goToMonth, currentMonth} = useNavigation()
+          const { goToMonth, currentMonth } = useNavigation();
 
           if (props.name === "months") {
             const selectItems = Array.from({ length: 12 }, (_, i) => ({
@@ -70,12 +73,17 @@ function Calendar({
             }));
 
             return (
-              <Select onValueChange={(value) => {
-                const newDate = new Date(currentMonth);
-                newDate.setMonth(Number(value));
-                goToMonth(newDate);
-              }} value={props.value?.toString()}>
-                <SelectTrigger>{dayjs(currentMonth).format('MMM')}</SelectTrigger>
+              <Select
+                onValueChange={(value) => {
+                  const newDate = new Date(currentMonth);
+                  newDate.setMonth(Number(value));
+                  goToMonth(newDate);
+                }}
+                value={props.value?.toString()}
+              >
+                <SelectTrigger>
+                  {dayjs(currentMonth).format("MMM")}
+                </SelectTrigger>
                 <SelectContent>
                   {selectItems.map((items) => (
                     <SelectItem value={items.value}>{items.label}</SelectItem>
@@ -102,11 +110,14 @@ function Calendar({
             }));
 
             return (
-              <Select onValueChange={(value) => {
-                const newDate = new Date(currentMonth);
-                newDate.setFullYear(Number(value));
-                goToMonth(newDate);
-              }} value={props.value?.toString()}>
+              <Select
+                onValueChange={(value) => {
+                  const newDate = new Date(currentMonth);
+                  newDate.setFullYear(Number(value));
+                  goToMonth(newDate);
+                }}
+                value={props.value?.toString()}
+              >
                 <SelectTrigger>{currentMonth.getFullYear()}</SelectTrigger>
                 <SelectContent>
                   {selectItems.map((items) => (

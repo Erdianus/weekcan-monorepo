@@ -1,5 +1,6 @@
 import { type LoadOptions } from "react-select-async-paginate";
 import k, { inferVariables } from "@repo/api/kit";
+import {axios} from "@repo/utils/axios";
 
 type OptionType =
   | { value: string; label: string }
@@ -84,6 +85,52 @@ const loadRoleOptions: LoadOptions<
   };
 };
 
+const loadProvinceOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  null
+> = async (search) => {
+  const res = await axios<{ data: { id: string; name: string }[] }>(
+    "/api/province",
+    {
+      params: { search },
+    },
+  );
+
+  const options = res.data.data.map((d) => ({
+    label: d.name,
+    value: d.id,
+  }));
+
+  return {
+    options,
+    hasMore: false,
+  };
+};
+
+const loadCityOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  { province_id: string }
+> = async (search, _, additional) => {
+  const res = await axios<{ data: { id: string; name: string }[] }>(
+    `/api/city/${additional?.province_id}`,
+    {
+      params: { search, province_id: additional?.province_id },
+    },
+  );
+
+  const options = res.data.data.map((d) => ({
+    label: d.name,
+    value: d.id,
+  }));
+
+  return {
+    options,
+    hasMore: false,
+  };
+};
+
 // --NOTE: Static Option
 
 const loadOptions = Object.freeze({
@@ -92,4 +139,11 @@ const loadOptions = Object.freeze({
   role: loadRoleOptions,
 });
 
-export { loadOptions, loadUserOptions, loadCompanyOptions, loadRoleOptions };
+export {
+  loadOptions,
+  loadUserOptions,
+  loadCompanyOptions,
+  loadRoleOptions,
+  loadProvinceOptions,
+  loadCityOptions,
+};
