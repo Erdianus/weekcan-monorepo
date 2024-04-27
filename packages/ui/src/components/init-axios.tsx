@@ -3,6 +3,10 @@ import { useEffect, Fragment } from "react";
 import Axios from "@repo/utils/axios";
 import useUserStore from "@ui/lib/store/useUserStore";
 import { UserSession } from "@repo/auth";
+import 'dayjs/locale/id'
+import dayjs from "dayjs";
+
+dayjs.locale('id');
 
 const InitAxios = ({user}: {user: UserSession}) => {
   const userStore = useUserStore()

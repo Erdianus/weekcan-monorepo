@@ -23,7 +23,7 @@ import Spinner from "@ui/components/ui/spinner";
 import { H3 } from "@ui/components/ui/typograhpy";
 import { dateRange } from "@ui/lib/date";
 import useAlertStore from "@ui/lib/store/useAlertStore";
-import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -59,7 +59,13 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <Link href={`/project/${data.id}/update`}>
+          <Link href={`/project/${data.id}`}>
+            <DropdownMenuItem>
+              <Eye className="mr-2 w-4 h-4" />
+              <span>Detail</span>
+            </DropdownMenuItem>
+          </Link>
+          <Link href={`/project/update/${data.id}`}>
             <DropdownMenuItem>
               <Pencil className="mr-2 w-4 h-4" />
               <span>Edit</span>
@@ -152,8 +158,8 @@ const ListProject = () => {
       <PortalSearch placeholder="Cari Proyek..." />
       <div className="flex mb-4 w-full items-center justify-between">
         <H3 className="">Proyek</H3>
-        <Button type="button" size={'icon'} asChild>
-          <Link href={'project/create'}>
+        <Button type="button" size={"icon"} asChild>
+          <Link href={"project/create"}>
             <Plus />
           </Link>
         </Button>

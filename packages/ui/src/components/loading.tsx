@@ -5,7 +5,7 @@ const Loading = (
 ) => {
   return (
     <>
-      {Array.from({ length: props.length ?? 3 }, (_, i) => i).map((i) => (
+      {Array.from({ length: props.length ?? 5 }, (_, i) => i).map((i) => (
         <Fragment
           key={props.keyname ? `${props.keyname}-${i}` : `loading-${i}`}
         >

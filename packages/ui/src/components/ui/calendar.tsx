@@ -6,6 +6,7 @@ import { DayPicker, useDayPicker, useNavigation } from "react-day-picker";
 import dayjs from "dayjs";
 import { cn } from "@ui/lib/utils";
 import { buttonVariants } from "@ui/components/ui/button";
+import { id } from 'date-fns/locale';
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./select";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
@@ -18,6 +19,7 @@ function Calendar({
 }: CalendarProps) {
   return (
     <DayPicker
+      locale={id}
       captionLayout="dropdown-buttons"
       fromYear={dayjs().subtract(10, 'year').get('year')}
       toYear={dayjs().add(3, 'year').get('year')}

@@ -20,6 +20,7 @@ const badgeVariants = cva<{ variant: Record<string, string> }>(
         "On Going":
           "border-transparent text-white bg-yellow-500 dark:bg-yellow-300 dark:text-yellow-700",
         Done: "border-transparent text-white bg-green-500 dark:bg-green-300 dark:text-green-700",
+        Cancel: "border-transparent text-white bg-red-500 dark:bg-red-300 dark:text-red-700",
       },
     },
     defaultVariants: {
