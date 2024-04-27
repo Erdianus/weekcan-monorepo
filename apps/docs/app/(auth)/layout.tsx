@@ -25,9 +25,11 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
     });
 
     if (res.status !== 200) {
+      await axios.post('/api/auth/signout');
       redirect("/login");
     }
   } catch (e) {
+    await axios.post('/api/auth/signout');
     redirect("/login");
   }
 

@@ -16,7 +16,6 @@ import ReactSelect, {
 import { ChevronsUpDown } from "lucide-react";
 import { cn } from "@ui/lib/utils";
 
-
 interface GroupBase<Option> {
   readonly options: readonly Option[];
   readonly label?: string;

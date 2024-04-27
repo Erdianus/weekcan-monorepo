@@ -40,7 +40,7 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
   const del = k.project.delete.useMutation({
     async onSuccess({ message }) {
       toast.success(message);
-      await client.invalidateQueries({ queryKey: k.company.all.getKey() });
+      await client.invalidateQueries({ queryKey: k.project.all.getKey() });
     },
     onError: ({ message }) => toast.error(message),
   });

@@ -6,10 +6,10 @@ import { UserSession, authConfig } from "./config";
 export type { Session } from "next-auth";
 
 const {
-  handlers: { GET, POST },
+  handlers,
   auth,
   signIn,
   signOut,
 } = NextAuth(authConfig);
 
-export { GET, POST, auth, signIn, signOut, useSession, type UserSession };
+export { handlers, auth, signIn, signOut, useSession, type UserSession };

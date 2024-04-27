@@ -9,8 +9,9 @@ type Client = z.infer<typeof clientBaseSchema>;
 const client = router("client", {
   all: router.query({
     fetcher: async (variables: {
+      search?: number | string | null;
       paginate?: string | null;
-      page?: string | null;
+      page?: string | null | number;
     }) => {
       const res = await Axios("/client", { params: variables });
 

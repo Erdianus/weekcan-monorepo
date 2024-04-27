@@ -1,6 +1,11 @@
 import { type LoadOptions } from "react-select-async-paginate";
 import k, { inferVariables } from "@repo/api/kit";
-import {axios} from "@repo/utils/axios";
+import { axios } from "@repo/utils/axios";
+import {
+  projectProgress,
+  projectStatus,
+  projectType,
+} from "@repo/api/router/project/schema";
 
 type OptionType =
   | { value: string; label: string }
@@ -85,6 +90,50 @@ const loadRoleOptions: LoadOptions<
   };
 };
 
+const loadVenueOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.venue.all>
+> = async (search, _, params) => {
+  const datas = await k.venue.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(params?.page!) + 1,
+    },
+  };
+};
+
+const loadClientOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.client.all>
+> = async (search, _, params) => {
+  const datas = await k.client.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(params?.page!) + 1,
+    },
+  };
+};
+
 const loadProvinceOptions: LoadOptions<
   OptionType,
   GroupBase<OptionType>,
@@ -132,6 +181,15 @@ const loadCityOptions: LoadOptions<
 };
 
 // --NOTE: Static Option
+//
+const optionsProjectType = () =>
+  projectType.map((v) => ({ label: v, value: v }));
+
+const optionsProjectStatus = () =>
+  projectStatus.map((v) => ({ label: v, value: v }));
+
+const optionsProjectProgress = () =>
+  projectProgress.map((v) => ({ label: v, value: v }));
 
 const loadOptions = Object.freeze({
   user: loadUserOptions,
@@ -144,6 +202,14 @@ export {
   loadUserOptions,
   loadCompanyOptions,
   loadRoleOptions,
+  loadVenueOptions,
+  loadClientOptions,
   loadProvinceOptions,
   loadCityOptions,
+
+  // Static
+  optionsProjectType,
+  optionsProjectStatus,
+  optionsProjectProgress,
+
 };

@@ -71,7 +71,7 @@ const projectFormSchema = projectBaseSchema
       {
         label: z.string(),
         value: z.string(),
-        __isNew__: z.boolean(),
+        __isNew__: z.boolean().optional(),
       },
       { invalid_type_error: "Tolong Pilih Tempat" },
     ),
@@ -79,7 +79,7 @@ const projectFormSchema = projectBaseSchema
       {
         label: z.string(),
         value: z.string(),
-        __isNew__: z.boolean(),
+        __isNew__: z.boolean().optional(),
       },
       { invalid_type_error: "Tolong Pilih Klien" },
     ),

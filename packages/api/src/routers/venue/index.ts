@@ -8,8 +8,9 @@ type Venue = z.infer<typeof venueBaseSchema>;
 const venue = router("venue", {
   all: router.query({
     fetcher: async (variables?: {
+      search?: string | null;
       paginate?: string | null;
-      page?: string | null;
+      page?: string | null | number;
     }) => {
       const res = await Axios("/venue", { params: variables });
 

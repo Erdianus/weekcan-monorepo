@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import k, { useQueryClient } from "@repo/api/kit";
 import { projectFormSchema } from "@repo/api/router/project/schema";
-import { SelectAsync } from "@ui/components/select";
+import { Select, SelectAsync, SelectAsyncCreatable } from "@ui/components/select";
 import { Button } from "@ui/components/ui/button";
 import { DateRangePicker } from "@ui/components/ui/date-picker";
 import {
@@ -19,10 +19,15 @@ import Spinner from "@ui/components/ui/spinner";
 import { H3 } from "@ui/components/ui/typograhpy";
 import { date4Y2M2D } from "@ui/lib/date";
 import {
-    loadCityOptions,
+  loadCityOptions,
+  loadClientOptions,
   loadCompanyOptions,
   loadProvinceOptions,
   loadUserOptions,
+  loadVenueOptions,
+  optionsProjectProgress,
+  optionsProjectStatus,
+  optionsProjectType,
 } from "@ui/lib/select";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -55,12 +60,33 @@ const projectForm = projectFormSchema
       },
       { invalid_type_error: "Tolong Pilih Provinsi" },
     ),
-city: z.object(
+    city: z.object(
       {
         label: z.string(),
         value: z.string(),
       },
       { invalid_type_error: "Tolong Pilih Kota" },
+    ),
+    type: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Pilih Tipe Proyek" },
+    ),
+    progress: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Pilih Progress Proyek" },
+    ),
+    status: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Pilih Status Proyek" },
     ),
   });
 
@@ -83,9 +109,12 @@ const CreateProject = () => {
       province: null,
       // @ts-ignore
       city: null,
-      type: "",
-      progress: "",
-      status: "",
+      // @ts-ignore
+      type: null,
+      // @ts-ignore
+      progress: null,
+      // @ts-ignore
+      status: null,
       // @ts-ignore
       picSelect: null,
     },
@@ -121,10 +150,13 @@ const CreateProject = () => {
                 ...data,
                 ...venue,
                 ...clients,
-                province: data.province.value,
-                city: data.city.value,
+                type: data.type.value,
+                progress: data.progress.value,
+                status: data.status.value,
+                province: data.province.label,
+                city: data.city.label,
                 start_date: date4Y2M2D(data.date.from),
-                end_date: data.date.to ? date4Y2M2D(data.date.from) : undefined,
+                end_date: data.date.to ? date4Y2M2D(data.date.to) : undefined,
                 pic: data.picSelect.value,
                 company_id: data.company.map((c) => c.value),
               },
@@ -278,8 +310,107 @@ const CreateProject = () => {
                       onChange={field.onChange}
                       isDisabled={!form.watch("province")}
                       additional={{
-                        province_id: form.watch("province")?.value ?? ""
+                        province_id: form.watch("province")?.value ?? "",
                       }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="venue_select"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tempat</FormLabel>
+                  <FormControl>
+                    <SelectAsyncCreatable
+                      loadOptions={loadVenueOptions}
+                      placeholder="Pilih Tempat"
+                      selectRef={field.ref}
+                      value={field.value}
+                      onChange={field.onChange}
+                      additional={{
+                        page: 1,
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="client_select"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Klien</FormLabel>
+                  <FormControl>
+                    <SelectAsyncCreatable
+                      loadOptions={loadClientOptions}
+                      placeholder="Pilih Klien"
+                      selectRef={field.ref}
+                      value={field.value}
+                      onChange={field.onChange}
+                      additional={{
+                        page: 1,
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipe Proyek</FormLabel>
+                  <FormControl>
+                    <Select
+                      {...field}
+                      options={optionsProjectType()}
+                      placeholder="Pilih Tipe"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status Proyek</FormLabel>
+                  <FormControl>
+                    <Select
+                      {...field}
+                      options={optionsProjectStatus()}
+                      placeholder="Pilih Status"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="progress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Progress Proyek</FormLabel>
+                  <FormControl>
+                    <Select
+                      {...field}
+                      options={optionsProjectProgress()}
+                      placeholder="Pilih Progress"
                     />
                   </FormControl>
                   <FormMessage />
