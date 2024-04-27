@@ -31,4 +31,8 @@ const useAlertStore = create<AlertState>()((set) => ({
   reset: () => set(initialState),
 }));
 
+export {
+  useAlertStore,
+}
+
 export default useAlertStore;

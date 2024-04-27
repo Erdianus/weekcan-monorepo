@@ -4,6 +4,7 @@ import z from "zod";
 import projectBaseSchema, { projectFormSchema } from "./schema";
 import companyBaseSchema from "../company/schema";
 import { Meta } from "../meta";
+import detail from "./detail";
 
 const projectParamsSchema = z
   .object({
@@ -79,6 +80,7 @@ const project = router("project", {
       return res.data as { message: string };
     },
   }),
+  detail
 });
 
 export { type Project };

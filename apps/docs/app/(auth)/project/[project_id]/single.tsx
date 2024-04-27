@@ -27,7 +27,7 @@ const SingleProject = ({ id }: { id: string | number }) => {
       <H2 className="border-b-0 mb-4">
         {project?.data.project_name ?? <Skeleton className="w-24 h-8" />}
       </H2>
-      <div className="inline-flex mb-4 h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
+      <div className="flex max-w-min min-w-0 w-auto mb-4 h-10 items-center rounded-md bg-muted p-1 text-muted-foreground overflow-x-auto">
         {links.map((link) => (
           <Link
             key={link.label}
