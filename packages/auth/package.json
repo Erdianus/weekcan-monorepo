@@ -22,9 +22,10 @@
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.28.11",
     "@types/node": "^20.10.6",
-    "@types/react": "^18.2.48"
+    "@types/react": "^18.2.0"
   },
   "exports": {
     ".": "./src/index.ts"
-  }
+  },
+  "prettier": "@repo/prettier-config"
 }

@@ -79,11 +79,7 @@ const EditCustom = (props: {
           <X size={20} />
         </Button>
         <Button variant={"ghost"} size={"icon"} type="submit">
-          {update.isPending ? (
-            <Spinner />
-          ) : (
-            <Check />
-          )}
+          {update.isPending ? <Spinner /> : <Check />}
         </Button>
       </div>
     </form>
@@ -219,7 +215,10 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
             )}
             {editID !== custom.id && (
               <>
-                <div>{custom.title}</div>
+                <div>
+                  <div className="text-muted-foreground">{custom.title}</div>
+                  <div className="text-lg">{custom.desc}</div>
+                </div>
                 <div className="flex items-center gap-4">
                   <Button
                     variant={"ghost"}

@@ -1,19 +1,17 @@
-import Axios from "@repo/utils/axios";
-import { router } from "react-query-kit";
-import z from "zod";
-import { clientBaseSchema, clientFormSchema } from "./schema";
-import { Meta } from "../meta";
+import { router } from 'react-query-kit';
+import z from 'zod';
+
+import Axios from '@repo/utils/axios';
+
+import { Meta } from '../meta';
+import { clientBaseSchema, clientFormSchema } from './schema';
 
 type Client = z.infer<typeof clientBaseSchema>;
 
-const client = router("client", {
+const client = router('client', {
   all: router.query({
-    fetcher: async (variables: {
-      search?: number | string | null;
-      paginate?: string | null;
-      page?: string | null | number;
-    }) => {
-      const res = await Axios("/client", { params: variables });
+    fetcher: async (variables: { search?: number | string | null; paginate?: string | null; page?: string | null | number }) => {
+      const res = await Axios('/client', { params: variables });
 
       return res.data as { data: Client[]; meta: Meta };
     },
@@ -26,19 +24,14 @@ const client = router("client", {
     },
   }),
   create: router.mutation({
-    mutationFn: async (variable: {
-      data: z.infer<typeof clientFormSchema>;
-    }) => {
+    mutationFn: async (variable: { data: z.infer<typeof clientFormSchema> }) => {
       const res = await Axios.post(`/client`, variable.data);
 
       return res.data as { message: string };
     },
   }),
   update: router.mutation({
-    mutationFn: async (variable: {
-      id: string;
-      data: z.infer<typeof clientFormSchema>;
-    }) => {
+    mutationFn: async (variable: { id: string; data: z.infer<typeof clientFormSchema> }) => {
       const res = await Axios.put(`/client/${variable.id}`, variable.data);
 
       return res.data as { message: string };

@@ -1,22 +1,12 @@
-import {
-  inferData,
-  inferError,
-  inferFnData,
-  inferVariables,
-} from "react-query-kit";
-import user from "./user";
-import company from "./company";
-import role from "./role";
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-  useMutationState,
-  useQueryClient,
-} from "@tanstack/react-query";
-import venue from "./venue";
-import client from "./client";
-import project from "./project";
+import { dehydrate, HydrationBoundary, QueryClient, useMutationState, useQueryClient } from '@tanstack/react-query';
+import { inferData, inferError, inferFnData, inferVariables } from 'react-query-kit';
+
+import client from './client';
+import company from './company';
+import project from './project';
+import role from './role';
+import user from './user';
+import venue from './venue';
 
 const k = {
   project,
@@ -27,14 +17,7 @@ const k = {
   client,
 };
 
-export {
-  k,
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
-  useQueryClient,
-  useMutationState,
-};
+export { k, QueryClient, dehydrate, HydrationBoundary, useQueryClient, useMutationState };
 export type { inferData, inferFnData, inferVariables, inferError };
 
 export default k;

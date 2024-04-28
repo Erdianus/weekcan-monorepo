@@ -30,6 +30,7 @@ const SingleProject = ({ id }: { id: string | number }) => {
       <div className="flex max-w-min min-w-0 w-auto mb-4 h-10 items-center rounded-md bg-muted p-1 text-muted-foreground overflow-x-auto">
         {links.map((link) => (
           <Link
+            replace
             key={link.label}
             href={link.href}
             data-state={pathname === link.href ? "active" : "inactive"}

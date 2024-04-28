@@ -1,4 +1,4 @@
-import z from "zod";
+import z from 'zod';
 
 const metaSchema = z.object({
   current_page: z.number(),
@@ -8,16 +8,15 @@ const metaSchema = z.object({
   per_page: z.number(),
   to: z.number(),
   total: z.number(),
-  links: z.object({
-    url: z.string().nullable(),
-    label: z.string(),
-    active: z.boolean(),
-  }).array()
+  links: z
+    .object({
+      url: z.string().nullable(),
+      label: z.string(),
+      active: z.boolean(),
+    })
+    .array(),
 });
-
 
 type Meta = z.infer<typeof metaSchema>;
 
-export {
-  type Meta
-}
+export { type Meta };

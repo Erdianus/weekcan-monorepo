@@ -9,11 +9,12 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
+    "@repo/prettier-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@testing-library/react": "^15.0.3",
     "@types/node": "^20.10.6",
-    "@types/react": "^18.2.46",
-    "@types/react-dom": "^18.2.18",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
     "jsdom": "^24.0.0",
@@ -50,6 +51,7 @@
     "react": "^18.2.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.51.3",
     "react-images-uploading": "^3.1.7",
     "react-select": "^5.8.0",
@@ -68,5 +70,6 @@
     "./lib/*": "./src/lib/*.ts",
     "./pages/*": "./src/pages/*.tsx",
     "./components/*": "./src/components/*.tsx"
-  }
+  },
+  "prettier": "@repo/prettier-config"
 }

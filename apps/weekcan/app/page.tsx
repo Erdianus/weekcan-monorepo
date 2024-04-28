@@ -1,3 +1,4 @@
+import { auth } from "@repo/auth";
 import { Logo } from "@repo/ui/components/logo";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -6,7 +7,8 @@ export const metadata: Metadata = {
   title: "weekcan",
 };
 
-export default function Page() {
+export default async function Page() {
+  const sesh = await auth()
   return (
     <>
       <header className="fixed z-10 w-full">
@@ -20,11 +22,11 @@ export default function Page() {
             </Link>
             <div className="flex items-center lg:order-2">
               <a
-                href={"/login"}
+                href={sesh ? '/dashboard' : '/login'}
                 target="_blank"
                 className="rounded-lg bg-main-700 px-4 py-2 text-sm font-medium text-white hover:bg-main-800 focus:outline-none focus:ring-4 focus:ring-main-300 dark:bg-main-600 dark:hover:bg-main-700 dark:focus:ring-main-800 sm:mr-2 lg:mr-0 lg:px-5 lg:py-2.5"
               >
-                Login
+              {sesh?.user.username ?? 'Login'}
               </a>
               <button
                 data-collapse-toggle="mobile-menu-2"

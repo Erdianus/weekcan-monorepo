@@ -1,9 +1,11 @@
-import Axios from "@repo/utils/axios";
-import { router } from "react-query-kit";
-import companyBaseSchema, { companyFormSchema as companyForm } from "./schema";
-import z from "zod";
-import userBaseSchema from "../user/schema";
-import { Meta } from "../meta";
+import { router } from 'react-query-kit';
+import z from 'zod';
+
+import Axios from '@repo/utils/axios';
+
+import { Meta } from '../meta';
+import userBaseSchema from '../user/schema';
+import companyBaseSchema, { companyFormSchema as companyForm } from './schema';
 
 const companySchema = companyBaseSchema.extend({
   picture_link: z.string().nullish(),
@@ -19,17 +21,10 @@ const companyUpdateFormSchema = companyForm.omit({ owner: true }).extend({
   picture_path: z.union([z.string(), z.instanceof(File)]).optional(),
 });
 
-const company = router("company", {
+const company = router('company', {
   all: router.query({
-    fetcher: async (variables?: {
-      search?: string | null;
-      page?: number | string | null;
-      paginate?: string | null;
-      project_id?: string | number;
-      owner_id?: string | number | null;
-      owner_name?: string | null;
-    }) => {
-      const res = await Axios("/company", { params: variables });
+    fetcher: async (variables?: { search?: string | null; page?: number | string | null; paginate?: string | null; project_id?: string | number; owner_id?: string | number | null; owner_name?: string | null }) => {
+      const res = await Axios('/company', { params: variables });
 
       return res.data as { data: Company[]; meta: Meta };
     },
@@ -42,12 +37,10 @@ const company = router("company", {
     },
   }),
   create: router.mutation({
-    mutationFn: async (variables: {
-      data: z.infer<typeof companyCreateFormSchema>;
-    }) => {
+    mutationFn: async (variables: { data: z.infer<typeof companyCreateFormSchema> }) => {
       const res = await Axios.post(`/company`, variables.data, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
 
@@ -55,19 +48,12 @@ const company = router("company", {
     },
   }),
   update: router.mutation({
-    mutationFn: async (variables: {
-      id: string | number;
-      data: z.infer<typeof companyUpdateFormSchema>;
-    }) => {
-      const res = await Axios.post(
-        `/company/update-company/${variables.id}`,
-        variables.data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+    mutationFn: async (variables: { id: string | number; data: z.infer<typeof companyUpdateFormSchema> }) => {
+      const res = await Axios.post(`/company/update-company/${variables.id}`, variables.data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
         },
-      );
+      });
 
       return res.data as { message: string };
     },

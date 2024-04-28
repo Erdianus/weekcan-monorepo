@@ -1,10 +1,13 @@
-import Axios from "@repo/utils/axios";
-import { router } from "react-query-kit";
-import z from "zod";
-import projectBaseSchema, { projectFormSchema } from "./schema";
-import companyBaseSchema from "../company/schema";
-import { Meta } from "../meta";
-import detail from "./detail";
+import { router } from 'react-query-kit';
+import z from 'zod';
+
+import Axios from '@repo/utils/axios';
+
+import companyBaseSchema from '../company/schema';
+import { Meta } from '../meta';
+import detail from './detail';
+import file from './file';
+import projectBaseSchema, { projectFormSchema } from './schema';
 
 const projectParamsSchema = z
   .object({
@@ -41,10 +44,10 @@ const projectForm = projectFormSchema.omit({
   client_select: true,
 });
 
-const project = router("project", {
+const project = router('project', {
   all: router.query({
     fetcher: async (variables?: z.infer<typeof projectParamsSchema>) => {
-      const res = await Axios.get("/project", { params: variables });
+      const res = await Axios.get('/project', { params: variables });
 
       return res.data as { data: Project[]; meta: Meta };
     },
@@ -64,10 +67,7 @@ const project = router("project", {
     },
   }),
   update: router.mutation({
-    mutationFn: async (variables: {
-      id: string | number;
-      data: z.infer<typeof projectForm>;
-    }) => {
+    mutationFn: async (variables: { id: string | number; data: z.infer<typeof projectForm> }) => {
       const res = await Axios.put(`/project/${variables.id}`, variables.data);
 
       return res.data as { message: string };
@@ -80,7 +80,8 @@ const project = router("project", {
       return res.data as { message: string };
     },
   }),
-  detail
+  detail,
+  file,
 });
 
 export { type Project };

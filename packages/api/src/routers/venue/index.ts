@@ -1,18 +1,16 @@
-import Axios from "@repo/utils/axios";
-import { router } from "react-query-kit";
-import z from "zod";
-import { venueBaseSchema, venueFormSchema } from "./schema";
-import { Meta } from "../meta";
+import { router } from 'react-query-kit';
+import z from 'zod';
+
+import Axios from '@repo/utils/axios';
+
+import { Meta } from '../meta';
+import { venueBaseSchema, venueFormSchema } from './schema';
 
 type Venue = z.infer<typeof venueBaseSchema>;
-const venue = router("venue", {
+const venue = router('venue', {
   all: router.query({
-    fetcher: async (variables?: {
-      search?: string | null;
-      paginate?: string | null;
-      page?: string | null | number;
-    }) => {
-      const res = await Axios("/venue", { params: variables });
+    fetcher: async (variables?: { search?: string | null; paginate?: string | null; page?: string | null | number }) => {
+      const res = await Axios('/venue', { params: variables });
 
       return res.data as { data: Venue[]; meta: Meta };
     },
@@ -32,10 +30,7 @@ const venue = router("venue", {
     },
   }),
   update: router.mutation({
-    mutationFn: async (variable: {
-      id: string;
-      data: z.infer<typeof venueFormSchema>;
-    }) => {
+    mutationFn: async (variable: { id: string; data: z.infer<typeof venueFormSchema> }) => {
       const res = await Axios.put(`/venue/${variable.id}`, variable.data);
 
       return res.data as { message: string };

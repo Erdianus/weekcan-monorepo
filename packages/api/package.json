@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@repo/eslint-config": "workspace:*",
+    "@repo/prettier-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/utils": "workspace:*",
     "@tanstack/react-query": "^5.31.0",
@@ -22,7 +23,7 @@
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.28.11",
     "@types/node": "^20.10.6",
-    "@types/react": "^18.2.79"
+    "@types/react": "^18.2.0"
   },
   "exports": {
     "./provider": "./src/providers.tsx",

@@ -1,10 +1,23 @@
 "use server";
 
-import { signOut } from "@repo/auth";
+import { auth, signOut } from "@repo/auth";
+import { axios } from "@repo/utils/axios";
 
 export async function logoutAction() {
+  const sesh = await auth();
   try {
-    await signOut({ redirect: false });
+    const res = await axios.post(
+      `${process.env.BASE_API}/api/logout`,
+      undefined,
+      {
+        headers: {
+          Authorization: `Bearer ${sesh?.user.token}`,
+          Accept: "application/json",
+        },
+      },
+    );
+    if (res.status === 200) await signOut({ redirect: false });
+
     return {
       status: true,
       message: "Berhasil Logout",

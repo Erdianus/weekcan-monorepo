@@ -11,6 +11,7 @@ import PaginationParams from "@ui/components/pagination-params";
 import PortalSearch from "@ui/components/portal-search";
 import { Badge } from "@ui/components/ui/badge";
 import { Button } from "@ui/components/ui/button";
+import { Separator } from "@ui/components/ui/separator";
 import { DataTable } from "@ui/components/ui/data-table";
 import {
   DropdownMenu,
@@ -27,6 +28,8 @@ import { Eye, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { SelectAsync } from "@repo/ui/components/select";
+import { loadCompanyOptions } from "@repo/ui/lib/select";
 
 type Project = inferData<typeof k.project.all>["data"][number];
 const colHelper = createColumnHelper<Project>();
@@ -164,6 +167,15 @@ const ListProject = () => {
           </Link>
         </Button>
       </div>
+      <div className="mb-2">
+        <div className="text-sm flex text-muted-foreground items-center mb-2 gap-2">
+          Filter
+          <Separator className="flex-1" />
+        </div>
+        <div className="flex gap-4 flex-wrap">
+
+        </div>
+      </div>
       <DataTable table={table} columns={columns} isloading={isload} />
       <div className="flex items-center mt-4 justify-end w-full">
         <Paginate />
@@ -172,5 +184,12 @@ const ListProject = () => {
     </>
   );
 };
+
+const FilterProject = () => {
+  const searchParams = useSearchParams();
+  return <>
+    <SelectAsync loadOptions={loadCompanyOptions} />
+  </>
+}
 
 export default ListProject;
