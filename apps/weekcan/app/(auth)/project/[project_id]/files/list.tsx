@@ -36,7 +36,7 @@ const label_format = (text: string) => {
 };
 
 const ListFileProject = ({ id }: { id: string | number }) => {
-  const searchparams = useSearchParams();
+  const searchParams = useSearchParams();
   const alert = useAlertStore();
 
   const form = useForm<z.infer<typeof fileFormSchema>>({
@@ -52,9 +52,9 @@ const ListFileProject = ({ id }: { id: string | number }) => {
   const { data: files } = k.project.file.all.useQuery({
     variables: {
       project_id: id,
-      search: searchparams.get('search'),
-      page: searchparams.get('page'),
-      paginate: searchparams.get('paginate'),
+      search: searchParams.get('search'),
+      page: searchParams.get('page'),
+      paginate: searchParams.get('paginate'),
     },
   });
 

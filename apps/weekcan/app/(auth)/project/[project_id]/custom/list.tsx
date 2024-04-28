@@ -1,26 +1,25 @@
-"use client";
-import k, { useQueryClient } from "@repo/api/kit";
-import { detailFormSchema } from "@repo/api/router/project/detail/schema";
-import Flashlist from "@repo/ui/components/flashlist";
-import Loading from "@repo/ui/components/loading";
-import { Button } from "@repo/ui/components/ui/button";
-import { Input } from "@repo/ui/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@repo/ui/components/ui/popover";
-import { Skeleton } from "@repo/ui/components/ui/skeleton";
-import Spinner from "@repo/ui/components/ui/spinner";
-import useAlertStore from "@repo/ui/lib/store/useAlertStore";
-import { Check, Info, Pencil, Plus, Trash2, X, Zap } from "lucide-react";
-import { useParams, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Label } from "@repo/ui/components/ui/label";
-import { z } from "zod";
+'use client';
+
+import { useState } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Check, Info, Pencil, Plus, Trash2, X, Zap } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+
+import k, { useQueryClient } from '@repo/api/kit';
+import { detailFormSchema } from '@repo/api/router/project/detail/schema';
+import Flashlist from '@repo/ui/components/flashlist';
+import Loading from '@repo/ui/components/loading';
+import PortalSearch from '@repo/ui/components/portal-search';
+import { Button } from '@repo/ui/components/ui/button';
+import { Input } from '@repo/ui/components/ui/input';
+import { Label } from '@repo/ui/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/components/ui/popover';
+import { Skeleton } from '@repo/ui/components/ui/skeleton';
+import Spinner from '@repo/ui/components/ui/spinner';
+import useAlertStore from '@repo/ui/lib/store/useAlertStore';
 
 const EditCustom = (props: {
   data: { title: string; desc: string; id: number };
@@ -51,7 +50,7 @@ const EditCustom = (props: {
 
   return (
     <form
-      className="flex items-center justify-between w-full"
+      className="flex w-full items-center justify-between"
       onSubmit={form.handleSubmit((data) => {
         update.mutate({
           id: props.data.id,
@@ -62,23 +61,18 @@ const EditCustom = (props: {
       <div className="space-y-1">
         <div>
           <Label className="mb-1.5">Judul</Label>
-          <Input {...form.register("title")} />
+          <Input {...form.register('title')} />
         </div>
         <div>
           <Label className="mb-1.5">Deskripsi</Label>
-          <Input {...form.register("desc")} />
+          <Input {...form.register('desc')} />
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <Button
-          variant={"ghost"}
-          size={"icon"}
-          type="button"
-          onClick={props.onClose}
-        >
+        <Button variant={'ghost'} size={'icon'} type="button" onClick={props.onClose}>
           <X size={20} />
         </Button>
-        <Button variant={"ghost"} size={"icon"} type="submit">
+        <Button variant={'ghost'} size={'icon'} type="submit">
           {update.isPending ? <Spinner /> : <Check />}
         </Button>
       </div>
@@ -94,15 +88,20 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
   const form = useForm<z.infer<typeof detailFormSchema>>({
     resolver: zodResolver(detailFormSchema),
     values: {
-      title: "",
-      desc: "",
+      title: '',
+      desc: '',
       project_id: `${id}`,
     },
   });
 
   const client = useQueryClient();
   const { data: customs } = k.project.detail.all.useQuery({
-    variables: { project_id: id },
+    variables: {
+      project_id: id,
+      search: searchParams.get('search'),
+      page: searchParams.get('page'),
+      paginate: searchParams.get('paginate'),
+    },
   });
 
   //--NOTE: Create Mutation
@@ -130,10 +129,11 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-4 mb-4">
+      <PortalSearch className="Cari Data Kustom Proyek..." disabled={!customs} />
+      <div className="mb-4 flex items-center justify-between gap-4">
         <Popover>
           <PopoverTrigger asChild className="relative">
-            <Button className="relative" size={"icon"}>
+            <Button className="relative" size={'icon'}>
               <Plus />
               <Zap className="absolute bottom-1 right-1" size={12} />
             </Button>
@@ -141,9 +141,7 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
           <PopoverContent className="w-80">
             <div className="grid gap-4">
               <div className="space-y-2">
-                <h4 className="font-medium leading-none">
-                  Tambah Tempat Acara
-                </h4>
+                <h4 className="font-medium leading-none">Tambah Tempat Acara</h4>
               </div>
               <form
                 className="space-y-4"
@@ -153,20 +151,14 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
               >
                 <div>
                   <Label className="mb-1">Nama</Label>
-                  <Input
-                    {...form.register("title")}
-                    placeholder="Contoh: Convention Hall"
-                  />
+                  <Input {...form.register('title')} placeholder="Contoh: Convention Hall" />
                 </div>
                 <div>
                   <Label className="mb-1">Deskripsi</Label>
-                  <Input
-                    {...form.register("desc")}
-                    placeholder="Contoh: Convention Hall"
-                  />
+                  <Input {...form.register('desc')} placeholder="Contoh: Convention Hall" />
                 </div>
                 <Button type="submit" disabled={create.isPending}>
-                  {create.isPending ? <Spinner /> : "Submit"}
+                  {create.isPending ? <Spinner /> : 'Submit'}
                 </Button>
               </form>
             </div>
@@ -181,8 +173,8 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
             <div className="grid gap-4">
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  Ini adalah halaman untuk menambahkan data tambahan pada proyek
-                  yang tidak ada dalam saat kalian membuat sebuah proyek
+                  Ini adalah halaman untuk menambahkan data tambahan pada proyek yang tidak ada
+                  dalam saat kalian membuat sebuah proyek
                 </p>
                 <p className="text-sm text-muted-foreground">Contoh</p>
               </div>
@@ -194,9 +186,9 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
         isloading={!customs}
         loading={
           <Loading>
-            <div className="border-border flex items-center justify-between p-4 border-b gap-4">
-              <Skeleton className="w-1/4 h-8" />
-              <Skeleton className="rounded-md h-8 w-8" />
+            <div className="flex items-center justify-between gap-4 border-b border-border p-4">
+              <Skeleton className="h-8 w-1/4" />
+              <Skeleton className="h-8 w-8 rounded-md" />
             </div>
           </Loading>
         }
@@ -204,7 +196,7 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
         fallback={<div>Tidak Ada Data Kustom</div>}
       >
         {customs?.data.map((custom) => (
-          <div className="border-border flex items-center justify-between p-4 border-b gap-4">
+          <div className="flex items-center justify-between gap-4 border-b border-border p-4">
             {editID === custom.id && (
               <EditCustom
                 data={custom}
@@ -221,23 +213,23 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
                 </div>
                 <div className="flex items-center gap-4">
                   <Button
-                    variant={"ghost"}
-                    size={"icon"}
+                    variant={'ghost'}
+                    size={'icon'}
                     type="button"
                     onClick={() => setEditID(custom.id)}
                   >
                     <Pencil size={20} />
                   </Button>
                   <Button
-                    variant={"ghost"}
-                    size={"icon"}
+                    variant={'ghost'}
+                    size={'icon'}
                     type="button"
                     onClick={() => {
                       alert.setData({
                         open: true,
                         header: `Yakin ingin menghapus '${custom.title}'?`,
-                        desc: "Data Kustom yang sudah dihapus tidak dapat dikembalikan lagi.",
-                        confirmText: "Ya, Hapus",
+                        desc: 'Data Kustom yang sudah dihapus tidak dapat dikembalikan lagi.',
+                        confirmText: 'Ya, Hapus',
                         onConfirm: () => {
                           del.mutate({ id: `${custom.id}` });
                         },
