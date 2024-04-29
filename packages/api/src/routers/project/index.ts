@@ -7,6 +7,7 @@ import companyBaseSchema from '../company/schema';
 import { Meta } from '../meta';
 import detail from './detail';
 import file from './file';
+import member from './member';
 import projectBaseSchema, { projectFormSchema } from './schema';
 
 const projectParamsSchema = z
@@ -82,6 +83,7 @@ const project = router('project', {
   }),
   detail,
   file,
+  member,
 });
 
 export { type Project };

@@ -10,7 +10,7 @@ const FileIcon = (props: { text: string }) => {
   const type = fileExt(props.text);
 
   if (type === 'docx' || type === 'doc') return <MsWord />;
-  if (type === 'xlsx' || type === 'xls') return <MsExcel />;
+  if (type === 'xlsx' || type === 'xls' || type === 'csv') return <MsExcel />;
   if (type === 'png' || type === 'jpeg' || type === 'jpg') return <Image />;
   if (type === 'pdf') return <Pdf />;
 
