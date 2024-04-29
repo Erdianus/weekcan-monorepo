@@ -29,6 +29,24 @@ importers:
 
   apps/weekcan:
     dependencies:
+      '@fullcalendar/core':
+        specifier: ^6.1.11
+        version: 6.1.11
+      '@fullcalendar/daygrid':
+        specifier: ^6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.11)
+      '@fullcalendar/interaction':
+        specifier: ^6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.11)
+      '@fullcalendar/list':
+        specifier: ^6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.11)
+      '@fullcalendar/multimonth':
+        specifier: ^6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.11)
+      '@fullcalendar/react':
+        specifier: ^6.1.11
+        version: 6.1.11(@fullcalendar/core@6.1.11)(react-dom@18.2.0)(react@18.2.0)
       '@hookform/resolvers':
         specifier: ^3.3.4
         version: 3.3.4(react-hook-form@7.51.3)
@@ -50,6 +68,9 @@ importers:
       axios:
         specifier: ^1.6.8
         version: 1.6.8
+      dayjs:
+        specifier: ^1.11.10
+        version: 1.11.10
       lucide-react:
         specifier: ^0.314.0
         version: 0.314.0(react@18.2.0)
@@ -259,6 +280,9 @@ importers:
       '@radix-ui/react-checkbox':
         specifier: ^1.0.4
         version: 1.0.4(@types/react-dom@18.2.18)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-dialog':
+        specifier: ^1.0.5
+        version: 1.0.5(@types/react-dom@18.2.18)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.0.6
         version: 2.0.6(@types/react-dom@18.2.18)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
@@ -355,6 +379,9 @@ importers:
       use-debounce:
         specifier: ^10.0.0
         version: 10.0.0(react@18.2.0)
+      vaul:
+        specifier: ^0.9.0
+        version: 0.9.0(@types/react-dom@18.2.18)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
       zod:
         specifier: ^3.23.0
         version: 3.23.0
@@ -1178,6 +1205,57 @@ packages:
 
   /@floating-ui/utils@0.2.1:
     resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
+    dev: false
+
+  /@fullcalendar/core@6.1.11:
+    resolution: {integrity: sha512-TjG7c8sUz+Vkui2FyCNJ+xqyu0nq653Ibe99A66LoW95oBo6tVhhKIaG1Wh0GVKymYiqAQN/OEdYTuj4ay27kA==}
+    dependencies:
+      preact: 10.12.1
+    dev: false
+
+  /@fullcalendar/daygrid@6.1.11(@fullcalendar/core@6.1.11):
+    resolution: {integrity: sha512-hF5jJB7cgUIxWD5MVjj8IU407HISyLu7BWXcEIuTytkfr8oolOXeCazqnnjmRbnFOncoJQVstTtq6SIhaT32Xg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+    dependencies:
+      '@fullcalendar/core': 6.1.11
+    dev: false
+
+  /@fullcalendar/interaction@6.1.11(@fullcalendar/core@6.1.11):
+    resolution: {integrity: sha512-ynOKjzuPwEAMgTQ6R/Z2zvzIIqG4p8/Qmnhi1q0vzPZZxSIYx3rlZuvpEK2WGBZZ1XEafDOP/LGfbWoNZe+qdg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+    dependencies:
+      '@fullcalendar/core': 6.1.11
+    dev: false
+
+  /@fullcalendar/list@6.1.11(@fullcalendar/core@6.1.11):
+    resolution: {integrity: sha512-9Qx8uvik9pXD12u50FiHwNzlHv4wkhfsr+r03ycahW7vEeIAKCsIZGTkUfFP+96I5wHihrfLazu1cFQG4MPiuw==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+    dependencies:
+      '@fullcalendar/core': 6.1.11
+    dev: false
+
+  /@fullcalendar/multimonth@6.1.11(@fullcalendar/core@6.1.11):
+    resolution: {integrity: sha512-7DbPC+AAlaKnquGVdw1Z85Q3nSZ4GZ1NcVIk4k7bLnqDlntwHPPsrDlSIzUWKcN0q5/u7jQHm4PU1m3LAl70Sg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+    dependencies:
+      '@fullcalendar/core': 6.1.11
+      '@fullcalendar/daygrid': 6.1.11(@fullcalendar/core@6.1.11)
+    dev: false
+
+  /@fullcalendar/react@6.1.11(@fullcalendar/core@6.1.11)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Og0Tv0OiglTFp+b++yRyEhAeWnAmKkMLQ3iS0eJE1KDEov6QqGkoO+dUG4x8zp2w55IJqzik/a9iHi0s3oQDbA==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+      react: ^16.7.0 || ^17 || ^18
+      react-dom: ^16.7.0 || ^17 || ^18
+    dependencies:
+      '@fullcalendar/core': 6.1.11
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /@hookform/resolvers@3.3.4(react-hook-form@7.51.3):
@@ -5809,6 +5887,10 @@ packages:
     resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
     dev: false
 
+  /preact@10.12.1:
+    resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
+    dev: false
+
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -7161,6 +7243,20 @@ packages:
     resolution: {integrity: sha512-M6w37eVCMMouJ9V/sdPGnC5H4uDr73/+xdq0FBLO3TFFX1+7wiUY6Es328NN+y43tmY+doUdN9g9J21vqB7iLw==}
     dependencies:
       builtins: 1.0.3
+    dev: false
+
+  /vaul@0.9.0(@types/react-dom@18.2.18)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-bZSySGbAHiTXmZychprnX/dE0EsSige88xtyyL3/MCRbrFotRPQZo7UdydGXZWw+CKbNOw5Ow8gwAo93/nB/Cg==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    dependencies:
+      '@radix-ui/react-dialog': 1.0.5(@types/react-dom@18.2.18)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
     dev: false
 
   /vite-node@1.5.0(@types/node@20.11.6):

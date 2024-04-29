@@ -1,11 +1,8 @@
-import { type LoadOptions } from "react-select-async-paginate";
-import k, { inferVariables } from "@repo/api/kit";
-import { axios } from "@repo/utils/axios";
-import {
-  projectProgress,
-  projectStatus,
-  projectType,
-} from "@repo/api/router/project/schema";
+import { type LoadOptions } from 'react-select-async-paginate';
+
+import k, { inferVariables } from '@repo/api/kit';
+import { projectProgress, projectStatus, projectType } from '@repo/api/router/project/schema';
+import { axios } from '@repo/utils/axios';
 
 type OptionType =
   | { value: string; label: string }
@@ -134,17 +131,12 @@ const loadClientOptions: LoadOptions<
   };
 };
 
-const loadProvinceOptions: LoadOptions<
-  OptionType,
-  GroupBase<OptionType>,
-  null
-> = async (search) => {
-  const res = await axios<{ data: { id: string; name: string }[] }>(
-    "/api/province",
-    {
-      params: { search },
-    },
-  );
+const loadProvinceOptions: LoadOptions<OptionType, GroupBase<OptionType>, null> = async (
+  search,
+) => {
+  const res = await axios<{ data: { id: string; name: string }[] }>('/api/province', {
+    params: { search },
+  });
 
   const options = res.data.data.map((d) => ({
     label: d.name,
@@ -182,14 +174,23 @@ const loadCityOptions: LoadOptions<
 
 // --NOTE: Static Option
 //
-const optionsProjectType = () =>
-  projectType.map((v) => ({ label: v, value: v }));
+const optionsProjectType = () => projectType.map((v) => ({ label: v, value: v }));
 
-const optionsProjectStatus = () =>
-  projectStatus.map((v) => ({ label: v, value: v }));
+const optionsProjectStatus = () => projectStatus.map((v) => ({ label: v, value: v }));
 
-const optionsProjectProgress = () =>
-  projectProgress.map((v) => ({ label: v, value: v }));
+const optionsProjectProgress = () => projectProgress.map((v) => ({ label: v, value: v }));
+
+const optionsTime = () => {
+  return Array.from({ length: 24 }, (_, i) => {
+    const v = `${i}`.length === 1 ? `0${i}` : `${i}`;
+    return {
+      label: `${v}:00`,
+      value: `${v}:00`,
+    };
+  });
+};
+
+//
 
 const loadOptions = Object.freeze({
   user: loadUserOptions,
@@ -211,5 +212,5 @@ export {
   optionsProjectType,
   optionsProjectStatus,
   optionsProjectProgress,
-
+  optionsTime,
 };

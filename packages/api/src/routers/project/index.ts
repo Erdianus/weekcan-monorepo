@@ -9,6 +9,7 @@ import detail from './detail';
 import file from './file';
 import member from './member';
 import projectBaseSchema, { projectFormSchema } from './schema';
+import sprint from './sprint';
 
 const projectParamsSchema = z
   .object({
@@ -84,6 +85,7 @@ const project = router('project', {
   detail,
   file,
   member,
+  sprint,
 });
 
 export { type Project };
