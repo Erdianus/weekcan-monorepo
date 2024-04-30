@@ -1,6 +1,11 @@
 import k, { HydrationBoundary, QueryClient } from '@repo/api/kit';
 
 import CreateMember from './create';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Tambah Anggota'
+}
 
 export default async function CreateMemberPage({ params }: { params: { project_id: string } }) {
   const client = new QueryClient();

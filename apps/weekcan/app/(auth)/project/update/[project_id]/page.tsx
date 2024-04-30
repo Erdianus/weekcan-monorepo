@@ -1,9 +1,11 @@
-import k, { HydrationBoundary, QueryClient, dehydrate } from "@repo/api/kit";
-import UpdateProject from "@repo/ui/pages/project/update";
-import { Metadata } from "next";
+import { Metadata } from 'next';
+
+import k, { dehydrate, HydrationBoundary, QueryClient } from '@repo/api/kit';
+
+import UpdateProject from './update';
 
 export const metadata: Metadata = {
-  title: "Update Proyek",
+  title: 'Update Proyek',
 };
 
 export default async function UpdateProjectPage({
@@ -13,9 +15,7 @@ export default async function UpdateProjectPage({
 }) {
   const client = new QueryClient();
 
-  await client.prefetchQuery(
-    k.project.single.getFetchOptions({ id: params.project_id }),
-  );
+  await client.prefetchQuery(k.project.single.getFetchOptions({ id: params.project_id }));
   return (
     <HydrationBoundary state={dehydrate(client)}>
       <UpdateProject id={params.project_id} />

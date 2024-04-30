@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import k, { useQueryClient } from "@repo/api/kit";
-import { projectFormSchema } from "@repo/api/router/project/schema";
-import {
-  Select,
-  SelectAsync,
-  SelectAsyncCreatable,
-} from "@ui/components/select";
-import { Button } from "@ui/components/ui/button";
-import { DateRangePicker } from "@ui/components/ui/date-picker";
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import z from 'zod';
+
+import k, { useQueryClient } from '@repo/api/kit';
+import { projectFormSchema } from '@repo/api/router/project/schema';
+import { Select, SelectAsync, SelectAsyncCreatable } from '@repo/ui/components/select';
+import { Button } from '@repo/ui/components/ui/button';
+import { DateRangePicker } from '@repo/ui/components/ui/date-picker';
 import {
   Form,
   FormControl,
@@ -17,11 +18,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ui/components/ui/form";
-import { Input } from "@ui/components/ui/input";
-import Spinner from "@ui/components/ui/spinner";
-import { H3 } from "@ui/components/ui/typograhpy";
-import { date4Y2M2D } from "@ui/lib/date";
+} from '@repo/ui/components/ui/form';
+import { Input } from '@repo/ui/components/ui/input';
+import Spinner from '@repo/ui/components/ui/spinner';
+import { H3 } from '@repo/ui/components/ui/typograhpy';
+import { date4Y2M2D } from '@repo/ui/lib/date';
 import {
   loadCityOptions,
   loadClientOptions,
@@ -32,13 +33,7 @@ import {
   optionsProjectProgress,
   optionsProjectStatus,
   optionsProjectType,
-} from "@ui/lib/select";
-import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+} from '@repo/ui/lib/select';
 
 const projectForm = projectFormSchema
   .omit({
@@ -54,56 +49,56 @@ const projectForm = projectFormSchema
   .extend({
     date: z.object(
       {
-        from: z.date({ required_error: "Tolong Pilih Tanggal" }),
+        from: z.date({ required_error: 'Tolong Pilih Tanggal' }),
         to: z.date().optional(),
       },
-      { required_error: "Tolong Pilih Tanggal" },
+      { required_error: 'Tolong Pilih Tanggal' },
     ),
     province: z.object(
       {
         label: z.string(),
         value: z.string(),
       },
-      { invalid_type_error: "Tolong Pilih Provinsi" },
+      { invalid_type_error: 'Tolong Pilih Provinsi' },
     ),
     city: z.object(
       {
         label: z.string(),
         value: z.string(),
       },
-      { invalid_type_error: "Tolong Pilih Kota" },
+      { invalid_type_error: 'Tolong Pilih Kota' },
     ),
     type: z.object(
       {
         label: z.string(),
         value: z.string(),
       },
-      { invalid_type_error: "Tolong Pilih Tipe Proyek" },
+      { invalid_type_error: 'Tolong Pilih Tipe Proyek' },
     ),
     progress: z.object(
       {
         label: z.string(),
         value: z.string(),
       },
-      { invalid_type_error: "Tolong Pilih Progress Proyek" },
+      { invalid_type_error: 'Tolong Pilih Progress Proyek' },
     ),
     status: z.object(
       {
         label: z.string(),
         value: z.string(),
       },
-      { invalid_type_error: "Tolong Pilih Status Proyek" },
+      { invalid_type_error: 'Tolong Pilih Status Proyek' },
     ),
   });
 
-const UpdateProject = ({ id }: { id: string | number }) => {
+const CreateProject = () => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof projectForm>>({
     resolver: zodResolver(projectForm),
     values: {
-      project_name: "",
-      desc: "",
+      project_name: '',
+      desc: '',
       // @ts-ignore
       date: undefined,
       company: [],
@@ -127,82 +122,31 @@ const UpdateProject = ({ id }: { id: string | number }) => {
   });
 
   const client = useQueryClient();
-  const { data: project } = k.project.single.useQuery({ variables: { id } });
-  const isload = !project;
-
-  const update = k.project.update.useMutation({
+  const create = k.project.create.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
       await client.invalidateQueries({ queryKey: k.project.all.getKey() });
-      router.push("/project");
+      router.push('/project');
     },
     onError: ({ message }) => toast.error(message),
   });
 
-  useEffect(() => {
-    if (project) {
-      const { data } = project;
-      form.reset({
-        project_name: data.project_name,
-        desc: data.desc,
-        company: data.company.map(c => ({label: c.company_name, value: `${c.id}`}) ),
-        date: {
-          from: dayjs(data.start_date).toDate(),
-          to: data.end_date ? dayjs(data.end_date).toDate() : undefined,
-        },
-        venue_select: {
-          value: `${data.venue_id}`,
-          label: data.venue_name,
-        },
-        client_select: {
-          value: `${data.client_id}`,
-          label: data.client_name,
-        },
-        province: {
-          value: `${data.province}`,
-          label: `${data.province}`,
-        },
-        city: {
-          value: `${data.city}`,
-          label: `${data.city}`,
-        },
-        type: {
-          value: `${data.type}`,
-          label: `${data.type}`,
-        },
-        progress: {
-          value: `${data.progress}`,
-          label: `${data.progress}`,
-        },
-        status: {
-          value: `${data.status}`,
-          label: `${data.status}`,
-        },
-        picSelect: {
-          value: `${data.pic}`,
-          label: `${data.pic_name}`,
-        },
-      });
-    }
-  }, [project]);
-
   return (
     <>
-      <H3 className="mb-4">Update Proyek</H3>
+      <H3 className="mb-4">Buat Proyek Baru</H3>
       <Form {...form}>
         <form
           className="space-y-4"
           onSubmit={form.handleSubmit((data) => {
             const venue = data.venue_select.__isNew__
-              ? { venue: data.venue_select.value, venue_id: "" }
-              : { venue_id: data.venue_select.value, venue: "" };
+              ? { venue: data.venue_select.value, venue_id: '' }
+              : { venue_id: data.venue_select.value, venue: '' };
 
             const clients = data.client_select.__isNew__
-              ? { client: data.client_select.value, client_id: "" }
-              : { client_id: data.client_select.value, client: "" };
+              ? { client: data.client_select.value, client_id: '' }
+              : { client_id: data.client_select.value, client: '' };
 
-            update.mutate({
-              id,
+            create.mutate({
               data: {
                 ...data,
                 ...venue,
@@ -220,18 +164,15 @@ const UpdateProject = ({ id }: { id: string | number }) => {
             });
           })}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="project_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nama Proyek</FormLabel>
-                  <FormControl isloading={isload}>
-                    <Input
-                      {...field}
-                      placeholder="Contoh: Konser Sheila on 7"
-                    />
+                  <FormControl>
+                    <Input {...field} placeholder="Contoh: Konser Sheila on 7" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -243,7 +184,7 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Deskripsi Singkat</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <Input
                       {...field}
                       placeholder="Contoh: Konser Sheila on Seven perdana di samarinda"
@@ -254,14 +195,14 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="date"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-2 col-span-2">
+                <FormItem className="col-span-2 flex flex-col gap-2">
                   <FormLabel>Tanggal</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <DateRangePicker
                       value={field.value}
                       onChange={field.onChange}
@@ -273,14 +214,14 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="company"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Perusahaan</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsync
                       isMulti
                       loadOptions={loadCompanyOptions}
@@ -289,7 +230,7 @@ const UpdateProject = ({ id }: { id: string | number }) => {
                       onChange={(e) => {
                         field.onChange(e);
                         // @ts-ignore
-                        form.setValue("picSelect", null);
+                        form.setValue('picSelect', null);
                       }}
                       placeholder="Pilih Perusahaan"
                       additional={{
@@ -307,18 +248,18 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Person In Charge</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsync
-                      cacheUniqs={[form.watch("company")]}
+                      cacheUniqs={[form.watch('company')]}
                       loadOptions={loadUserOptions}
                       placeholder="Pilih Penanggung Jawab"
                       selectRef={field.ref}
                       value={field.value}
                       onChange={field.onChange}
-                      isDisabled={!form.watch("company").length}
+                      isDisabled={!form.watch('company').length}
                       additional={{
                         page: 1,
-                        company_id: form.watch("company").map((c) => c.value),
+                        company_id: form.watch('company').map((c) => c.value),
                       }}
                     />
                   </FormControl>
@@ -327,14 +268,14 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="province"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Provinsi</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsync
                       loadOptions={loadProvinceOptions}
                       selectRef={field.ref}
@@ -342,7 +283,7 @@ const UpdateProject = ({ id }: { id: string | number }) => {
                       onChange={(e) => {
                         field.onChange(e);
                         // @ts-ignore
-                        form.setValue("city", null);
+                        form.setValue('city', null);
                       }}
                       placeholder="Pilih Provinsi"
                     />
@@ -357,17 +298,17 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kota</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsync
-                      cacheUniqs={[form.watch("province")]}
+                      cacheUniqs={[form.watch('province')]}
                       loadOptions={loadCityOptions}
                       placeholder="Pilih Kota"
                       selectRef={field.ref}
                       value={field.value}
                       onChange={field.onChange}
-                      isDisabled={!form.watch("province")}
+                      isDisabled={!form.watch('province')}
                       additional={{
-                        province_id: form.watch("province")?.value ?? "",
+                        province_id: form.watch('province')?.value ?? '',
                       }}
                     />
                   </FormControl>
@@ -376,14 +317,14 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="venue_select"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tempat</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsyncCreatable
                       loadOptions={loadVenueOptions}
                       placeholder="Pilih Tempat"
@@ -405,7 +346,7 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Klien</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsyncCreatable
                       loadOptions={loadClientOptions}
                       placeholder="Pilih Klien"
@@ -422,19 +363,15 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <FormField
               control={form.control}
               name="type"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipe Proyek</FormLabel>
-                  <FormControl isloading={isload}>
-                    <Select
-                      {...field}
-                      options={optionsProjectType()}
-                      placeholder="Pilih Tipe"
-                    />
+                  <FormControl>
+                    <Select {...field} options={optionsProjectType()} placeholder="Pilih Tipe" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -446,7 +383,7 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status Proyek</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <Select
                       {...field}
                       options={optionsProjectStatus()}
@@ -463,7 +400,7 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Progress Proyek</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <Select
                       {...field}
                       options={optionsProjectProgress()}
@@ -475,13 +412,11 @@ const UpdateProject = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <Button disabled={update.isPending}>
-            {update.isPending ? <Spinner /> : "Submit"}
-          </Button>
+          <Button disabled={create.isPending}>{create.isPending ? <Spinner /> : 'Submit'}</Button>
         </form>
       </Form>
     </>
   );
 };
 
-export default UpdateProject;
+export default CreateProject;

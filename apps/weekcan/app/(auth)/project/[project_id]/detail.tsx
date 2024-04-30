@@ -1,15 +1,14 @@
-"use client";
-import k from "@repo/api/kit";
-import { Badge } from "@repo/ui/components/ui/badge";
-import { dateRange } from "@repo/ui/lib/date";
-import { Client, Company, Leader, Progress, Status, Venue } from "@ui/components/icon";
-import { Skeleton } from "@ui/components/ui/skeleton";
-import {
-  type LucideIcon,
-  ScrollText,
-  CalendarDays,
-} from "lucide-react";
-import { SVGProps } from "react";
+'use client';
+
+import type { LucideIcon } from 'lucide-react';
+import { SVGProps } from 'react';
+import { Client, Company, Leader, Progress, Status, Venue } from '@ui/components/icon';
+import { Skeleton } from '@ui/components/ui/skeleton';
+import { CalendarDays, ScrollText } from 'lucide-react';
+
+import k from '@repo/api/kit';
+import { Badge } from '@repo/ui/components/ui/badge';
+import { dateRange } from '@repo/ui/lib/date';
 
 type ItemProps = {
   label: string;
@@ -20,13 +19,11 @@ type ItemProps = {
 const Item = (props: ItemProps) => {
   return (
     <div className="mb-4">
-      <div className="flex items-center gap-1.5 mb-2">
-        <props.icon className="w-5 h-5" />
+      <div className="mb-2 flex items-center gap-1.5">
+        <props.icon className="h-5 w-5" />
         <p className="font-semibold">{props.label}</p>
       </div>
-      <div className="ml-7">
-        {props.value ?? <Skeleton className="w-24 h-4" />}
-      </div>
+      <div className="ml-7">{props.value ?? <Skeleton className="h-4 w-24" />}</div>
     </div>
   );
 };
@@ -48,18 +45,18 @@ const DetailProject = ({ id }: { id: string | number }) => {
       <Item
         icon={Progress}
         label="Progress"
+        value={<Badge variant={project?.data.progress}>{project?.data.progress}</Badge>}
+      />
+      <Item icon={Leader} label="Person In Charge" value={project?.data.pic_name} />
+      <Item
+        icon={Company}
+        label="Perusahaan"
         value={
-          <Badge variant={project?.data.progress}>
-            {project?.data.progress}
-          </Badge>
+          <div>
+            {project?.data.company.map((c) => <div key={`company-${c.id}`}>{c.company_name}</div>)}
+          </div>
         }
       />
-      <Item
-        icon={Leader}
-        label="Person In Charge"
-        value={project?.data.pic_name}
-      />
-      <Item icon={Company} label="Perusahaan" value={project?.data.company[0]?.company_name} />
     </>
   );
 };

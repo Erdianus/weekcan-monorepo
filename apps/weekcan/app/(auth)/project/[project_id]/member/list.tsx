@@ -172,14 +172,14 @@ const ListMemberProject = ({ id }: { id: string }) => {
             key={member.id}
             className="flex items-center justify-between gap-4 border-b border-border p-4"
           >
-            {editID === member.id && (
+            {/* {editID === member.id && (
               <EditCustom
                 data={member}
                 onClose={() => {
                   setEditID(0);
                 }}
               />
-            )}
+            )} */}
             {editID !== member.id && (
               <>
                 <div>
@@ -202,7 +202,7 @@ const ListMemberProject = ({ id }: { id: string }) => {
                     onClick={() => {
                       alert.setData({
                         open: true,
-                        header: `Yakin ingin menghapus '${member.title}'?`,
+                        header: `Yakin ingin menghapus '${member.name}'?`,
                         desc: 'Data Kustom yang sudah dihapus tidak dapat dikembalikan lagi.',
                         confirmText: 'Ya, Hapus',
                         onConfirm: () => {
