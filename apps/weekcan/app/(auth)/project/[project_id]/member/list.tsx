@@ -118,11 +118,11 @@ const ListMemberProject = ({ id }: { id: string }) => {
   });
 
   //--NOTE: Delete Mutation
-  const del = k.project.detail.delete.useMutation({
+  const del = k.project.member.delete.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
       await client.invalidateQueries({
-        queryKey: k.project.detail.all.getKey(),
+        queryKey: k.project.member.all.getKey(),
       });
     },
     onError: ({ message }) => toast.error(message),
@@ -203,15 +203,15 @@ const ListMemberProject = ({ id }: { id: string }) => {
                       alert.setData({
                         open: true,
                         header: `Yakin ingin menghapus '${member.name}'?`,
-                        desc: 'Data Kustom yang sudah dihapus tidak dapat dikembalikan lagi.',
+                        desc: 'Member yang sudah dihapus tidak dapat dikembalikan lagi dan harus ditambahkan manual lagi',
                         confirmText: 'Ya, Hapus',
                         onConfirm: () => {
-                          del.mutate({ id: `${member.id}` });
+                          del.mutate({ user_id: `${member.id}`, project_id: id });
                         },
                       });
                     }}
                   >
-                    {del.isPending && del.variables.id === `${member.id}` ? (
+                    {del.isPending && del.variables.user_id === `${member.id}` ? (
                       <Spinner />
                     ) : (
                       <Trash2 size={20} />

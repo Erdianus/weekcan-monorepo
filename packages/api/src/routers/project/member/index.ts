@@ -63,8 +63,8 @@ const member = {
     },
   }),
   delete: router.mutation({
-    mutationFn: async (variables: { id: string | number }) => {
-      const res = await Axios.delete(`/project-member/${variables.id}`);
+    mutationFn: async (variables: { user_id: string | number; project_id: string | number }) => {
+      const res = await Axios.delete(`/project-member`, { params: variables });
 
       return res.data as { message: string };
     },
