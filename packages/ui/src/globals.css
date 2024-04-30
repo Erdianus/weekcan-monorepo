@@ -34,8 +34,20 @@
 
     --radius: 0.5rem;
 
-    --fc-page-bg-color: transparent;
-    --fc-neutral-bg-color: transparent;
+    /* Fullcalendar */
+    --fc-page-bg-color: hsl(var(--background));
+    --fc-neutral-bg-color: hsl(var(--secondary));
+    --fc-border-color: hsl(var(--border));
+    --fc-today-bg-color: hsl(var(--accent));
+    --fc-list-event-hover-bg-color: hsl(var(--background));
+
+    --fc-button-bg-color: hsl(var(--background));
+    --fc-button-text-color: hsl(var(--secondary-foreground));
+    --fc-button-hover-bg-color: hsl(var(--background));
+    --fc-button-hover-border-color: hsl(var(--background));
+    --fc-button-border-color: hsl(var(--background));
+    --fc-button-active-bg-color: hsl(var(--background));
+    --fc-button-active-border-color: hsl(var(--border));
   }
 
   .dark {
@@ -67,8 +79,20 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
 
-    --fc-page-bg-color: transparent;
-    --fc-neutral-bg-color: transparent;
+    /* Fullcalendar */
+    --fc-page-bg-color: hsl(var(--background));
+    --fc-neutral-bg-color: hsl(var(--secondary));
+    --fc-border-color: hsl(var(--border));
+    --fc-today-bg-color: hsl(var(--accent));
+    --fc-list-event-hover-bg-color: hsl(var(--background));
+
+    --fc-button-bg-color: hsl(var(--background));
+    --fc-button-text-color: hsl(var(--secondary-foreground));
+    --fc-button-hover-bg-color: hsl(var(--background));
+    --fc-button-hover-border-color: hsl(var(--background));
+    --fc-button-border-color: hsl(var(--background));
+    --fc-button-active-bg-color: hsl(var(--background));
+    --fc-button-active-border-color: hsl(var(--border));
   }
 }
 
@@ -79,4 +103,13 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Full Calendar */
+.fc .fc-toolbar {
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+.fc-button-group {
+  @apply text-sm;
 }

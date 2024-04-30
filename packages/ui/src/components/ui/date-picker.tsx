@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Button } from "./button";
-import { cn } from "@ui/lib/utils";
-import { Calendar } from "./calendar";
-import dayjs from "dayjs";
-import { DateRange } from "react-day-picker";
-import { dateRange } from "@ui/lib/date";
-import { ControllerRenderProps } from "react-hook-form";
+import * as React from 'react';
+import { dateRange } from '@ui/lib/date';
+import { cn } from '@ui/lib/utils';
+import dayjs from 'dayjs';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { DateRange } from 'react-day-picker';
+import { ControllerRenderProps } from 'react-hook-form';
+
+import { Button } from './button';
+import { Calendar, CalendarProps } from './calendar';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
 function DatePicker() {
   const [date, setDate] = React.useState<Date>();
@@ -18,39 +19,30 @@ function DatePicker() {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant={'outline'}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground",
+            'w-[280px] justify-start text-left font-normal',
+            !date && 'text-muted-foreground',
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? (
-            dayjs(date).format("DD MMMM YYYY")
-          ) : (
-            <span>Pilih Tanggal</span>
-          )}
+          {date ? dayjs(date).format('DD MMMM YYYY') : <span>Pilih Tanggal</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          initialFocus
-        />
+        <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
       </PopoverContent>
     </Popover>
   );
 }
 
-type DateRangePickerProps = {
+type DateRangePickerProps = CalendarProps & {
   value?: {
     from: Date;
     to?: Date;
   };
   onChange: (...event: any[]) => void;
-  className?: string
+  className?: string;
 };
 function DateRangePicker(props?: DateRangePickerProps) {
   const [date, setDate] = React.useState<DateRange>();
@@ -62,23 +54,25 @@ function DateRangePicker(props?: DateRangePickerProps) {
       <PopoverTrigger asChild>
         <Button
           type="button"
-          variant={"outline"}
+          variant={'outline'}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground",
-            props?.className
+            'w-[280px] justify-start text-left font-normal',
+            !date && 'text-muted-foreground',
+            props?.className,
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {selected ? (
-            dateRange(selected.from, selected.to)
-          ) : (
-            <span>Pilih Tanggal</span>
-          )}
+          {selected ? dateRange(selected.from, selected.to) : <span>Pilih Tanggal</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
+          disabled={props?.disabled}
+          defaultMonth={props?.defaultMonth}
+          fromDate={props?.fromDate}
+          toDate={props?.toDate}
+          fromMonth={props?.fromMonth}
+          toMonth={props?.toMonth}
           mode="range"
           selected={props?.value ?? date}
           onSelect={props?.onChange ?? setDate}

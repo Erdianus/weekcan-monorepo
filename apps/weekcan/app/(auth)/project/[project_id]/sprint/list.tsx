@@ -3,11 +3,11 @@
 import { ReactNode, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { EventSourceInput } from '@fullcalendar/core';
+import idLocale from '@fullcalendar/core/locales/id';
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 
 import interactionPlugin from '@fullcalendar/interaction'; // needed for dayClick
 import listPlugin from '@fullcalendar/list';
-import multiMonthPlugin from '@fullcalendar/multimonth';
 import FullCalendar from '@fullcalendar/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
@@ -19,22 +19,8 @@ import k, { useQueryClient } from '@repo/api/kit';
 import { sprintFormSchema } from '@repo/api/router/project/sprint/schema';
 import { Button } from '@repo/ui/components/ui/button';
 import { DateRangePicker } from '@repo/ui/components/ui/date-picker';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@repo/ui/components/ui/dialog';
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@repo/ui/components/ui/drawer';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@repo/ui/components/ui/dialog';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@repo/ui/components/ui/drawer';
 import {
   Form,
   FormControl,
@@ -105,20 +91,21 @@ function ResponsiveDialogDrawer({
   );
 }
 
-const CreateSprint = () => {
+const CreateSprint = ({ date }: { date: { from: Date; to?: Date } }) => {
   const params = useParams<{ project_id: string }>();
   const form = useForm<z.infer<typeof sprintForm>>({
     resolver: zodResolver(sprintForm),
     values: {
       title: '',
       // @ts-ignore
-      date: null,
+      date,
       time: '_',
       project_id: params.project_id,
     },
   });
 
   const client = useQueryClient();
+  const { data: project } = k.project.single.useQuery({ variables: { id: params.project_id } });
   const create = k.project.sprint.create.useMutation({
     onSuccess: async ({ message }) => {
       await client.invalidateQueries({ queryKey: k.project.sprint.all.getKey() });
@@ -167,6 +154,13 @@ const CreateSprint = () => {
                 <FormLabel>Tanggal</FormLabel>
                 <FormControl>
                   <DateRangePicker
+                    defaultMonth={dayjs(date.from).toDate()}
+                    disabled={{
+                      before: dayjs(project?.data.start_date).toDate(),
+                      after: dayjs(project?.data.end_date).toDate(),
+                    }}
+                    fromMonth={dayjs(project?.data.start_date).toDate()}
+                    toMonth={dayjs(project?.data.end_date).toDate()}
                     value={field.value}
                     onChange={field.onChange}
                     className="w-full"
@@ -208,26 +202,54 @@ const CreateSprint = () => {
   );
 };
 
+const formDataInit: {
+  open: boolean;
+  id: number;
+  title: string;
+  date: {
+    from: Date;
+    to?: Date;
+  };
+} = {
+  open: false,
+  id: 0,
+  title: '',
+  date: {
+    from: dayjs().toDate(),
+    to: undefined,
+  },
+};
+
 const ListSprint = ({ project_id }: { project_id: string }) => {
-  const [formData, setFormData] = useState({
-    open: false,
-    id: 0,
-    title: '',
-  });
+  const [formData, setFormData] = useState(formDataInit);
+  const { data: project } = k.project.single.useQuery({ variables: { id: project_id } });
   const { data: sprints } = k.project.sprint.all.useQuery({ variables: { project_id } });
 
   const events = useMemo<EventSourceInput | undefined>(() => {
     if (!sprints) return undefined;
 
     return sprints.data.map((sprint) => {
+      const allDay = dayjs(sprint.start_date).format('HH:mm:ss') === '00:00:01';
+
+      if (dayjs(sprint.start_date).isSame(dayjs(sprint.end_date), 'second'))
+        return {
+          id: `${sprint.id}`,
+          title: sprint.title,
+          allDay,
+          date: dayjs(sprint.start_date).format(`YYYY-MM-DD${allDay ? '' : 'THH:mm:ss'}`),
+        };
+
       return {
         id: `${sprint.id}`,
         title: sprint.title,
-        start: dayjs(sprint.start_date).format('YYYY-MM-DDTHH:mm:ss'),
-        end: dayjs(sprint.end_date).format('YYYY-MM-DDTHH:mm:ss'),
+        allDay,
+        start: dayjs(sprint.start_date).format(`YYYY-MM-DD${allDay ? '' : 'THH:mm:ss'}`),
+        end: dayjs(sprint.end_date).format(`YYYY-MM-DD${allDay ? '' : 'THH:mm:ss'}`),
       };
     });
   }, [sprints]);
+
+  console.log(events);
 
   return (
     <>
@@ -236,22 +258,32 @@ const ListSprint = ({ project_id }: { project_id: string }) => {
         onOpenChange={(open) => setFormData((o) => ({ ...o, open }))}
         title="Buat Jadwal Baru"
       >
-        {formData.id === 0 && <CreateSprint />}
+        {formData.id === 0 && <CreateSprint date={formData.date} />}
       </ResponsiveDialogDrawer>
       <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin, multiMonthPlugin, listPlugin]}
+        locale={idLocale}
+        validRange={{
+          start: project?.data.start_date,
+          end: project?.data.end_date ?? undefined,
+        }}
+        eventTimeFormat={{
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }}
+        plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
-          left: 'prev,next',
-          center: 'title',
-          right: 'dayGridWeek,dayGridDay,dayGridMonth,multiMonthYear,listWeek', // user can switch between the two
+          right: 'prev,next',
+          left: 'title',
+          center: 'dayGridWeek,dayGridDay,dayGridMonth,listWeek', // user can switch between the two
         }}
         events={events}
         eventClick={(e) => {
           console.log('event', e);
         }}
         dateClick={(e) => {
-          setFormData((o) => ({ ...o, open: true }));
+          setFormData((o) => ({ ...o, open: true, date: { from: e.date } }));
         }}
       />
     </>
