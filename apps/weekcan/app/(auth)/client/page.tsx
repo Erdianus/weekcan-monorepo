@@ -1,15 +1,12 @@
-import k, {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-  inferVariables,
-} from "@repo/api/kit";
-import ListClient from "@repo/ui/pages/client/list";
-import { Metadata } from "next";
+import { Metadata } from 'next';
+
+import k, { dehydrate, HydrationBoundary, inferVariables, QueryClient } from '@repo/api/kit';
+
+import ListClient from './list';
 
 export const metadata: Metadata = {
-  title: 'Klien'
-}
+  title: 'Klien',
+};
 
 export default async function VenuePage({
   searchParams,

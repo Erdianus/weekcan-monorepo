@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { useSession } from "next-auth/react";
 
 import { UserSession, authConfig } from "./config";
+import { logoutAction } from "./logout-action";
 
 export type { Session } from "next-auth";
 
@@ -12,4 +13,4 @@ const {
   signOut,
 } = NextAuth(authConfig);
 
-export { handlers, auth, signIn, signOut, useSession, type UserSession };
+export { handlers, auth, signIn, signOut, useSession, type UserSession, logoutAction };

@@ -1,14 +1,11 @@
-import k, {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-  inferVariables,
-} from "@repo/api/kit";
-import { Metadata } from "next";
-import ListProject from "./list";
+import { Metadata } from 'next';
+
+import k, { dehydrate, HydrationBoundary, inferVariables, QueryClient } from '@repo/api/kit';
+
+import ListProject from './list';
 
 export const metadata: Metadata = {
-  title: "Proyek/Event",
+  title: 'Proyek/Event',
 };
 
 export default async function ProjectPage({

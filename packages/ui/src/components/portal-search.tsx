@@ -1,11 +1,13 @@
-"use client";
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { Input, InputProps } from "./ui/input";
-import { Search } from "lucide-react";
-import { cn } from "@ui/lib/utils";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useDebouncedCallback } from "use-debounce";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { cn } from '@ui/lib/utils';
+import { Search } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { useDebouncedCallback } from 'use-debounce';
+
+import { Input, InputProps } from './ui/input';
 
 export default function PortalSearch(props: InputProps) {
   const [mount, setMount] = useState(false);
@@ -14,14 +16,13 @@ export default function PortalSearch(props: InputProps) {
   const { replace } = useRouter();
 
   const handleSearch = useDebouncedCallback((term?: string) => {
-
-    const hasPage = !!searchParams.get('page')
+    const hasPage = !!searchParams.get('page');
     const params = new URLSearchParams(searchParams);
     if (term) {
-      params.set("search", term);
-      if (hasPage) params.delete("page");
+      params.set('search', term);
+      if (hasPage) params.delete('page');
     } else {
-      params.delete("search");
+      params.delete('search');
     }
     replace(`${pathname}?${params.toString()}`);
   }, 300);
@@ -34,23 +35,23 @@ export default function PortalSearch(props: InputProps) {
     ? createPortal(
         <>
           <div className="relative">
-            <div className=" absolute text-muted-foreground inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3 text-muted-foreground">
               <Search size={20} />
             </div>
             <Input
               {...props}
-              defaultValue={searchParams.get("search")?.toString()}
+              defaultValue={searchParams.get('search')?.toString()}
               onChange={(e) => {
                 handleSearch(e.target.value);
               }}
               type="search"
-              placeholder={props.placeholder ?? "Cari Sesuatu"}
-              className={cn("pl-10", props.className)}
+              placeholder={props.placeholder ?? 'Cari Sesuatu'}
+              className={cn('max-w-48 pl-10', props.className)}
             />
           </div>
         </>,
         // @ts-ignore
-        document.querySelector("#portal-search"),
+        document.querySelector('#portal-search'),
       )
-    : null
+    : null;
 }

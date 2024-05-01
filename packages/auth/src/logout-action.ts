@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, signOut } from "@repo/auth";
+import { auth, signOut } from "./index";
 import { axios } from "@repo/utils/axios";
 
 export async function logoutAction() {

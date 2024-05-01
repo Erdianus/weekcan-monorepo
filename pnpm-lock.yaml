@@ -141,15 +141,9 @@ importers:
 
   packages/api:
     dependencies:
-      '@repo/eslint-config':
+      '@repo/auth':
         specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/prettier-config':
-        specifier: workspace:*
-        version: link:../prettier-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../auth
       '@repo/utils':
         specifier: workspace:*
         version: link:../utils
@@ -172,6 +166,15 @@ importers:
         specifier: ^3.23.0
         version: 3.23.0
     devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/prettier-config':
+        specifier: workspace:*
+        version: link:../prettier-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
       '@tanstack/eslint-plugin-query':
         specifier: ^5.28.11
         version: 5.28.11(eslint@8.56.0)(typescript@5.4.5)

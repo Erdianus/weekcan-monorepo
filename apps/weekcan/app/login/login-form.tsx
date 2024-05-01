@@ -1,7 +1,14 @@
-"use client";
+'use client';
 
-import { Button } from "@ui/components/ui/button";
-import { toast } from "sonner";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useFormStatus } from 'react-dom';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+
+import { Button } from '@repo/ui/components/ui/button';
 import {
   Card,
   CardContent,
@@ -9,8 +16,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@ui/components/ui/card";
-import { Input } from "@ui/components/ui/input";
+} from '@repo/ui/components/ui/card';
+import { Checkbox } from '@repo/ui/components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -18,27 +25,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ui/components/ui/form";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginAction } from "./login-action";
-import { useFormStatus } from "react-dom";
-import { useRouter } from "next/navigation";
-import Spinner from "@ui/components/ui/spinner";
-import { Checkbox } from "@ui/components/ui/checkbox";
-import { useState } from "react";
+} from '@repo/ui/components/ui/form';
+import { Input } from '@repo/ui/components/ui/input';
+import Spinner from '@repo/ui/components/ui/spinner';
+
+import { loginAction } from './login-action';
 
 const formSchema = z.object({
-  username: z.string().min(1, "Tolong Isi Username"),
-  password: z.string().min(1, "Tolong Isi Username"),
+  username: z.string().min(1, 'Tolong Isi Username'),
+  password: z.string().min(1, 'Tolong Isi Username'),
 });
 
 const ButtonSubmit = () => {
   const { pending } = useFormStatus();
-  return (
-    <Button className="w-full">{pending ? <Spinner /> : "Sign In"}</Button>
-  );
+  return <Button className="w-full">{pending ? <Spinner /> : 'Sign In'}</Button>;
 };
 
 function LoginForm() {
@@ -48,8 +48,8 @@ function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: '',
+      password: '',
     },
   });
 
@@ -57,9 +57,7 @@ function LoginForm() {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your username below to login to your account.
-        </CardDescription>
+        <CardDescription>Enter your username below to login to your account.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form
@@ -71,7 +69,7 @@ function LoginForm() {
               return;
             }
 
-            router.push("/dashboard");
+            router.push('/dashboard');
             toast.success(res.message);
           }}
           className="space-y-4"
@@ -85,12 +83,7 @@ function LoginForm() {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input
-                        id="username"
-                        placeholder="Masukkan Username"
-                        required
-                        {...field}
-                      />
+                      <Input id="username" placeholder="Masukkan Username" required {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -108,7 +101,7 @@ function LoginForm() {
                       <Input
                         id="password"
                         placeholder="Masukkan Password"
-                        type={viewPassword ? "text" : "password"}
+                        type={viewPassword ? 'text' : 'password'}
                         required
                         {...field}
                       />

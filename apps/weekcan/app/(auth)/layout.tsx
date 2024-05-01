@@ -5,9 +5,10 @@ import axios from 'axios';
 import QueryProvider from '@repo/api/provider';
 import { auth } from '@repo/auth';
 import AlertConfirm from '@repo/ui/components/alert-confirm';
-import InitAxios from '@repo/ui/components/init-axios';
+import InitClient from '@repo/ui/components/init-client';
 import Navbar from '@repo/ui/components/navbar';
 import Sidebar from '@repo/ui/components/sidebar';
+import Axios from '@repo/utils/axios';
 
 export default async function AuthLayout({ children }: PropsWithChildren) {
   const sesh = await auth();
@@ -29,14 +30,16 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
       await axios.post('/api/auth/signout');
       redirect('/login');
     }
-  } catch (e) {
+  } catch (e: any) {
+    console.log(e.message);
     await axios.post('/api/auth/signout');
     redirect('/login');
   }
+  console.log('aku dari layauth');
 
   return (
     <>
-      <InitAxios user={sesh.user} />
+      <InitClient user={sesh.user} />
       <QueryProvider>
         <AlertConfirm />
         <div className="antialiased">

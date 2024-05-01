@@ -1,15 +1,17 @@
-import { LoginForm } from "@repo/ui/pages/auth/login-form";
-import { auth } from "@repo/auth";
-import { redirect } from "next/navigation";
+import { redirect } from 'next/navigation';
+
+import { auth } from '@repo/auth';
+
+import { LoginForm } from './login-form';
 
 export default async function LoginPage() {
   const sesh = await auth();
   if (sesh) {
-    redirect("/dashboard");
+    redirect('/dashboard');
   }
 
   return (
-    <div className="w-full h-screen flex items-center justify-center">
+    <div className="flex h-screen w-full items-center justify-center">
       <LoginForm />
     </div>
   );

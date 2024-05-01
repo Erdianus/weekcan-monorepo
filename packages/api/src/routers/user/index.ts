@@ -1,7 +1,8 @@
 import { router } from 'react-query-kit';
 import { z } from 'zod';
 
-import Axios from '@repo/utils/axios';
+import { auth } from '@repo/auth';
+import Axios, { headerAuth } from '@repo/utils/axios';
 
 import companyBaseSchema from '../company/schema';
 import { Meta } from '../meta';
@@ -22,9 +23,18 @@ const userUpdateForm = userUpdateFormSchema.omit({ company: true, role: true });
 
 const user = router('user', {
   all: router.query({
-    fetcher: async (variables?: { search?: string | null; page?: number | string | null; paginate?: string | null; company_id?: string[] | null; company_name?: string[] | null; isOwner?: boolean }) => {
+    fetcher: async (variables?: {
+      search?: string | null;
+      page?: number | string | null;
+      paginate?: string | null;
+      company_id?: string[] | null;
+      company_name?: string[] | null;
+      isOwner?: boolean;
+    }) => {
+      const headers = await headerAuth(auth());
       const res = await Axios('/user', {
         params: { ...variables, company_id: variables?.company_id },
+        headers,
       });
 
       return res.data as { data: User[]; meta: Meta };
@@ -32,7 +42,8 @@ const user = router('user', {
   }),
   single: router.query({
     fetcher: async (variables: { id: string | number }) => {
-      const res = await Axios(`/user/${variables.id}`);
+      const headers = await headerAuth(auth());
+      const res = await Axios(`/user/${variables.id}`, { headers });
 
       return res.data as { data: User };
     },
@@ -45,7 +56,10 @@ const user = router('user', {
     },
   }),
   update: router.mutation({
-    mutationFn: async (variables: { id: string | number; data: z.infer<typeof userUpdateForm> }) => {
+    mutationFn: async (variables: {
+      id: string | number;
+      data: z.infer<typeof userUpdateForm>;
+    }) => {
       const res = await Axios.put(`/user/update/${variables.id}`, variables.data);
 
       return res.data as { message: string };

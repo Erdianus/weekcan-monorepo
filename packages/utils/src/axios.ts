@@ -1,4 +1,4 @@
-import axios, { type AxiosError, type AxiosRequestConfig } from "axios";
+import axios, { type AxiosError, RawAxiosRequestHeaders } from "axios";
 
 const Axios = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_API}/api`,
@@ -8,21 +8,30 @@ const Axios = axios.create({
   },
 });
 
-export const authToken = (
-  token: string,
-): AxiosRequestConfig<any> | undefined => {
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+type UserSession = {
+  id: string;
+  name: string | null | undefined;
+  username: string;
+  role: string;
+  // company: Array<Company>;
+  role_id: number;
+  token: string;
 };
+
+export async function headerAuth(session: Promise<{user: UserSession} | null> ): Promise<RawAxiosRequestHeaders> {
+  const sesh = await session;
+  return {
+    Authorization: `Bearer ${sesh?.user.token}`
+  }
+
+}
 
 Axios.interceptors.response.use(
   (response) => response,
   (error) => {
     const message: unknown = error.response.data.message;
-    console.log(message);
+    // console.log(error);
+    console.log(`aku error interceptor awal: ${message}`);
     if (error.response.data.errors) {
       const errs = error.response.data.errors;
 
