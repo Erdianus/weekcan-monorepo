@@ -271,7 +271,7 @@ const UpdateSprint = ({ id, onClose }: { id: string | number; onClose: () => voi
 
   return (
     <>
-      <Tabs defaultValue="detail" className="">
+      <Tabs defaultValue="detail">
         <TabsList>
           <TabsTrigger value="detail">Detail</TabsTrigger>
           <TabsTrigger value="edit">Edit</TabsTrigger>
