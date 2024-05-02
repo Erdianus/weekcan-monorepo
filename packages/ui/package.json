@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "clean": "rm -rf .turbo node_modules",
     "test": "vitest run",
     "ui:add": "pnpm dlx shadcn-ui@latest add",
     "lint": "eslint ."
@@ -71,7 +72,8 @@
     "./tailwind.config": "./tailwind.config.ts",
     "./lib/*": "./src/lib/*.ts",
     "./pages/*": "./src/pages/*.tsx",
-    "./components/*": "./src/components/*.tsx"
+    "./components/*": "./src/components/*.tsx",
+    "./icons": "./src/components/icon/index.ts"
   },
   "prettier": "@repo/prettier-config"
 }

@@ -1,12 +1,13 @@
 {
-  "name": "weekcan",
+  "name": "@repo/weekcan",
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "clean": "rm -rf .turbo node_modules",
     "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . "
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.11",
@@ -33,7 +34,7 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^14.2.0",
+    "@next/eslint-plugin-next": "^14.2.2",
     "@repo/eslint-config": "workspace:*",
     "@repo/prettier-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",

@@ -1,16 +1,21 @@
-import { Meta } from '@api/routers/meta';
 import { router } from 'react-query-kit';
 import z from 'zod';
 
 import Axios from '@repo/utils/axios';
 
+import { Meta } from '../../meta';
 import fileBaseSchema, { fileFormSchema } from './schema';
 
 type FileProject = z.infer<typeof fileBaseSchema>;
 
 const file = {
   all: router.query({
-    fetcher: async (variables: { project_id: string | number; page?: string | number | null; paginate?: string | number | null; search?: string | null }) => {
+    fetcher: async (variables: {
+      project_id: string | number;
+      page?: string | number | null;
+      paginate?: string | number | null;
+      search?: string | null;
+    }) => {
       const res = await Axios('/file-project', { params: { ...variables, have_detail_id: 0 } });
 
       return res.data as { data: FileProject[]; meta: Meta };

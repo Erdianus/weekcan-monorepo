@@ -1,23 +1,17 @@
-import k, {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@repo/api/kit";
-import UpdateCompany from '@repo/ui/pages/company/update';
-import { Metadata } from "next";
+import { Metadata } from 'next';
+
+import k, { dehydrate, HydrationBoundary, QueryClient } from '@repo/api/kit';
+
+import UpdateCompany from './update';
 
 export const metadata: Metadata = {
-  title: "Update Perusahaan",
+  title: 'Update Perusahaan',
 };
 
-export default async function CompanyPage({
-  params,
-}: {
-  params: {company_id: string | number}
-}) {
+export default async function CompanyPage({ params }: { params: { company_id: string | number } }) {
   const client = new QueryClient();
 
-  await client.prefetchQuery(k.company.single.getFetchOptions({id: params.company_id}));
+  await client.prefetchQuery(k.company.single.getFetchOptions({ id: params.company_id }));
 
   return (
     <HydrationBoundary state={dehydrate(client)}>

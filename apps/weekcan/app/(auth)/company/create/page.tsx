@@ -1,10 +1,14 @@
-import CreateCompany from '@repo/ui/pages/company/create';
 import { Metadata } from 'next';
+
+import CreateCompany from './create';
+
 export const metadata: Metadata = {
-  title: 'Buat Perusahaan'
-}
+  title: 'Buat Perusahaan',
+};
 export default function CreateCompanyPage() {
-  return <>
-    <CreateCompany />
-  </>
+  return (
+    <>
+      <CreateCompany />
+    </>
+  );
 }

@@ -144,14 +144,7 @@ const ListProject = () => {
   return (
     <>
       <PortalSearch placeholder="Cari Proyek..." />
-      <div className="mb-4 flex w-full items-center justify-between">
-        <H3 className="">Proyek</H3>
-        <Button type="button" size={'icon'} asChild>
-          <Link href={'project/create'}>
-            <Plus />
-          </Link>
-        </Button>
-      </div>
+
       <div className="mb-2">
         <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
           Filter

@@ -1,10 +1,16 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import k, { useQueryClient } from "@repo/api/kit";
-import { userUpdateFormSchema } from "@repo/api/router/user/schema";
-import { SelectAsync } from "@ui/components/select";
-import { Button } from "@ui/components/ui/button";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import z from 'zod';
+
+import k, { useQueryClient } from '@repo/api/kit';
+import { userUpdateFormSchema } from '@repo/api/router/user/schema';
+import { SelectAsync } from '@repo/ui/components/select';
+import { Button } from '@repo/ui/components/ui/button';
 import {
   Form,
   FormControl,
@@ -12,16 +18,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ui/components/ui/form";
-import { Input } from "@ui/components/ui/input";
-import Spinner from "@ui/components/ui/spinner";
-import { H3 } from "@ui/components/ui/typograhpy";
-import { loadCompanyOptions, loadRoleOptions } from "@ui/lib/select";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+} from '@repo/ui/components/ui/form';
+import { Input } from '@repo/ui/components/ui/input';
+import Spinner from '@repo/ui/components/ui/spinner';
+import { H3 } from '@repo/ui/components/ui/typograhpy';
+import { loadCompanyOptions, loadRoleOptions } from '@repo/ui/lib/select';
 
 const userFormSchema = userUpdateFormSchema.omit({
   role_id: true,
@@ -36,8 +37,8 @@ const UpdateUser = ({ id }: { id: string | number }) => {
   const form = useForm<z.infer<typeof userFormSchema>>({
     resolver: zodResolver(userFormSchema),
     values: {
-      name: "",
-      username: "",
+      name: '',
+      username: '',
       email: undefined,
       company: [],
       role: {},
@@ -49,7 +50,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
     onSuccess: async ({ message }) => {
       toast.success(message);
       await client.invalidateQueries({ queryKey: k.user.all.getKey() });
-      router.push("/user");
+      router.push('/user');
     },
     onError: async ({ message }) => toast.error(message),
   });
@@ -62,8 +63,8 @@ const UpdateUser = ({ id }: { id: string | number }) => {
         username: user.data.username,
         name: user.data.name,
         email: user.data.email,
-        role: {label: user.data.role.role_name, value: `${user.data.role.id}`},
-        company: user.data.company.map(c => ({value: `${c.id}`, label: c.company_name}) )
+        role: { label: user.data.role.role_name, value: `${user.data.role.id}` },
+        company: user.data.company.map((c) => ({ value: `${c.id}`, label: c.company_name })),
       });
     }
   }, [user]);
@@ -85,7 +86,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
             });
           })}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="name"
@@ -113,7 +114,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="email"
@@ -121,18 +122,14 @@ const UpdateUser = ({ id }: { id: string | number }) => {
                 <FormItem className="col-span-2">
                   <FormLabel>Email</FormLabel>
                   <FormControl isloading={isload}>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="Masukkan Nama Email"
-                    />
+                    <Input {...field} type="email" placeholder="Masukkan Nama Email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="role"
@@ -171,7 +168,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <Button>{update.isPending ? <Spinner /> : "Submit"}</Button>
+          <Button>{update.isPending ? <Spinner /> : 'Submit'}</Button>
         </form>
       </Form>
     </>

@@ -1,4 +1,4 @@
-import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import type { DefaultSession, NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import axios from "axios";
 
@@ -13,21 +13,21 @@ export type UserSession = {
 };
 
 declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user: UserSession;
+  interface Session {
+    user: UserSession & DefaultSession['user'];
   }
 }
 
-export const authConfig: NextAuthConfig = {
+export const authConfig = {
   providers: [
     Credentials({
-      async authorize(credential: { username: string; password: string }) {
+      authorize: async(credentials: Partial<Record<"username" | "password", unknown>>) => {
         try {
           const res = await axios.post<{ data: UserSession }>(
             `${process.env.BASE_API}/api/login`,
             {
-              username: credential.username,
-              password: credential.password,
+              username: credentials.username,
+              password: credentials.password,
             },
             {
               headers: {
@@ -55,14 +55,11 @@ export const authConfig: NextAuthConfig = {
     signIn: "/login",
   },
   callbacks: {
-    // @ts-ignore
     jwt({ token, user }) {
       return { ...token, ...user };
     },
-    // @ts-ignore
     async session({ session, token }) {
-      session.user = token;
-      return session;
+      return {...session, user: token};
     },
   },
 } satisfies NextAuthConfig;

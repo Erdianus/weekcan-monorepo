@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "clean": "rm -rf .turbo node_modules",
     "dev": "echo 'Add dev script here'",
     "build": "echo 'Add build script here'",
     "test": "echo 'Add test script here'",

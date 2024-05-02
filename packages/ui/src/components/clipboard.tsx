@@ -34,7 +34,7 @@ export default function CopyToken() {
 
   return (
     <Button
-      className="hidden sm:block"
+      className="hidden sm:flex"
       variant={'ghost'}
       size={'icon'}
       onClick={handleCopyClick}

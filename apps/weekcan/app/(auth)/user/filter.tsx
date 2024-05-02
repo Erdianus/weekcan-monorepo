@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { SelectAsync } from "@ui/components/select";
-import { loadCompanyOptions } from "@ui/lib/select";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
+import { SelectAsync } from '@repo/ui/components/select';
+import { loadCompanyOptions } from '@repo/ui/lib/select';
 
 const FilterUser = () => {
   const searchParams = useSearchParams();
@@ -13,10 +14,10 @@ const FilterUser = () => {
     <div className="flex items-center gap-4">
       <SelectAsync
         defaultValue={
-          searchParams.get("company_id")
+          searchParams.get('company_id')
             ? {
-                label: searchParams.get("company_name")?.toString(),
-                value: searchParams.get("company_id")?.toString(),
+                label: searchParams.get('company_name')?.toString(),
+                value: searchParams.get('company_id')?.toString(),
               }
             : null
         }
@@ -28,18 +29,18 @@ const FilterUser = () => {
         className="w-auto"
         isClearable
         onChange={(e) => {
-          const hasPage = !!searchParams.get("page");
+          const hasPage = !!searchParams.get('page');
           const params = new URLSearchParams(searchParams);
 
           if (e) {
-            params.set("company_id", `${e.value}`);
-            params.set("company_name", `${e.label}`);
+            params.set('company_id', `${e.value}`);
+            params.set('company_name', `${e.label}`);
           } else {
-            params.delete("company_id");
-            params.delete("company_name");
+            params.delete('company_id');
+            params.delete('company_name');
           }
 
-          if (hasPage) params.delete("page");
+          if (hasPage) params.delete('page');
 
           replace(`${pathname}?${params.toString()}`);
         }}

@@ -1,10 +1,15 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import k, { useQueryClient } from "@repo/api/kit";
-import { userCreateFormSchema } from "@repo/api/router/user/schema";
-import { SelectAsync } from "@ui/components/select";
-import { Button } from "@ui/components/ui/button";
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import z from 'zod';
+
+import k, { useQueryClient } from '@repo/api/kit';
+import { userCreateFormSchema } from '@repo/api/router/user/schema';
+import { SelectAsync } from '@repo/ui/components/select';
+import { Button } from '@repo/ui/components/ui/button';
 import {
   Form,
   FormControl,
@@ -12,40 +17,33 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ui/components/ui/form";
-import { Input } from "@ui/components/ui/input";
-import Spinner from "@ui/components/ui/spinner";
-import { H3 } from "@ui/components/ui/typograhpy";
-import { loadCompanyOptions, loadRoleOptions } from "@ui/lib/select";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+} from '@repo/ui/components/ui/form';
+import { Input } from '@repo/ui/components/ui/input';
+import Spinner from '@repo/ui/components/ui/spinner';
+import { H3 } from '@repo/ui/components/ui/typograhpy';
+import { loadCompanyOptions, loadRoleOptions } from '@repo/ui/lib/select';
 
 const userFormSchema = userCreateFormSchema
   .omit({ role_id: true, company_id: true })
-  .refine(
-    ({ confirmation_password, password }) => confirmation_password === password,
-    {
-      message: "Password dan Konfirmasi Password tidak sama",
-      path: ["confirmation_password"],
-    },
-  );
+  .refine(({ confirmation_password, password }) => confirmation_password === password, {
+    message: 'Password dan Konfirmasi Password tidak sama',
+    path: ['confirmation_password'],
+  });
 const CreateUser = () => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof userFormSchema>>({
     resolver: zodResolver(userFormSchema),
     values: {
-      name: "",
-      username: "",
+      name: '',
+      username: '',
       email: undefined,
       // @ts-ignore
       company: null,
       // @ts-ignore
       role: null,
-      password: "password",
-      confirmation_password: "password",
+      password: 'password',
+      confirmation_password: 'password',
     },
   });
 
@@ -56,7 +54,7 @@ const CreateUser = () => {
       await client.invalidateQueries({ queryKey: k.user.all.getKey() });
       router.push('/user');
     },
-    onError: async ({message}) => toast.error(message)
+    onError: async ({ message }) => toast.error(message),
   });
 
   return (
@@ -69,11 +67,11 @@ const CreateUser = () => {
             create.mutate({
               ...v,
               role_id: v.role.value ?? '',
-              company_id: v.company.map(({value}) => value),
-            })
+              company_id: v.company.map(({ value }) => value),
+            });
           })}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="name"
@@ -101,7 +99,7 @@ const CreateUser = () => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="email"
@@ -109,18 +107,14 @@ const CreateUser = () => {
                 <FormItem className="col-span-2">
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="Masukkan Nama Email"
-                    />
+                    <Input {...field} type="email" placeholder="Masukkan Nama Email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="role"
@@ -160,7 +154,7 @@ const CreateUser = () => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="password"
@@ -168,11 +162,7 @@ const CreateUser = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="Masukkan Password"
-                    />
+                    <Input {...field} type="password" placeholder="Masukkan Password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,11 +175,7 @@ const CreateUser = () => {
                 <FormItem>
                   <FormLabel>Konfirmasi Password</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="Masukkan Konfirmasi Password"
-                    />
+                    <Input {...field} type="password" placeholder="Masukkan Konfirmasi Password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

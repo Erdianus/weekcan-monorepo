@@ -1,9 +1,10 @@
-import CreateUser from "@repo/ui/pages/user/create";
-import { Metadata } from "next";
+import { Metadata } from 'next';
+
+import CreateUser from './create';
 
 export const metadata: Metadata = {
-  title: 'Buat User'
-}
+  title: 'Buat User',
+};
 
 export default function CreateUserPage() {
   return (

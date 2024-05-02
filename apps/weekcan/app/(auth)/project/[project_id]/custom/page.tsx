@@ -1,20 +1,24 @@
-import { Metadata } from "next";
-import ListCustomProject from "./list";
-import k, { HydrationBoundary, QueryClient, dehydrate } from "@repo/api/kit";
+import { Metadata } from 'next';
+
+import k, { dehydrate, HydrationBoundary, inferVariables, QueryClient } from '@repo/api/kit';
+
+import ListCustomProject from './list';
 
 export const metadata: Metadata = {
-  title: "Kustom Data",
+  title: 'Kustom Data',
 };
 
 export default async function CustomProjectPage({
   params,
+  searchParams,
 }: {
   params: { project_id: string | number };
+  searchParams: inferVariables<typeof k.project.detail.all>;
 }) {
   const client = new QueryClient();
 
   await client.prefetchQuery(
-    k.project.detail.all.getFetchOptions({ project_id: params.project_id }),
+    k.project.detail.all.getFetchOptions({ ...searchParams, project_id: params.project_id }),
   );
 
   return (

@@ -4,21 +4,26 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo clean",
     "build": "dotenv -- turbo build",
     "test": "dotenv -- turbo test",
-    "dev": "dotenv -- turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev": "dotenv -- turbo dev --parallel",
+    "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
+    "format": "turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
     "ui:add": "pnpm --filter @repo/ui ui:add",
     "postinstall": "manypkg check",
     "fix:pkg": "manypkg fix"
   },
   "dependencies": {
-    "@manypkg/cli": "latest",
+    "@manypkg/cli": "latest"
+  },
+  "devDepedencies": {
+    "@repo/prettier-config": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "dotenv-cli": "latest",
     "prettier": "^3.2.5",
+    "dotenv-cli": "latest",
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.9.0",

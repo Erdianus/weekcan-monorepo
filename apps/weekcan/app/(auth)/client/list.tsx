@@ -64,6 +64,7 @@ const EditClient = (props: { data: { name: string; id: number }; onClose: () => 
 
 const ListClient = () => {
   const searchParams = useSearchParams();
+  const variables = Object.fromEntries(searchParams.entries());
   const alert = useAlertStore();
   const [editID, setEditID] = useState(0);
 
@@ -76,10 +77,7 @@ const ListClient = () => {
 
   const client = useQueryClient();
   const { data: clients } = k.client.all.useQuery({
-    variables: {
-      paginate: searchParams.get('paginate'),
-      page: searchParams.get('page'),
-    },
+    variables,
   });
 
   //--NOTE: Create Mutation
@@ -87,7 +85,7 @@ const ListClient = () => {
     onSuccess: async ({ message }) => {
       toast.success(message);
       form.reset();
-      await client.invalidateQueries({ queryKey: k.client.all.getKey() });
+      await client.invalidateQueries({ queryKey: k.client.all.getKey(variables) });
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -96,7 +94,7 @@ const ListClient = () => {
   const del = k.client.delete.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
-      await client.invalidateQueries({ queryKey: k.client.all.getKey() });
+      await client.invalidateQueries({ queryKey: k.client.all.getKey(variables) });
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -148,7 +146,10 @@ const ListClient = () => {
         fallback={<div>Tidak Ada Data Tempat</div>}
       >
         {clients?.data.map((client) => (
-          <div className="flex items-center justify-between gap-4 border-b border-border p-4">
+          <div
+            key={`client-${client.id}`}
+            className="flex items-center justify-between gap-4 border-b border-border p-4"
+          >
             {editID === client.id && (
               <EditClient
                 data={client}

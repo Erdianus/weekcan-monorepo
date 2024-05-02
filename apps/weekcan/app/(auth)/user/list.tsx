@@ -2,22 +2,33 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { CellContext, createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import Paginate from '@ui/components/paginate';
-import PaginationParams from '@ui/components/pagination-params';
-import PortalSearch from '@ui/components/portal-search';
-import { Badge } from '@ui/components/ui/badge';
-import { Button } from '@ui/components/ui/button';
-import { DataTable } from '@ui/components/ui/data-table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@ui/components/ui/dropdown-menu';
-import Spinner from '@ui/components/ui/spinner';
-import { H3 } from '@ui/components/ui/typograhpy';
-import useAlertStore from '@ui/lib/store/useAlertStore';
+import {
+  CellContext,
+  createColumnHelper,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import k, { useQueryClient } from '@repo/api/kit';
 import { User } from '@repo/api/router/user/index';
+import Paginate from '@repo/ui/components/paginate';
+import PaginationParams from '@repo/ui/components/pagination-params';
+import PortalSearch from '@repo/ui/components/portal-search';
+import { Badge } from '@repo/ui/components/ui/badge';
+import { Button } from '@repo/ui/components/ui/button';
+import { DataTable } from '@repo/ui/components/ui/data-table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@repo/ui/components/ui/dropdown-menu';
+import Spinner from '@repo/ui/components/ui/spinner';
+import { H3 } from '@repo/ui/components/ui/typograhpy';
+import useAlertStore from '@repo/ui/lib/store/useAlertStore';
 
 import FilterUser from './filter';
 
@@ -110,16 +121,10 @@ const columns = [
 
 const ListUser = () => {
   const searchParams = useSearchParams();
+  const variables = Object.entries(searchParams.entries());
 
-  const { data: users, isLoading } = k.user.all.useQuery({
-    variables: {
-      search: searchParams.get('search'),
-      page: searchParams.get('page'),
-      paginate: searchParams.get('paginate'),
-      company_id: searchParams.get('company_id'),
-      company_name: searchParams.get('company_name'),
-    },
-  });
+  // @ts-ignore gapapa
+  const { data: users, isLoading } = k.user.all.useQuery({ variables });
 
   const table = useReactTable({
     data: users?.data ?? [],

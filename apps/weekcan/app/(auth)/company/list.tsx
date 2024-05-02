@@ -1,32 +1,35 @@
-"use client";
-import k, { useQueryClient } from "@repo/api/kit";
-import { Company } from "@repo/api/router/company/index";
+'use client';
+
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
-  createColumnHelper,
-  useReactTable,
-  getCoreRowModel,
   CellContext,
-} from "@tanstack/react-table";
-import PortalSearch from "@ui/components/portal-search";
-import { Button } from "@ui/components/ui/button";
-import { DataTable } from "@ui/components/ui/data-table";
-import { H3 } from "@ui/components/ui/typograhpy";
-import { useSearchParams } from "next/navigation";
-import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
-import Link from "next/link";
-import PaginationParams from "@ui/components/pagination-params";
-import Paginate from "@ui/components/paginate";
+  createColumnHelper,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+import k, { useQueryClient } from '@repo/api/kit';
+import { Company } from '@repo/api/router/company/index';
+import Paginate from '@repo/ui/components/paginate';
+import PaginationParams from '@repo/ui/components/pagination-params';
+import PortalSearch from '@repo/ui/components/portal-search';
+import { Button } from '@repo/ui/components/ui/button';
+import { DataTable } from '@repo/ui/components/ui/data-table';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@ui/components/ui/dropdown-menu";
-import useAlertStore from "@ui/lib/store/useAlertStore";
-import { toast } from "sonner";
-import Spinner from "@ui/components/ui/spinner";
-import FilterCompany from "./filter";
+} from '@repo/ui/components/ui/dropdown-menu';
+import Spinner from '@repo/ui/components/ui/spinner';
+import { H3 } from '@repo/ui/components/ui/typograhpy';
+import useAlertStore from '@repo/ui/lib/store/useAlertStore';
+
+import FilterCompany from './filter';
 
 const colHelper = createColumnHelper<Company>();
 
@@ -50,18 +53,14 @@ const Actions = ({ row }: CellContext<Company, unknown>) => {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
-            {del.isPending ? (
-              <Spinner />
-            ) : (
-              <MoreHorizontal className="h-4 w-4" />
-            )}
+            {del.isPending ? <Spinner /> : <MoreHorizontal className="h-4 w-4" />}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <Link href={`/company/${data.id}/update`}>
             <DropdownMenuItem>
-              <Pencil className="mr-2 w-4 h-4" />
+              <Pencil className="mr-2 h-4 w-4" />
               <span>Edit</span>
             </DropdownMenuItem>
           </Link>
@@ -69,9 +68,9 @@ const Actions = ({ row }: CellContext<Company, unknown>) => {
             onClick={() =>
               alert.setData({
                 open: true,
-                confirmText: "Ya, Hapus",
+                confirmText: 'Ya, Hapus',
                 header: `Yakin ingin mengapus '${data.company_name}'?`,
-                desc: "Perusahaan yang dihapus tidak dapat dikembalikan lagi",
+                desc: 'Perusahaan yang dihapus tidak dapat dikembalikan lagi',
                 onConfirm: () => {
                   del.mutate({ id: data.id });
                 },
@@ -79,7 +78,7 @@ const Actions = ({ row }: CellContext<Company, unknown>) => {
             }
             className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
           >
-            <Trash2 className="mr-2 w-4 h-4" />
+            <Trash2 className="mr-2 h-4 w-4" />
             <span>Hapus</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -90,38 +89,33 @@ const Actions = ({ row }: CellContext<Company, unknown>) => {
 
 const columns = [
   colHelper.display({
-    header: "No",
+    header: 'No',
     cell: ({ row }) => row.index + 1,
   }),
-  colHelper.accessor("company_name", {
-    header: "Nama",
+  colHelper.accessor('company_name', {
+    header: 'Nama',
   }),
-  colHelper.accessor("email", {
-    header: "Email",
+  colHelper.accessor('email', {
+    header: 'Email',
   }),
-  colHelper.accessor("address", {
-    header: "Alamat",
+  colHelper.accessor('address', {
+    header: 'Alamat',
   }),
-  colHelper.accessor("owner.name", {
-    header: "Pemilik",
+  colHelper.accessor('owner.name', {
+    header: 'Pemilik',
   }),
   colHelper.display({
-    id: "action",
+    id: 'action',
     cell: Actions,
   }),
 ];
 
 const ListCompany = () => {
   const searchParams = useSearchParams();
+  const variables = Object.fromEntries(searchParams.entries());
 
   const { data: companies, isLoading } = k.company.all.useQuery({
-    variables: {
-      search: searchParams.get("search"),
-      page: searchParams.get("page"),
-      paginate: searchParams.get("paginate"),
-      owner_id: searchParams.get("owner_id"),
-      owner_name: searchParams.get("owner_name"),
-    },
+    variables,
   });
 
   const table = useReactTable({
@@ -132,11 +126,11 @@ const ListCompany = () => {
 
   return (
     <div>
-      <div className="flex w-full justify-between items-center mb-4">
+      <div className="mb-4 flex w-full items-center justify-between">
         <H3>Perusahaan</H3>
         <div className="flex items-center gap-4">
           <FilterCompany />
-          <Button size={"icon"} asChild>
+          <Button size={'icon'} asChild>
             <Link href="company/create">
               <Plus />
             </Link>
@@ -145,7 +139,7 @@ const ListCompany = () => {
       </div>
       <PortalSearch placeholder="Cari Perusahaan..." />
       <DataTable table={table} isloading={isLoading} columns={columns} />
-      <div className="mt-4 w-full flex items-center justify-end gap-5">
+      <div className="mt-4 flex w-full items-center justify-end gap-5">
         <Paginate />
         <PaginationParams meta={companies?.meta} />
       </div>

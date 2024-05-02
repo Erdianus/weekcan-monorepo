@@ -1,9 +1,10 @@
-import { Meta } from '@api/routers/meta';
 import { router } from 'react-query-kit';
 import z from 'zod';
 
-import Axios from '@repo/utils/axios';
+import { auth } from '@repo/auth';
+import Axios, { headerAuth } from '@repo/utils/axios';
 
+import { Meta } from '../../meta';
 import detailBaseSchema, { detailFormSchema } from './schema';
 
 type DetailProject = z.infer<typeof detailBaseSchema>;
@@ -19,7 +20,8 @@ const detail = {
       paginate?: number | string | null;
       search?: string | null;
     }) => {
-      const res = await Axios('/detail-project', { params: variables });
+      const headers = await headerAuth(auth());
+      const res = await Axios('/detail-project', { params: variables, headers });
 
       return res.data as { data: DetailProject[]; meta: Meta };
     },

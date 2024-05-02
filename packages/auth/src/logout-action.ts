@@ -1,7 +1,7 @@
 "use server";
 
 import { auth, signOut } from "./index";
-import { axios } from "@repo/utils/axios";
+import  axios  from "axios";
 
 export async function logoutAction() {
   const sesh = await auth();

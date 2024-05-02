@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Check, Info, Pencil, Plus, Trash2, X, Zap } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import k, { useQueryClient } from '@repo/api/kit';
+import k from '@repo/api/kit';
 import { detailFormSchema } from '@repo/api/router/project/detail/schema';
 import Flashlist from '@repo/ui/components/flashlist';
 import Loading from '@repo/ui/components/loading';
@@ -25,6 +25,7 @@ const EditCustom = (props: {
   data: { title: string; desc: string; id: number };
   onClose: () => void;
 }) => {
+  const router = useRouter();
   const params = useParams<{ project_id: string }>();
 
   const form = useForm<z.infer<typeof detailFormSchema>>({
@@ -36,13 +37,10 @@ const EditCustom = (props: {
     },
   });
 
-  const client = useQueryClient();
   const update = k.project.detail.update.useMutation({
     onSuccess: async ({ message }) => {
-      await client.invalidateQueries({
-        queryKey: k.project.detail.all.getKey(),
-      });
       toast.success(message);
+      router.refresh();
       props.onClose();
     },
     onError: ({ message }) => toast.error(message),
@@ -81,7 +79,7 @@ const EditCustom = (props: {
 };
 
 const ListCustomProject = ({ id }: { id: string | number }) => {
-  const searchParams = useSearchParams();
+  const router = useRouter();
   const alert = useAlertStore();
   const [editID, setEditID] = useState(0);
 
@@ -94,13 +92,12 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
     },
   });
 
-  const client = useQueryClient();
+  const searchParams = useSearchParams();
+  const variables = Object.fromEntries(searchParams.entries());
   const { data: customs } = k.project.detail.all.useQuery({
     variables: {
+      ...variables,
       project_id: id,
-      search: searchParams.get('search'),
-      page: searchParams.get('page'),
-      paginate: searchParams.get('paginate'),
     },
   });
 
@@ -109,9 +106,7 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
     onSuccess: async ({ message }) => {
       toast.success(message);
       form.reset();
-      await client.invalidateQueries({
-        queryKey: k.project.detail.all.getKey(),
-      });
+      router.refresh();
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -120,9 +115,7 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
   const del = k.project.detail.delete.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
-      await client.invalidateQueries({
-        queryKey: k.project.detail.all.getKey(),
-      });
+      router.refresh();
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -196,7 +189,10 @@ const ListCustomProject = ({ id }: { id: string | number }) => {
         fallback={<div>Tidak Ada Data Kustom</div>}
       >
         {customs?.data.map((custom) => (
-          <div className="flex items-center justify-between gap-4 border-b border-border p-4">
+          <div
+            key={`custom-${custom.id}`}
+            className="flex items-center justify-between gap-4 border-b border-border p-4"
+          >
             {editID === custom.id && (
               <EditCustom
                 data={custom}

@@ -1,17 +1,23 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import k, { useQueryClient } from "@repo/api/kit";
-import { companyFormSchema as companyForm } from "@repo/api/router/company/schema";
-import { Facebook, Instagram, Tiktok, Twitter } from "@ui/components/icon";
-import ImageUpload, { ImageUploadType } from "@ui/components/image-upload";
-import { SelectAsync } from "@ui/components/select";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import z from 'zod';
+
+import k, { useQueryClient } from '@repo/api/kit';
+import { companyFormSchema as companyForm } from '@repo/api/router/company/schema';
+import ImageUpload, { ImageUploadType } from '@repo/ui/components/image-upload';
+import { SelectAsync } from '@repo/ui/components/select';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@ui/components/ui/accordion";
-import { Button } from "@ui/components/ui/button";
+} from '@repo/ui/components/ui/accordion';
+import { Button } from '@repo/ui/components/ui/button';
 import {
   Form,
   FormControl,
@@ -19,16 +25,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@ui/components/ui/form";
-import { Input } from "@ui/components/ui/input";
-import Spinner from "@ui/components/ui/spinner";
-import { H3 } from "@ui/components/ui/typograhpy";
-import { loadUserOptions } from "@ui/lib/select";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+} from '@repo/ui/components/ui/form';
+import { Input } from '@repo/ui/components/ui/input';
+import Spinner from '@repo/ui/components/ui/spinner';
+import { H3 } from '@repo/ui/components/ui/typograhpy';
+import { Facebook, Instagram, Tiktok, Twitter } from '@repo/ui/icons';
+import { loadUserOptions } from '@repo/ui/lib/select';
 
 const companyFormSchema = companyForm.omit({ owner_id: true }).extend({
   picture_path: z.union([z.string(), z.instanceof(File)]).optional(),
@@ -41,13 +43,13 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
   const form = useForm<z.infer<typeof companyFormSchema>>({
     resolver: zodResolver(companyFormSchema),
     values: {
-      company_name: "",
-      email: "",
-      picture_path: "",
+      company_name: '',
+      email: '',
+      picture_path: '',
       // @ts-ignore
       owner: null,
-      address: "",
-      no_telp: "",
+      address: '',
+      no_telp: '',
       twitter: undefined,
       facebook: undefined,
       instagram: undefined,
@@ -59,7 +61,7 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
   const { data: company } = k.company.single.useQuery({ variables: { id } });
   const update = k.company.update.useMutation({
     onSuccess: async ({ message }) => {
-      router.push("/company");
+      router.push('/company');
       await client.invalidateQueries({ queryKey: k.company.all.getKey() });
       toast.success(message);
     },
@@ -70,7 +72,7 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
 
   useEffect(() => {
     if (company) {
-    const {data} = company;
+      const { data } = company;
       form.reset({
         ...company.data,
         instagram: data.instagram ?? undefined,
@@ -103,7 +105,7 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
             });
           })}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="company_name"
@@ -124,17 +126,14 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
                 <FormItem>
                   <FormLabel>Alamat</FormLabel>
                   <FormControl isloading={isload}>
-                    <Input
-                      {...field}
-                      placeholder="Masukkan Alamat Perusahaan"
-                    />
+                    <Input {...field} placeholder="Masukkan Alamat Perusahaan" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="email"
@@ -155,17 +154,14 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
                 <FormItem>
                   <FormLabel>No. Telp</FormLabel>
                   <FormControl isloading={isload}>
-                    <Input
-                      {...field}
-                      placeholder="Masukkan No. Telp Perusahaan"
-                    />
+                    <Input {...field} placeholder="Masukkan No. Telp Perusahaan" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="owner"
@@ -189,7 +185,7 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
               name="picture_path"
@@ -201,8 +197,8 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
                       value={images}
                       onChange={(v) => {
                         setImages(v);
-                        form.setValue("picture_path", v[0]?.file ?? "");
-                        if (v.length) form.clearErrors("picture_path");
+                        form.setValue('picture_path', v[0]?.file ?? '');
+                        if (v.length) form.clearErrors('picture_path');
                       }}
                     />
                   </FormControl>
@@ -217,15 +213,15 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
                 <div className="flex flex-wrap gap-4">
                   <div className="">Sosial Media</div>
                   <div className="flex items-center gap-4 text-foreground">
-                    {!!form.watch("instagram") && <Instagram />}
-                    {!!form.watch("tiktok") && <Tiktok />}
-                    {!!form.watch("facebook") && <Facebook />}
-                    {!!form.watch("twitter") && <Twitter />}
+                    {!!form.watch('instagram') && <Instagram />}
+                    {!!form.watch('tiktok') && <Tiktok />}
+                    {!!form.watch('facebook') && <Facebook />}
+                    {!!form.watch('twitter') && <Twitter />}
                   </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="space-y-4 p-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="instagram"
@@ -253,7 +249,7 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
                     )}
                   />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="facebook"
@@ -284,7 +280,7 @@ const UpdateCompany = ({ id }: { id: string | number }) => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <Button>{update.isPending ? <Spinner /> : "Submit"}</Button>
+          <Button>{update.isPending ? <Spinner /> : 'Submit'}</Button>
         </form>
       </Form>
     </>

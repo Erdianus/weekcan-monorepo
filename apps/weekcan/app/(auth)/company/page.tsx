@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 import k, { dehydrate, HydrationBoundary, inferVariables, QueryClient } from '@repo/api/kit';
-import { auth } from '@repo/auth';
-import ListCompany from '@repo/ui/pages/company/list';
+
+import ListCompany from './list';
 
 export const metadata: Metadata = {
   title: 'Perusahaan',
@@ -13,7 +13,6 @@ export default async function CompanyPage({
 }: {
   searchParams: inferVariables<typeof k.company.all>;
 }) {
-  console.log('aku dari company page');
   const client = new QueryClient();
 
   await client.prefetchQuery(k.company.all.getFetchOptions(searchParams));

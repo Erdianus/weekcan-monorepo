@@ -1,14 +1,11 @@
-import k, {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-  inferVariables,
-} from "@repo/api/kit";
-import ListUser from "@repo/ui/pages/user/list";
-import { Metadata } from "next";
+import { Metadata } from 'next';
+
+import k, { dehydrate, HydrationBoundary, inferVariables, QueryClient } from '@repo/api/kit';
+
+import ListUser from './list';
 
 export const metadata: Metadata = {
-  title: "User",
+  title: 'User',
 };
 
 export default async function UserPage({
@@ -18,9 +15,7 @@ export default async function UserPage({
 }) {
   const client = new QueryClient();
 
-  await client.prefetchQuery(
-    k.user.all.getFetchOptions(searchParams),
-  );
+  await client.prefetchQuery(k.user.all.getFetchOptions(searchParams));
 
   return (
     <HydrationBoundary state={dehydrate(client)}>

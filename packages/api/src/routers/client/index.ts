@@ -1,7 +1,8 @@
 import { router } from 'react-query-kit';
 import z from 'zod';
 
-import Axios from '@repo/utils/axios';
+import { auth } from '@repo/auth';
+import Axios, { headerAuth } from '@repo/utils/axios';
 
 import { Meta } from '../meta';
 import { clientBaseSchema, clientFormSchema } from './schema';
@@ -10,15 +11,21 @@ type Client = z.infer<typeof clientBaseSchema>;
 
 const client = router('client', {
   all: router.query({
-    fetcher: async (variables: { search?: number | string | null; paginate?: string | null; page?: string | null | number }) => {
-      const res = await Axios('/client', { params: variables });
+    fetcher: async (variables: {
+      search?: number | string | null;
+      paginate?: string | null;
+      page?: string | null | number;
+    }) => {
+      const headers = await headerAuth(auth());
+      const res = await Axios('/client', { params: variables, headers });
 
       return res.data as { data: Client[]; meta: Meta };
     },
   }),
   single: router.query({
     fetcher: async (variable: { id: string }) => {
-      const res = await Axios(`/client/${variable.id}`);
+      const headers = await headerAuth(auth());
+      const res = await Axios(`/client/${variable.id}`, { headers });
 
       return res.data as { data: Client };
     },

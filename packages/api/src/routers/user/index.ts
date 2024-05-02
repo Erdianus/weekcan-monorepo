@@ -31,10 +31,8 @@ const user = router('user', {
       company_name?: string[] | null;
       isOwner?: boolean;
     }) => {
-      const headers = await headerAuth(auth());
       const res = await Axios('/user', {
         params: { ...variables, company_id: variables?.company_id },
-        headers,
       });
 
       return res.data as { data: User[]; meta: Meta };
@@ -42,8 +40,7 @@ const user = router('user', {
   }),
   single: router.query({
     fetcher: async (variables: { id: string | number }) => {
-      const headers = await headerAuth(auth());
-      const res = await Axios(`/user/${variables.id}`, { headers });
+      const res = await Axios(`/user/${variables.id}`);
 
       return res.data as { data: User };
     },

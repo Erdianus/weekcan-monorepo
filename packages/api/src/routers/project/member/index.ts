@@ -1,9 +1,9 @@
-import { Meta } from '@api/routers/meta';
 import { router } from 'react-query-kit';
 import z from 'zod';
 
 import Axios from '@repo/utils/axios';
 
+import { Meta } from '../../meta';
 import memberBaseSchema from './schema';
 
 const memberSchema = memberBaseSchema.extend({

@@ -1,35 +1,30 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import k, { useQueryClient } from "@repo/api/kit";
-import { venueFormSchema } from "@repo/api/router/venue/schema";
-import Flashlist from "@ui/components/flashlist";
-import Loading from "@ui/components/loading";
-import Paginate from "@ui/components/paginate";
-import PaginationParams from "@ui/components/pagination-params";
-import PortalSearch from "@ui/components/portal-search";
-import { Button } from "@ui/components/ui/button";
-import { Input } from "@ui/components/ui/input";
-import { Label } from "@ui/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@ui/components/ui/popover";
-import { Skeleton } from "@ui/components/ui/skeleton";
-import Spinner from "@ui/components/ui/spinner";
-import { H3 } from "@ui/components/ui/typograhpy";
-import useAlertStore from "@ui/lib/store/useAlertStore";
-import { Check, Plus, Trash2, X, Zap } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+'use client';
 
-const EditVenue = (props: {
-  data: { name: string; id: number };
-  onClose: () => void;
-}) => {
+import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Check, Plus, Trash2, X, Zap } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import z from 'zod';
+
+import k, { useQueryClient } from '@repo/api/kit';
+import { venueFormSchema } from '@repo/api/router/venue/schema';
+import Flashlist from '@repo/ui/components/flashlist';
+import Loading from '@repo/ui/components/loading';
+import Paginate from '@repo/ui/components/paginate';
+import PaginationParams from '@repo/ui/components/pagination-params';
+import PortalSearch from '@repo/ui/components/portal-search';
+import { Button } from '@repo/ui/components/ui/button';
+import { Input } from '@repo/ui/components/ui/input';
+import { Label } from '@repo/ui/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/components/ui/popover';
+import { Skeleton } from '@repo/ui/components/ui/skeleton';
+import Spinner from '@repo/ui/components/ui/spinner';
+import { H3 } from '@repo/ui/components/ui/typograhpy';
+import useAlertStore from '@repo/ui/lib/store/useAlertStore';
+
+const EditVenue = (props: { data: { name: string; id: number }; onClose: () => void }) => {
   const [name, setName] = useState(props.data.name);
 
   const client = useQueryClient();
@@ -46,17 +41,12 @@ const EditVenue = (props: {
     <>
       <Input value={name} onChange={(e) => setName(e.target.value)} />
       <div className="flex items-center gap-4">
-        <Button
-          variant={"ghost"}
-          size={"icon"}
-          type="button"
-          onClick={props.onClose}
-        >
+        <Button variant={'ghost'} size={'icon'} type="button" onClick={props.onClose}>
           <X size={20} />
         </Button>
         <Button
-          variant={"ghost"}
-          size={"icon"}
+          variant={'ghost'}
+          size={'icon'}
           type="button"
           onClick={() => {
             update.mutate({
@@ -65,11 +55,7 @@ const EditVenue = (props: {
             });
           }}
         >
-          {update.isPending && update.variables.id === `${props.data.id}` ? (
-            <Spinner />
-          ) : (
-            <Check />
-          )}
+          {update.isPending && update.variables.id === `${props.data.id}` ? <Spinner /> : <Check />}
         </Button>
       </div>
     </>
@@ -77,23 +63,21 @@ const EditVenue = (props: {
 };
 
 const ListVenue = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const variables = Object.fromEntries(searchParams.entries());
   const alert = useAlertStore();
   const [editID, setEditID] = useState(0);
 
   const form = useForm<z.infer<typeof venueFormSchema>>({
     resolver: zodResolver(venueFormSchema),
     values: {
-      name: "",
+      name: '',
     },
   });
 
-  const client = useQueryClient();
   const { data: venues } = k.venue.all.useQuery({
-    variables: {
-      paginate: searchParams.get("paginate"),
-      page: searchParams.get("page"),
-    },
+    variables,
   });
 
   //--NOTE: Create Mutation
@@ -101,7 +85,8 @@ const ListVenue = () => {
     onSuccess: async ({ message }) => {
       toast.success(message);
       form.reset();
-      await client.invalidateQueries({ queryKey: k.venue.all.getKey() });
+      router.refresh();
+      // await client.refetchQueries({ queryKey: k.venue.all.getKey(variables) });
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -110,7 +95,8 @@ const ListVenue = () => {
   const del = k.venue.delete.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
-      await client.invalidateQueries({ queryKey: k.venue.all.getKey() });
+      router.refresh();
+      // await client.refetchQueries({ queryKey: k.venue.all.getKey(variables) });
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -122,7 +108,7 @@ const ListVenue = () => {
         <H3 className="mb-4">Tempat Acara</H3>
         <Popover>
           <PopoverTrigger asChild className="relative">
-            <Button className="relative" size={"icon"}>
+            <Button className="relative" size={'icon'}>
               <Plus />
               <Zap className="absolute bottom-1 right-1" size={12} />
             </Button>
@@ -130,9 +116,7 @@ const ListVenue = () => {
           <PopoverContent className="w-80">
             <div className="grid gap-4">
               <div className="space-y-2">
-                <h4 className="font-medium leading-none">
-                  Tambah Tempat Acara
-                </h4>
+                <h4 className="font-medium leading-none">Tambah Tempat Acara</h4>
               </div>
               <form
                 className="space-y-4"
@@ -141,12 +125,9 @@ const ListVenue = () => {
                 })}
               >
                 <Label>Nama</Label>
-                <Input
-                  {...form.register("name")}
-                  placeholder="Contoh: Convention Hall"
-                />
+                <Input {...form.register('name')} placeholder="Contoh: Convention Hall" />
                 <Button type="submit" disabled={create.isPending}>
-                  {create.isPending ? <Spinner /> : "Submit"}
+                  {create.isPending ? <Spinner /> : 'Submit'}
                 </Button>
               </form>
             </div>
@@ -157,9 +138,9 @@ const ListVenue = () => {
         isloading={!venues}
         loading={
           <Loading>
-            <div className="border-border flex items-center justify-between p-4 border-b gap-4">
-              <Skeleton className="w-1/4 h-8" />
-              <Skeleton className="rounded-md h-8 w-8" />
+            <div className="flex items-center justify-between gap-4 border-b border-border p-4">
+              <Skeleton className="h-8 w-1/4" />
+              <Skeleton className="h-8 w-8 rounded-md" />
             </div>
           </Loading>
         }
@@ -167,7 +148,10 @@ const ListVenue = () => {
         fallback={<div>Tidak Ada Data Tempat</div>}
       >
         {venues?.data.map((venue) => (
-          <div className="border-border flex items-center justify-between p-4 border-b gap-4">
+          <div
+            key={`venue-${venue.id}`}
+            className="flex items-center justify-between gap-4 border-b border-border p-4"
+          >
             {editID === venue.id && (
               <EditVenue
                 data={venue}
@@ -189,15 +173,15 @@ const ListVenue = () => {
                     <Pencil size={20} />
                   </Button> */}
                   <Button
-                    variant={"ghost"}
-                    size={"icon"}
+                    variant={'ghost'}
+                    size={'icon'}
                     type="button"
                     onClick={() => {
                       alert.setData({
                         open: true,
                         header: `Yakin ingin menghapus '${venue.name}'?`,
-                        desc: "Tempat acara yang sudah dihapus tidak dapat dikembalikan lagi.",
-                        confirmText: "Ya, Hapus",
+                        desc: 'Tempat acara yang sudah dihapus tidak dapat dikembalikan lagi.',
+                        confirmText: 'Ya, Hapus',
                         onConfirm: () => {
                           del.mutate({ id: `${venue.id}` });
                         },
@@ -216,7 +200,7 @@ const ListVenue = () => {
           </div>
         ))}
       </Flashlist>
-      <div className="w-full flex items-center gap-4 justify-end mt-4">
+      <div className="mt-4 flex w-full items-center justify-end gap-4">
         <Paginate />
         <PaginationParams meta={venues?.meta} />
       </div>
