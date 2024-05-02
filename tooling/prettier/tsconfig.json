@@ -1,9 +1,8 @@
 {
-  "extends": "@hktekno/tsconfig/internal-package.json",
+  "extends": "@hktekno/tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "dist",
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
-  "include": ["src"],
+  "include": ["."],
   "exclude": ["node_modules"]
 }

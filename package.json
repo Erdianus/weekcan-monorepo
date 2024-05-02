@@ -1,34 +1,32 @@
 {
-  "name": "turborepo-shadcn-ui",
-  "version": "1.1.0",
+  "name": "weekcan",
   "private": true,
-  "license": "MIT",
+  "engines": {
+    "node": ">=20.12.0"
+  },
+  "packageManager": "pnpm@9.0.6",
   "scripts": {
+    "build": "turbo build",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo clean",
-    "build": "dotenv -- turbo build",
-    "test": "dotenv -- turbo test",
-    "dev": "dotenv -- turbo dev --parallel",
-    "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
+    "db:push": "pnpm -F db push",
+    "db:studio": "pnpm -F db studio",
+    "dev": "turbo dev --parallel",
     "format": "turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
-    "ui:add": "pnpm --filter @repo/ui ui:add",
-    "postinstall": "manypkg check",
-    "fix:pkg": "manypkg fix"
+    "format:fix": "turbo format --continue -- --write --cache --cache-location node_modules/.cache/.prettiercache",
+    "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
+    "lint:fix": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
+    "lint:ws": "pnpm dlx sherif@latest",
+    "postinstall": "pnpm lint:ws",
+    "typecheck": "turbo typecheck",
+    "ui-add": "pnpm -F ui ui-add"
   },
-  "dependencies": {
-    "@manypkg/cli": "latest"
-  },
-  "devDepedencies": {
-    "@repo/prettier-config": "workspace:*",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+  "devDependencies": {
+    "@acme/prettier-config": "workspace:*",
+    "@turbo/gen": "^1.13.3",
     "prettier": "^3.2.5",
-    "dotenv-cli": "latest",
-    "turbo": "latest"
+    "turbo": "^1.13.3",
+    "typescript": "^5.4.5"
   },
-  "packageManager": "pnpm@8.9.0",
-  "engines": {
-    "node": ">=18"
-  },
-  "prettier": "@repo/prettier-config"
+  "prettier": "@acme/prettier-config"
 }
