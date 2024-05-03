@@ -1,30 +1,31 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { cn } from '@ui/lib/utils';
-import { Search } from 'lucide-react';
-import { createPortal } from 'react-dom';
-import { useDebouncedCallback } from 'use-debounce';
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Search } from "lucide-react";
+import { createPortal } from "react-dom";
+import { useDebouncedCallback } from "use-debounce";
 
-import { Input, InputProps } from './ui/input';
+import type { InputProps } from "./ui/input";
+import { cn } from "../lib/utils";
+import { Input } from "./ui/input";
 
 export default function PortalSearch(props: InputProps) {
   const [mount, setMount] = useState(false);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const router = useRouter();
 
   const handleSearch = useDebouncedCallback((term?: string) => {
-    const hasPage = !!searchParams.get('page');
+    const hasPage = !!searchParams.get("page");
     const params = new URLSearchParams(searchParams);
     if (term) {
-      params.set('search', term);
-      if (hasPage) params.delete('page');
+      params.set("search", term);
+      if (hasPage) params.delete("page");
     } else {
-      params.delete('search');
+      params.delete("search");
     }
-    replace(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`);
   }, 300);
 
   useEffect(() => {
@@ -40,18 +41,18 @@ export default function PortalSearch(props: InputProps) {
             </div>
             <Input
               {...props}
-              defaultValue={searchParams.get('search')?.toString()}
+              defaultValue={searchParams.get("search")?.toString()}
               onChange={(e) => {
                 handleSearch(e.target.value);
               }}
               type="search"
-              placeholder={props.placeholder ?? 'Cari Sesuatu'}
-              className={cn('max-w-48 pl-10', props.className)}
+              placeholder={props.placeholder ?? "Cari Sesuatu"}
+              className={cn("max-w-48 pl-10", props.className)}
             />
           </div>
         </>,
-        // @ts-ignore
-        document.querySelector('#portal-search'),
+        // @ts-expect-error gapapa bro error
+        document.querySelector("#portal-search"),
       )
     : null;
 }

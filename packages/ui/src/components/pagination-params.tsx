@@ -1,6 +1,9 @@
 "use client";
 
-import { Meta } from "@repo/api/router/meta";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+import type { Meta } from "@hktekno/api/routers/meta";
+
 import {
   Pagination,
   PaginationContent,
@@ -9,18 +12,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./ui/pagination";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
 
 const PaginationParams = ({ meta }: { meta?: Meta }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const router = useRouter();
 
-  if (!meta) return <Skeleton className="w-1/5 h-8" />;
+  if (!meta) return <Skeleton className="h-8 w-1/5" />;
 
   return (
-    <Pagination className="justify-start w-auto mx-0">
+    <Pagination className="mx-0 w-auto justify-start">
       <PaginationContent>
         {meta.links.map((link, i) => {
           const { last_page } = meta;
@@ -40,7 +42,7 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
                     console.log(page);
                     const params = new URLSearchParams(searchParams);
                     params.set("page", `${page - 1}`);
-                    replace(`${pathname}?${params.toString()}`);
+                    router.replace(`${pathname}?${params.toString()}`);
                   }}
                 />
               )}
@@ -54,19 +56,19 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
                     const params = new URLSearchParams(searchParams);
                     if (page === last_page) return;
                     params.set("page", `${page + 1}`);
-                    replace(`${pathname}?${params.toString()}`);
+                    router.replace(`${pathname}?${params.toString()}`);
                   }}
                 />
               )}
               {page && (
                 <PaginationLink
-                  className="cursor-pointer hidden sm:flex"
+                  className="hidden cursor-pointer sm:flex"
                   isActive={link.active}
                   onClick={() => {
                     if (link.active) return;
                     const params = new URLSearchParams(searchParams);
                     params.set("page", `${link.label}`);
-                    replace(`${pathname}?${params.toString()}`);
+                    router.replace(`${pathname}?${params.toString()}`);
                   }}
                 >
                   {link.label}

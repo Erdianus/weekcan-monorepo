@@ -1,5 +1,6 @@
-import { cn } from "@ui/lib/utils";
-import { SVGProps } from "react";
+import type { SVGProps } from "react";
+
+import { cn } from "@hktekno/ui/lib/utils";
 
 export default function Dashboard(props: SVGProps<SVGSVGElement>) {
   return (

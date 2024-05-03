@@ -1,6 +1,8 @@
 import type { DefaultSession, NextAuthConfig } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
 import axios from "axios";
+import Credentials from "next-auth/providers/credentials";
+
+import { env } from "../env";
 
 export type UserSession = {
   id: string;
@@ -14,17 +16,19 @@ export type UserSession = {
 
 declare module "next-auth" {
   interface Session {
-    user: UserSession & DefaultSession['user'];
+    user: UserSession & DefaultSession["user"];
   }
 }
 
 export const authConfig = {
   providers: [
     Credentials({
-      authorize: async(credentials: Partial<Record<"username" | "password", unknown>>) => {
+      authorize: async (
+        credentials: Partial<Record<"username" | "password", unknown>>,
+      ) => {
         try {
           const res = await axios.post<{ data: UserSession }>(
-            `${process.env.BASE_API}/api/login`,
+            `${env.NEXT_PUBLIC_BASE_API}/api/login`,
             {
               username: credentials.username,
               password: credentials.password,
@@ -41,8 +45,6 @@ export const authConfig = {
           console.log("Halo config auth");
           console.log(user);
 
-          if (!user) throw new Error("Akun Tidak Ditemukan");
-
           return user;
         } catch (e: unknown) {
           return null;
@@ -50,7 +52,6 @@ export const authConfig = {
       },
     }),
   ],
-  secret: "nCD9KYO42/6NESGwYuW6zPjYGPLJwFqC/LoKDTfWsCEW",
   pages: {
     signIn: "/login",
   },
@@ -58,8 +59,9 @@ export const authConfig = {
     jwt({ token, user }) {
       return { ...token, ...user };
     },
-    async session({ session, token }) {
-      return {...session, user: token};
+    session({ session, token }) {
+      return { ...session, user: token };
     },
   },
+  secret: "nCD9KYO42/6NESGwYuW6zPjYGPLJwFqC/LoKDTfWsCEW",
 } satisfies NextAuthConfig;

@@ -1,11 +1,10 @@
 import { router } from 'react-query-kit';
-import z from 'zod';
+import type z from 'zod';
 
-import { auth } from '@repo/auth';
-import Axios, { headerAuth } from '@repo/utils/axios';
+import Axios from '@repo/utils/axios';
 
-import { Meta } from '../meta';
-import { venueBaseSchema, venueFormSchema } from './schema';
+import type { Meta } from '../meta';
+import type { venueBaseSchema, venueFormSchema } from './schema';
 
 type Venue = z.infer<typeof venueBaseSchema>;
 const venue = router('venue', {
@@ -15,16 +14,14 @@ const venue = router('venue', {
       paginate?: string | null;
       page?: string | null | number;
     }) => {
-      const headers = await headerAuth(auth());
-      const res = await Axios('/venue', { params: variables, headers });
+      const res = await Axios('/venue', { params: variables});
 
       return res.data as { data: Venue[]; meta: Meta };
     },
   }),
   single: router.query({
     fetcher: async (variable: { id: string }) => {
-      const headers = await headerAuth(auth());
-      const res = await Axios(`/venue/${variable.id}`, { headers });
+      const res = await Axios(`/venue/${variable.id}`);
 
       return res.data as { data: Venue };
     },

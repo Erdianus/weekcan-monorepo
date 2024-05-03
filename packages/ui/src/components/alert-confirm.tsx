@@ -1,5 +1,6 @@
 "use client";
-import useAlertStore from "@ui/lib/store/useAlertStore";
+
+import useAlertStore from "../lib/store/useAlertStore";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,9 +19,7 @@ const AlertConfirm = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{alert.header}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {alert.desc}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{alert.desc}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{alert.cancelText}</AlertDialogCancel>

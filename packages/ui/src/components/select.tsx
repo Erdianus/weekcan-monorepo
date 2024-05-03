@@ -1,15 +1,21 @@
-import type { ClassNamesConfig, DropdownIndicatorProps, StylesConfig } from 'react-select';
+import type {
+  ClassNamesConfig,
+  DropdownIndicatorProps,
+  Props,
+  StylesConfig,
+} from "react-select";
 import type {
   AsyncPaginateProps,
   ComponentProps,
   UseAsyncPaginateParams,
-} from 'react-select-async-paginate';
-import type { CreatableProps } from 'react-select/creatable';
-import { cn } from '@ui/lib/utils';
-import { ChevronsUpDown, Clock } from 'lucide-react';
-import ReactSelect, { components, Props } from 'react-select';
-import { AsyncPaginate, withAsyncPaginate } from 'react-select-async-paginate';
-import Creatable from 'react-select/creatable';
+} from "react-select-async-paginate";
+import type { CreatableProps } from "react-select/creatable";
+import { ChevronsUpDown } from "lucide-react";
+import ReactSelect, { components } from "react-select";
+import { AsyncPaginate, withAsyncPaginate } from "react-select-async-paginate";
+import Creatable from "react-select/creatable";
+
+import { cn } from "@hktekno/ui/lib/utils";
 
 interface GroupBase<Option> {
   readonly options: readonly Option[];
@@ -24,9 +30,10 @@ function classNames<
   return {
     control: ({ isFocused, isDisabled }) =>
       cn(
-        'h-10 w-full rounded border border-gray-200 bg-transparent text-sm hover:cursor-pointer hover:border-gray-400 dark:border-gray-800',
-        isFocused && 'ring-2 ring-main-700',
-        isDisabled && '!cursor-not-allowed dark:bg-gray-900/40 dark:text-gray-300',
+        "h-10 w-full rounded border border-gray-200 bg-transparent text-sm hover:cursor-pointer hover:border-gray-400 dark:border-gray-800",
+        isFocused && "ring-2 ring-main-700",
+        isDisabled &&
+          "!cursor-not-allowed dark:bg-gray-900/40 dark:text-gray-300",
       ),
     placeholder: () => `text-gray-500 dark:text-gray-400 pl-1 py-0.5`,
     input: () => `pl-1 py-0.5`,
@@ -37,27 +44,28 @@ function classNames<
       const { name: status } = props.selectProps;
 
       return cn(
-        'ml-1',
+        "ml-1",
         status &&
           "before:content-[' '] flex items-center before:mr-2 before:h-2 before:w-2 before:rounded-full",
-        data.value === 'Done' && 'text-green-500 before:bg-green-500',
-        data.value === 'On Going' && 'text-yellow-500 before:bg-yellow-500',
-        data.value === 'Pending' && 'text-orange-500 before:bg-orange-500',
-        data.value === 'Cancel' && 'text-red-500 before:bg-red-500',
+        data.value === "Done" && "text-green-500 before:bg-green-500",
+        data.value === "On Going" && "text-yellow-500 before:bg-yellow-500",
+        data.value === "Pending" && "text-orange-500 before:bg-orange-500",
+        data.value === "Cancel" && "text-red-500 before:bg-red-500",
       );
     },
     multiValue: (props) => {
       return `bg-gray-100 dark:bg-gray-700 rounded items-center py-0.5 pl-2 pr-1.5 gap-1.5 !min-w-max ${
-        props.selectProps.placeholder === 'Pilih Perusahaan'
-          ? 'first:bg-main-500 first:text-white dark:first:bg-main-900 dark:first:text-main-400'
-          : ''
+        props.selectProps.placeholder === "Pilih Perusahaan"
+          ? "first:bg-main-500 first:text-white dark:first:bg-main-900 dark:first:text-main-400"
+          : ""
       }`;
     },
     multiValueLabel: () => `leading-6 py-0.5 whitespace-nowrap text-sm`,
     multiValueRemove: () =>
       `border border-gray-200 bg-white hover:bg-red-50 hover:text-red-800 text-gray-500 rounded-md`,
     indicatorsContainer: () => `p-1 gap-1 `,
-    clearIndicator: () => `text-gray-500 p-1 rounded-md hover:bg-red-50 hover:text-red-800`,
+    clearIndicator: () =>
+      `text-gray-500 p-1 rounded-md hover:bg-red-50 hover:text-red-800`,
     indicatorSeparator: () => `hidden bg-gray-300`,
     dropdownIndicator: () =>
       `p-1 hover:bg-gray-100 text-gray-500 rounded-md hover:text-black dark:hover:bg-gray-800 dark:hover:text-gray-400`,
@@ -70,13 +78,16 @@ function classNames<
     option: ({ data, isFocused, isSelected }) => {
       const d = data as { label: string; value: string };
       return cn(
-        'z-10 mb-0.5 rounded px-3 py-2 text-sm hover:cursor-pointer hover:bg-main-300 dark:hover:bg-main-600',
-        isFocused && 'bg-gray-100 text-black active:bg-gray-200 dark:bg-gray-900 dark:text-white',
-        isSelected && 'bg-main-500 text-white dark:bg-gray-200 dark:text-gray-900 ',
-        d.value === 'Done' && 'hover:bg-green-300 dark:hover:bg-green-600',
-        d.value === 'On Going' && 'hover:bg-yellow-300 dark:hover:bg-yellow-600',
-        d.value === 'Pending' && 'hover:bg-orange-300 dark:hover:bg-orange-600',
-        d.value === 'Cancel' && 'hover:bg-red-300 dark:hover:bg-red-600',
+        "z-10 mb-0.5 rounded px-3 py-2 text-sm hover:cursor-pointer hover:bg-main-300 dark:hover:bg-main-600",
+        isFocused &&
+          "bg-gray-100 text-black active:bg-gray-200 dark:bg-gray-900 dark:text-white",
+        isSelected &&
+          "bg-main-500 text-white dark:bg-gray-200 dark:text-gray-900 ",
+        d.value === "Done" && "hover:bg-green-300 dark:hover:bg-green-600",
+        d.value === "On Going" &&
+          "hover:bg-yellow-300 dark:hover:bg-yellow-600",
+        d.value === "Pending" && "hover:bg-orange-300 dark:hover:bg-orange-600",
+        d.value === "Cancel" && "hover:bg-red-300 dark:hover:bg-red-600",
       );
     },
   };
@@ -90,18 +101,18 @@ function styles<
   return {
     input: (base) => ({
       ...base,
-      'input:focus': {
-        boxShadow: 'none',
+      "input:focus": {
+        boxShadow: "none",
       },
     }),
     multiValueLabel: (base) => ({
       ...base,
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
+      whiteSpace: "nowrap",
+      overflow: "hidden",
     }),
     control: (base) => ({
       ...base,
-      transition: 'none',
+      transition: "none",
     }),
   };
 }
@@ -113,19 +124,10 @@ function DropdownIndicator<
 >(props: DropdownIndicatorProps<Option, IsMulti, Group>) {
   return (
     <components.DropdownIndicator {...props}>
-      <ChevronsUpDown size={16} className={cn('transition', props.isFocused && 'rotate-90')} />
-    </components.DropdownIndicator>
-  );
-}
-
-function DropdownIndicatorClock<
-  Option,
-  IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>,
->(props: DropdownIndicatorProps<Option, IsMulti, Group>) {
-  return (
-    <components.DropdownIndicator {...props}>
-      <Clock size={16} className={cn('transition', props.isFocused && 'rotate-45')} />
+      <ChevronsUpDown
+        size={16}
+        className={cn("transition", props.isFocused && "rotate-90")}
+      />
     </components.DropdownIndicator>
   );
 }
@@ -139,7 +141,7 @@ function Select<
     <ReactSelect
       {...props}
       className="w-full"
-      menuPortalTarget={typeof window !== 'undefined' ? document.body : null}
+      menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       classNames={classNames<Option, IsMulti, Group>()}
       components={{ DropdownIndicator }}
       styles={{
@@ -162,7 +164,7 @@ function SelectCreatable<
     <Creatable
       {...props}
       className="w-full"
-      menuPortalTarget={typeof window !== 'undefined' ? document.body : null}
+      menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       classNames={classNames<Option, IsMulti, Group>()}
       components={{ DropdownIndicator }}
       styles={{
@@ -181,12 +183,13 @@ function SelectAsync<
   Group extends GroupBase<OptionType>,
   Additional,
   IsMulti extends boolean = false,
->(props: AsyncPaginateProps<OptionType, Group, Additional, IsMulti> & {}) {
+>(props: AsyncPaginateProps<OptionType, Group, Additional, IsMulti>) {
   return (
     <AsyncPaginate
       {...props}
-      menuPortalTarget={typeof window !== 'undefined' ? document.body : null}
-      className={cn('w-full', props.className)}
+      debounceTimeout={600}
+      menuPortalTarget={typeof window !== "undefined" ? document.body : null}
+      className={cn("w-full", props.className)}
       menuPosition="fixed"
       components={{ DropdownIndicator }}
       classNames={classNames<OptionType, IsMulti, Group>()}
@@ -220,7 +223,9 @@ type AsyncPaginateCreatableType = <
   props: AsyncPaginateCreatableProps<OptionType, Group, Additional, IsMulti>,
 ) => JSX.Element;
 
-const CreatableAsyncPaginate = withAsyncPaginate(Creatable) as AsyncPaginateCreatableType;
+const CreatableAsyncPaginate = withAsyncPaginate(
+  Creatable,
+) as AsyncPaginateCreatableType;
 
 function SelectAsyncCreatable<
   OptionType,
@@ -231,7 +236,8 @@ function SelectAsyncCreatable<
   return (
     <CreatableAsyncPaginate
       {...props}
-      menuPortalTarget={typeof window !== 'undefined' ? document.body : null}
+      debounceTimeout={600}
+      menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       className="mt-2 w-full"
       menuPosition="fixed"
       classNames={classNames<OptionType, IsMulti, Group>()}

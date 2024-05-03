@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
 import { Label } from "./ui/label";
 import {
   Select,
@@ -13,19 +14,19 @@ import {
 const Paginate = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { replace } = useRouter();
+  const router = useRouter();
 
   return (
     <div className="flex items-center gap-4">
       <Label className="whitespace-nowrap">Per halaman:</Label>
       <Select
-        defaultValue={searchParams.get('paginate')?.toString()}
+        defaultValue={searchParams.get("paginate")?.toString()}
         onValueChange={(v) => {
           const params = new URLSearchParams(searchParams);
-          params.set('paginate', v);
-          if (searchParams.get('page')) params.delete('page')
+          params.set("paginate", v);
+          if (searchParams.get("page")) params.delete("page");
 
-          replace(`${pathname}?${params.toString()}`)
+          router.replace(`${pathname}?${params.toString()}`);
         }}
       >
         <SelectTrigger className="w-24">

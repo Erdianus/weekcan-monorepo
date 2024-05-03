@@ -1,4 +1,4 @@
-import { type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from "react";
 
 type Flashlistprops = {
   isloading?: boolean;

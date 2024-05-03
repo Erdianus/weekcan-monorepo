@@ -1,11 +1,8 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
+  "extends": "@hktekno/tsconfig/base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@auth/*": ["./src/index.ts"]
-    },
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
-  "include": ["src"],
+  "include": ["src", "*.ts"],
   "exclude": ["node_modules"]
 }

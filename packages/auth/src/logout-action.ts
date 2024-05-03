@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
+import axios from "axios";
+
+import { env } from "../env";
 import { auth, signOut } from "./index";
-import  axios  from "axios";
 
 export async function logoutAction() {
   const sesh = await auth();
   try {
     const res = await axios.post(
-      `${process.env.BASE_API}/api/logout`,
+      `${env.NEXT_PUBLIC_BASE_API}/api/logout`,
       undefined,
       {
         headers: {
@@ -23,6 +26,7 @@ export async function logoutAction() {
       message: "Berhasil Logout",
     };
   } catch (e: any) {
+    console.log(e);
     return {
       status: false,
       message: `Gagal Logout`,

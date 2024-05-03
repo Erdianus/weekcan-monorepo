@@ -1,26 +1,25 @@
-'use client';
+"use client";
 
-import { PropsWithChildren, SVGProps } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { cn } from '@ui/lib/utils';
-import { LogOut } from 'lucide-react';
-import { toast } from 'sonner';
+import type { PropsWithChildren, SVGProps } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
+import { toast } from "sonner";
 
-import { logoutAction } from '@repo/auth';
+import { logoutAction } from "@hktekno/auth/logout-action";
 
-import { Client, Company, Dashboard, Project, Venue } from './icon';
-import User from './icon/user';
-import Logo from './logo';
-import { ModeToggle } from './theme-toggle';
-import ButtonSubmit from './ui/button-submit';
-import { Sheet, SheetContent, SheetHeader, SheetTrigger } from './ui/sheet';
-import { Muted } from './ui/typograhpy';
+import { cn } from "../lib/utils";
+import { Client, Company, Dashboard, Project, Venue } from "./icon";
+import User from "./icon/user";
+import Logo from "./logo";
+import { ModeToggle } from "./theme-toggle";
+import ButtonSubmit from "./ui/button-submit";
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "./ui/sheet";
+import { Muted } from "./ui/typograhpy";
 
 type SidebarItemProps = {
   link: string;
   text: string;
-  // eslint-disable-next-line no-unused-vars
   icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
 };
 
@@ -32,14 +31,14 @@ const SidebarItems = (props: SidebarItemProps) => {
       <Link
         href={props.link}
         className={cn(
-          'group flex items-center rounded-lg p-2 text-base font-medium hover:bg-muted',
+          "group flex items-center rounded-lg p-2 text-base font-medium hover:bg-muted",
           isActive &&
-            'bg-main-500 text-white hover:bg-main-600 dark:bg-main-900 dark:text-main-500 dark:hover:bg-main-950',
+            "bg-main-500 text-white hover:bg-main-600 dark:bg-main-900 dark:text-main-500 dark:hover:bg-main-950",
         )}
       >
         <props.icon
           aria-hidden="true"
-          className={cn('h-6 w-6')}
+          className={cn("h-6 w-6")}
           fill="currentColor"
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"
@@ -76,10 +75,10 @@ const SidebarList = () => {
             }
 
             toast.success(res.message);
-            router.push('/push');
+            router.push("/login");
           }}
         >
-          <ButtonSubmit variant={'ghost'} size={'icon'}>
+          <ButtonSubmit variant={"ghost"} size={"icon"}>
             <LogOut />
           </ButtonSubmit>
         </form>
@@ -93,10 +92,13 @@ export function SidebarDrawer({ children }: PropsWithChildren) {
   return (
     <Sheet>
       <SheetTrigger>{children}</SheetTrigger>
-      <SheetContent side={'left'}>
+      <SheetContent side={"left"}>
         <SheetHeader>
           <a href="/" className="mr-4 flex items-center gap-2">
-            <Logo className="mr-3 h-6 text-black dark:text-white sm:h-9" height={36} />
+            <Logo
+              className="mr-3 h-6 text-black dark:text-white sm:h-9"
+              height={36}
+            />
             <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
               weekcan
             </span>

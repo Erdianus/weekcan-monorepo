@@ -1,16 +1,14 @@
-import { router } from 'react-query-kit';
-import z from 'zod';
+import Axios from "@repo/utils/axios";
+import { router } from "react-query-kit";
+import z from "zod";
 
-import { auth } from '@repo/auth';
-import Axios, { headerAuth } from '@repo/utils/axios';
-
-import companyBaseSchema from '../company/schema';
-import { Meta } from '../meta';
-import detail from './detail';
-import file from './file';
-import member from './member';
-import projectBaseSchema, { projectFormSchema } from './schema';
-import sprint from './sprint';
+import type { Meta } from "../meta";
+import companyBaseSchema from "../company/schema";
+import detail from "./detail";
+import file from "./file";
+import member from "./member";
+import projectBaseSchema, { projectFormSchema } from "./schema";
+import sprint from "./sprint";
 
 const projectParamsSchema = z
   .object({
@@ -47,13 +45,11 @@ const projectForm = projectFormSchema.omit({
   client_select: true,
 });
 
-const project = router('project', {
+const project = router("project", {
   all: router.query({
     fetcher: async (variables?: z.infer<typeof projectParamsSchema>) => {
-      const headers = await headerAuth(auth());
-      const res = await Axios.get('/project', {
+      const res = await Axios.get("/project", {
         params: variables,
-        headers,
       });
 
       return res.data as { data: Project[]; meta: Meta };
@@ -61,8 +57,7 @@ const project = router('project', {
   }),
   single: router.query({
     fetcher: async (variables: { id: string | number }) => {
-      const headers = await headerAuth(auth());
-      const res = await Axios.get(`/project/${variables.id}`, { headers });
+      const res = await Axios.get(`/project/${variables.id}`);
 
       return res.data as { data: Project };
     },
@@ -75,7 +70,10 @@ const project = router('project', {
     },
   }),
   update: router.mutation({
-    mutationFn: async (variables: { id: string | number; data: z.infer<typeof projectForm> }) => {
+    mutationFn: async (variables: {
+      id: string | number;
+      data: z.infer<typeof projectForm>;
+    }) => {
       const res = await Axios.put(`/project/${variables.id}`, variables.data);
 
       return res.data as { message: string };

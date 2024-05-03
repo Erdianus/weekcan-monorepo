@@ -1,4 +1,5 @@
-import { Fragment, type PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
+import { Fragment } from "react";
 
 const Loading = (
   props: PropsWithChildren & { length?: number; keyname?: string },

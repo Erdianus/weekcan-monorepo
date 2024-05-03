@@ -1,5 +1,7 @@
 import { useFormStatus } from "react-dom";
-import { Button, ButtonProps } from "./button";
+
+import type { ButtonProps } from "./button";
+import { Button } from "./button";
 import Spinner from "./spinner";
 
 const ButtonSubmit = (props: ButtonProps) => {

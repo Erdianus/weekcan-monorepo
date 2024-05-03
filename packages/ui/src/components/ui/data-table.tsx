@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import {
-  ColumnDef,
-  flexRender,
-  type Table as Tabel,
-} from "@tanstack/react-table";
+import type { ColumnDef, Table as Tabel } from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 
+import Flashlist from "../flashlist";
+import Loading from "../loading";
+import { Skeleton } from "./skeleton";
 import {
   Table,
   TableBody,
@@ -14,9 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "./table";
-import Flashlist from "../flashlist";
-import Loading from "../loading";
-import { Skeleton } from "./skeleton";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, any>[];

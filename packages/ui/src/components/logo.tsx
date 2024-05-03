@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { type SVGProps } from "react";
+import type { SVGProps } from "react";
 
 type LogoProps = SVGProps<SVGSVGElement> & {
   isInline?: boolean;
@@ -40,9 +40,6 @@ const Logo = (props: LogoProps) => {
   );
 };
 
-export {
-  Logo,
-}
+export { Logo };
 
 export default Logo;
-

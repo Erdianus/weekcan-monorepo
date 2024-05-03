@@ -1,13 +1,14 @@
-import { router } from 'react-query-kit';
-import { z } from 'zod';
+import Axios from "@repo/utils/axios";
+import { router } from "react-query-kit";
+import { z } from "zod";
 
-import { auth } from '@repo/auth';
-import Axios, { headerAuth } from '@repo/utils/axios';
-
-import companyBaseSchema from '../company/schema';
-import { Meta } from '../meta';
-import { roleBaseSchema } from '../role/schema';
-import userBaseSchema, { userCreateFormSchema, userUpdateFormSchema } from './schema';
+import type { Meta } from "../meta";
+import companyBaseSchema from "../company/schema";
+import { roleBaseSchema } from "../role/schema";
+import userBaseSchema, {
+  userCreateFormSchema,
+  userUpdateFormSchema,
+} from "./schema";
 
 const userSchema = userBaseSchema.extend({
   role_name: z.string(),
@@ -21,7 +22,7 @@ type User = z.infer<typeof userSchema>;
 const userCreateForm = userCreateFormSchema.omit({ company: true, role: true });
 const userUpdateForm = userUpdateFormSchema.omit({ company: true, role: true });
 
-const user = router('user', {
+const user = router("user", {
   all: router.query({
     fetcher: async (variables?: {
       search?: string | null;
@@ -31,7 +32,7 @@ const user = router('user', {
       company_name?: string[] | null;
       isOwner?: boolean;
     }) => {
-      const res = await Axios('/user', {
+      const res = await Axios("/user", {
         params: { ...variables, company_id: variables?.company_id },
       });
 
@@ -57,13 +58,19 @@ const user = router('user', {
       id: string | number;
       data: z.infer<typeof userUpdateForm>;
     }) => {
-      const res = await Axios.put(`/user/update/${variables.id}`, variables.data);
+      const res = await Axios.put(
+        `/user/update/${variables.id}`,
+        variables.data,
+      );
 
       return res.data as { message: string };
     },
   }),
   update_picture: router.mutation({
-    mutationFn: async (variables: { id: string | number; picture_path: File }) => {
+    mutationFn: async (variables: {
+      id: string | number;
+      picture_path: File;
+    }) => {
       const res = await Axios.post(`/user/${variables.id}`, {
         picture_path: variables.picture_path,
       });

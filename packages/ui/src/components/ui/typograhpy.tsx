@@ -1,5 +1,6 @@
-import { cn } from "@ui/lib/utils";
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import type { DetailedHTMLProps, HTMLAttributes } from "react";
+
+import { cn } from "@hktekno/ui/lib/utils";
 
 type HeadingProps = DetailedHTMLProps<
   HTMLAttributes<HTMLHeadingElement>,

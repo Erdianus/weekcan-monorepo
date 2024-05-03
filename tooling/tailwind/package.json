@@ -20,12 +20,12 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:*",
-    "@acme/prettier-config": "workspace:*",
-    "@acme/tsconfig": "workspace:*",
+    "@hktekno/eslint-config": "workspace:*",
+    "@hktekno/prettier-config": "workspace:*",
+    "@hktekno/tsconfig": "workspace:*",
     "eslint": "^9.0.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@hktekno/prettier-config"
 }

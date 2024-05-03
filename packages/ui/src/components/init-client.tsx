@@ -1,19 +1,18 @@
-'use client';
+"use client";
 
-import { Fragment, useEffect } from 'react';
-import useUserStore from '@ui/lib/store/useUserStore';
+import { Fragment, useEffect } from "react";
 
-import { UserSession } from '@repo/auth';
-import Axios from '@repo/utils/axios';
+import "dayjs/locale/id";
 
-import 'dayjs/locale/id';
+import dayjs from "dayjs";
 
-import dayjs from 'dayjs';
+import Axios from "@hktekno/utils/axios";
 
-dayjs.locale('id');
+import useUserStore from "../lib/store/useUserStore";
 
-function InitClient({ user }: { user: UserSession }) {
-  console.log('aku dari init client');
+dayjs.locale("id");
+
+function InitClient({ user }: { user: { id: string; token: string } }) {
   const userStore = useUserStore();
 
   useEffect(() => {

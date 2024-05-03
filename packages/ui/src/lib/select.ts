@@ -1,8 +1,13 @@
-import { type LoadOptions } from 'react-select-async-paginate';
+import type { LoadOptions } from "react-select-async-paginate";
 
-import k, { inferVariables } from '@repo/api/kit';
-import { projectProgress, projectStatus, projectType } from '@repo/api/router/project/schema';
-import { axios } from '@repo/utils/axios';
+import type { inferVariables } from "@hktekno/api";
+import { k } from "@hktekno/api";
+import {
+  projectProgress,
+  projectStatus,
+  projectType,
+} from "@hktekno/api/routers/project/schema";
+import { axios } from "@hktekno/utils/axios";
 
 type OptionType =
   | { value: string; label: string }
@@ -23,6 +28,7 @@ const loadUserOptions: LoadOptions<
   GroupBase<OptionType>,
   inferVariables<typeof k.user.all>
 > = async (search, _, params) => {
+  const page = params?.page ?? 1;
   const users = await k.user.all.fetcher({
     ...params,
     search,
@@ -38,7 +44,7 @@ const loadUserOptions: LoadOptions<
     hasMore: users.meta.current_page !== users.meta.last_page,
     additional: {
       ...params,
-      page: Number(params?.page!) + 1,
+      page: Number(page) + 1,
     },
   };
 };
@@ -48,6 +54,7 @@ const loadCompanyOptions: LoadOptions<
   GroupBase<OptionType>,
   inferVariables<typeof k.company.all>
 > = async (search, _, params) => {
+  const page = params?.page ?? 1;
   const datas = await k.company.all.fetcher({ ...params, search });
 
   const options = datas.data.map((d) => ({
@@ -60,7 +67,7 @@ const loadCompanyOptions: LoadOptions<
     hasMore: datas.meta.current_page !== datas.meta.last_page,
     additional: {
       ...params,
-      page: Number(params?.page!) + 1,
+      page: Number(page) + 1,
     },
   };
 };
@@ -70,6 +77,7 @@ const loadRoleOptions: LoadOptions<
   GroupBase<OptionType>,
   inferVariables<typeof k.role.all>
 > = async (search, _, params) => {
+  const page = params?.page ?? 1;
   const datas = await k.role.all.fetcher({ ...params, search });
 
   const options = datas.data.map((d) => ({
@@ -82,7 +90,7 @@ const loadRoleOptions: LoadOptions<
     hasMore: datas.meta.current_page !== datas.meta.last_page,
     additional: {
       ...params,
-      page: params?.page! + 1,
+      page: page + 1,
     },
   };
 };
@@ -92,6 +100,7 @@ const loadVenueOptions: LoadOptions<
   GroupBase<OptionType>,
   inferVariables<typeof k.venue.all>
 > = async (search, _, params) => {
+  const page = params?.page ?? 1;
   const datas = await k.venue.all.fetcher({ ...params, search });
 
   const options = datas.data.map((d) => ({
@@ -104,7 +113,7 @@ const loadVenueOptions: LoadOptions<
     hasMore: datas.meta.current_page !== datas.meta.last_page,
     additional: {
       ...params,
-      page: Number(params?.page!) + 1,
+      page: Number(page) + 1,
     },
   };
 };
@@ -114,6 +123,7 @@ const loadClientOptions: LoadOptions<
   GroupBase<OptionType>,
   inferVariables<typeof k.client.all>
 > = async (search, _, params) => {
+  const page = params?.page ?? 1;
   const datas = await k.client.all.fetcher({ ...params, search });
 
   const options = datas.data.map((d) => ({
@@ -126,17 +136,22 @@ const loadClientOptions: LoadOptions<
     hasMore: datas.meta.current_page !== datas.meta.last_page,
     additional: {
       ...params,
-      page: Number(params?.page!) + 1,
+      page: Number(page) + 1,
     },
   };
 };
 
-const loadProvinceOptions: LoadOptions<OptionType, GroupBase<OptionType>, null> = async (
-  search,
-) => {
-  const res = await axios<{ data: { id: string; name: string }[] }>('/api/province', {
-    params: { search },
-  });
+const loadProvinceOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  null
+> = async (search) => {
+  const res = await axios<{ data: { id: string; name: string }[] }>(
+    "/api/province",
+    {
+      params: { search },
+    },
+  );
 
   const options = res.data.data.map((d) => ({
     label: d.name,
@@ -174,11 +189,14 @@ const loadCityOptions: LoadOptions<
 
 // --NOTE: Static Option
 //
-const optionsProjectType = () => projectType.map((v) => ({ label: v, value: v }));
+const optionsProjectType = () =>
+  projectType.map((v) => ({ label: v, value: v }));
 
-const optionsProjectStatus = () => projectStatus.map((v) => ({ label: v, value: v }));
+const optionsProjectStatus = () =>
+  projectStatus.map((v) => ({ label: v, value: v }));
 
-const optionsProjectProgress = () => projectProgress.map((v) => ({ label: v, value: v }));
+const optionsProjectProgress = () =>
+  projectProgress.map((v) => ({ label: v, value: v }));
 
 const optionsTime = () => {
   return Array.from({ length: 24 }, (_, i) => {

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import useUserStore from '@ui/lib/store/useUserStore';
+import { useState } from "react";
 
-import { Button } from './ui/button';
+import useUserStore from "../lib/store/useUserStore";
+import { Button } from "./ui/button";
 
 export default function CopyToken() {
   const [isCopied, setIsCopied] = useState(false);
@@ -11,7 +11,7 @@ export default function CopyToken() {
 
   // This is the function we wrote earlier
   async function copyTextToClipboard(text: string) {
-    if ('clipboard' in navigator) {
+    if ("clipboard" in navigator) {
       return await navigator.clipboard.writeText(text);
     }
   }
@@ -19,7 +19,7 @@ export default function CopyToken() {
   // onClick handler function for the copy button
   const handleCopyClick = () => {
     // Asynchronously call copyTextToClipboard
-    copyTextToClipboard(user.token ?? '')
+    copyTextToClipboard(user.token)
       .then(() => {
         // If successful, update the isCopied state value
         setIsCopied(true);
@@ -35,8 +35,8 @@ export default function CopyToken() {
   return (
     <Button
       className="hidden sm:flex"
-      variant={'ghost'}
-      size={'icon'}
+      variant={"ghost"}
+      size={"icon"}
       onClick={handleCopyClick}
       type="button"
     >

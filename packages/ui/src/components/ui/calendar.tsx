@@ -1,12 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { id } from "date-fns/locale";
+import dayjs from "dayjs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker, useDayPicker, useNavigation } from "react-day-picker";
-import dayjs from "dayjs";
-import { cn } from "@ui/lib/utils";
-import { buttonVariants } from "@ui/components/ui/button";
-import { id } from 'date-fns/locale';
+
+import { buttonVariants } from "@hktekno/ui/components/ui/button";
+import { cn } from "@hktekno/ui/lib/utils";
+
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./select";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
@@ -21,8 +23,8 @@ function Calendar({
     <DayPicker
       locale={id}
       captionLayout="dropdown-buttons"
-      fromYear={dayjs().subtract(10, 'year').get('year')}
-      toYear={dayjs().add(3, 'year').get('year')}
+      fromYear={dayjs().subtract(10, "year").get("year")}
+      toYear={dayjs().add(3, "year").get("year")}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
@@ -95,14 +97,14 @@ function Calendar({
             );
           } else if (props.name === "years") {
             const earliestYear =
-              fromYear ||
-              fromMonth?.getFullYear() ||
-              fromDate?.getFullYear() ||
+              fromYear ??
+              fromMonth?.getFullYear() ??
+              fromDate?.getFullYear() ??
               2005;
             const latestYear =
-              toYear ||
-              toMonth?.getFullYear() ||
-              toDate?.getFullYear() ||
+              toYear ??
+              toMonth?.getFullYear() ??
+              toDate?.getFullYear() ??
               dayjs().year();
 
             const yearsLength = latestYear - earliestYear + 1;

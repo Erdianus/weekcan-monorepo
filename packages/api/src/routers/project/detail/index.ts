@@ -1,11 +1,10 @@
-import { router } from 'react-query-kit';
-import z from 'zod';
+import type z from "zod";
+import Axios from "@repo/utils/axios";
+import { router } from "react-query-kit";
 
-import { auth } from '@repo/auth';
-import Axios, { headerAuth } from '@repo/utils/axios';
-
-import { Meta } from '../../meta';
-import detailBaseSchema, { detailFormSchema } from './schema';
+import type { Meta } from "../../meta";
+import type detailBaseSchema from "./schema";
+import { detailFormSchema } from "./schema";
 
 type DetailProject = z.infer<typeof detailBaseSchema>;
 
@@ -20,15 +19,14 @@ const detail = {
       paginate?: number | string | null;
       search?: string | null;
     }) => {
-      const headers = await headerAuth(auth());
-      const res = await Axios('/detail-project', { params: variables, headers });
+      const res = await Axios("/detail-project", { params: variables });
 
       return res.data as { data: DetailProject[]; meta: Meta };
     },
   }),
   create: router.mutation({
     mutationFn: async (variables: { data: z.infer<typeof detailForm> }) => {
-      const res = await Axios.post('/detail-project', { data: variables.data });
+      const res = await Axios.post("/detail-project", { data: variables.data });
 
       return res.data as { message: string };
     },
@@ -38,7 +36,10 @@ const detail = {
       id: string | number;
       data: z.infer<typeof detailFormSchema>;
     }) => {
-      const res = await Axios.put(`/detail-project/${variables.id}`, variables.data);
+      const res = await Axios.put(
+        `/detail-project/${variables.id}`,
+        variables.data,
+      );
 
       return res.data as { message: string };
     },

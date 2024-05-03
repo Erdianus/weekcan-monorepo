@@ -1,6 +1,8 @@
-import { cn } from "@ui/lib/utils";
+import type { ImageListType } from "react-images-uploading";
 import { Image, Upload, XCircle } from "lucide-react";
-import ImageUploading, { ImageListType } from "react-images-uploading";
+import ImageUploading from "react-images-uploading";
+
+import { cn } from "@hktekno/ui/lib/utils";
 
 type Props = {
   value: ImageListType;
