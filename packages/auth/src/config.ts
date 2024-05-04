@@ -21,6 +21,7 @@ declare module "next-auth" {
 }
 
 export const authConfig = {
+  trustHost: true,
   providers: [
     Credentials({
       authorize: async (

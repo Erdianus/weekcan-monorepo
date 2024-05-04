@@ -4,13 +4,11 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    AUTH_SECRET:
-      process.env.NODE_ENV === "production"
-        ? z.string().min(1)
-        : z.string().min(1).optional(),
+    AUTH_SECRET: z.string().optional(),
+    AUTH_TRUST_HOST: z.string().optional(),
   },
   client: {
-    NEXT_PUBLIC_BASE_API: z.string(),
+    NEXT_PUBLIC_BASE_API: z.string().optional(),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_BASE_API: process.env.NEXT_PUBLIC_BASE_API,

@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm with-env next build",
+    "build": "pnpm with-env next build && tsc --project tsconfig.server.json",
     "clean": "git clean -xdf .next .turbo node_modules",
     "dev": "pnpm with-env next dev",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "start": "pnpm with-env next start",
+    "start:server": "pnpm with-env node dist/server",
     "typecheck": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },
