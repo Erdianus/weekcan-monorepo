@@ -1,9 +1,18 @@
-import type { SVGProps } from 'react';
+import type { SVGProps } from "react";
 
 export default function Pdf(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 32 32" {...props}>
-      <path fill="#909090" d="m24.1 2.072l5.564 5.8v22.056H8.879V30h20.856V7.945z"></path>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24px"
+      height="24px"
+      viewBox="0 0 32 32"
+      {...props}
+    >
+      <path
+        fill="#909090"
+        d="m24.1 2.072l5.564 5.8v22.056H8.879V30h20.856V7.945z"
+      ></path>
       <path fill="#f4f4f4" d="M24.031 2H8.808v27.928h20.856V7.873z"></path>
       <path fill="#7a7b7c" d="M8.655 3.5h-6.39v6.827h20.1V3.5z"></path>
       <path fill="#dd2025" d="M22.472 10.211H2.395V3.379h20.077z"></path>

@@ -47,6 +47,13 @@ const user = router("user", {
       return res.data as { data: User };
     },
   }),
+  profile: router.query({
+    fetcher: async (variables: string | number) => {
+      const res = await Axios(`/user/${variables}`);
+
+      return res.data as { data: User };
+    },
+  }),
   create: router.mutation({
     mutationFn: async (variables: z.infer<typeof userCreateForm>) => {
       const res = await Axios.post(`/user`, variables);

@@ -1,6 +1,6 @@
-import type { ClassValue } from 'clsx';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import type { ClassValue } from "clsx";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,5 +9,5 @@ export function cn(...inputs: ClassValue[]) {
 export function fileExt(text: string) {
   const t = text.match(/[0-9a-z]+$/);
 
-  return t?.[0] ?? '';
+  return t?.[0] ?? "";
 }

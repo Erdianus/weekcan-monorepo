@@ -12,7 +12,6 @@ import { cn } from "../lib/utils";
 import { Client, Company, Dashboard, Project, Venue } from "./icon";
 import User from "./icon/user";
 import Logo from "./logo";
-import { ModeToggle } from "./theme-toggle";
 import ButtonSubmit from "./ui/button-submit";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "./ui/sheet";
 import { Muted } from "./ui/typograhpy";
@@ -82,7 +81,6 @@ const SidebarList = () => {
             <LogOut />
           </ButtonSubmit>
         </form>
-        <ModeToggle />
       </div>
     </>
   );

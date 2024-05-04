@@ -1,4 +1,5 @@
 import { SVGProps } from "react";
+
 const User = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg

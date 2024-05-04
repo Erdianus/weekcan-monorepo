@@ -35,8 +35,6 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
     await axios.post("/api/auth/signout");
     redirect("/login");
   }
-  console.log("aku dari layauth");
-
   return (
     <>
       <InitClient user={sesh.user} />

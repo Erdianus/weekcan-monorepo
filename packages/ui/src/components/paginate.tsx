@@ -30,10 +30,7 @@ const Paginate = () => {
         }}
       >
         <SelectTrigger className="w-24">
-          <SelectValue
-            onChange={(e) => console.log(e.target)}
-            placeholder="10"
-          />
+          <SelectValue placeholder="10" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="5">5</SelectItem>

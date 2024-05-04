@@ -13,7 +13,7 @@ interface UserState extends State {
 
 const initialState: State = {
   id: 0,
-  token: ''
+  token: "",
 };
 
 const useAlertStore = create<UserState>()((set) => ({

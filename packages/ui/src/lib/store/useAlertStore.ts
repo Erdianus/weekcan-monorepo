@@ -6,7 +6,8 @@ interface State {
   desc?: string;
   cancelText?: string;
   confirmText?: string;
-  onConfirm: () => void;
+  onConfirm?: () => void;
+  onAction?: string | ((formData: FormData) => void) | undefined;
 }
 
 interface AlertState extends State {
@@ -21,7 +22,7 @@ const initialState: State = {
   desc: "Perbuatan ini tidak dapat dikembalikan",
   cancelText: "Batal",
   confirmText: "Lanjutkan",
-  onConfirm: () => {},
+  onConfirm: () => undefined,
 };
 
 const useAlertStore = create<AlertState>()((set) => ({
@@ -31,8 +32,6 @@ const useAlertStore = create<AlertState>()((set) => ({
   reset: () => set(initialState),
 }));
 
-export {
-  useAlertStore,
-}
+export { useAlertStore };
 
 export default useAlertStore;

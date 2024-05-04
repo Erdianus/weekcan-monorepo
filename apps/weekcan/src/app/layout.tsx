@@ -21,6 +21,9 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body className={cn("", inter.className)}>
         <ThemeProvider disableTransitionOnChange attribute="class">
           {children}

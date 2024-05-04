@@ -11,6 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "./ui/alert-dialog";
+import ButtonSubmit from "./ui/button-submit";
 
 const AlertConfirm = () => {
   const alert = useAlertStore();
@@ -23,9 +24,15 @@ const AlertConfirm = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{alert.cancelText}</AlertDialogCancel>
-          <AlertDialogAction onClick={alert.onConfirm}>
-            {alert.confirmText}
-          </AlertDialogAction>
+          {alert.onAction ? (
+            <form action={alert.onAction}>
+              <ButtonSubmit>Ya, Logout</ButtonSubmit>
+            </form>
+          ) : (
+            <AlertDialogAction onClick={alert.onConfirm}>
+              {alert.confirmText}
+            </AlertDialogAction>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

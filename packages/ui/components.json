@@ -11,7 +11,7 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@hktekno/ui/components/ui",
+    "components": "@hktekno/ui/components",
     "utils": "@hktekno/ui/lib/utils"
   }
 }
