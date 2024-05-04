@@ -199,9 +199,6 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
-      undici-types:
-        specifier: ^5.26.5
-        version: 5.26.5
 
   packages/auth:
     dependencies:
