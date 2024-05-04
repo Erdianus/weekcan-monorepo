@@ -61,7 +61,7 @@ export default function PortalSearch(props: InputProps) {
               }}
               type="search"
               placeholder={props.placeholder ?? "Cari Sesuatu"}
-              className={cn("pl-10", props.className)}
+              className={cn("bg-background pl-10", props.className)}
             />
             <kbd className="pointer-events-none absolute right-2.5 top-2.5 flex h-5 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
               <span className="text-xs">⌘</span>K
