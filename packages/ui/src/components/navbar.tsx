@@ -1,5 +1,3 @@
-"use client";
-
 import { Menu } from "lucide-react";
 
 import CopyToken from "./clipboard";
@@ -34,7 +32,6 @@ export default function Navbar() {
           <CopyToken />
           <ModeToggle />
           <UserMenu />
-
           {/* <!-- Dropdown menu --> */}
         </div>
       </div>

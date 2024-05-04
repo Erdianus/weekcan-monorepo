@@ -10,6 +10,7 @@ import file from "./file";
 import member from "./member";
 import projectBaseSchema, { projectFormSchema } from "./schema";
 import sprint from "./sprint";
+import task from "./task";
 
 const projectParamsSchema = z
   .object({
@@ -87,6 +88,7 @@ const project = router("project", {
       return res.data as { message: string };
     },
   }),
+  task,
   detail,
   file,
   member,

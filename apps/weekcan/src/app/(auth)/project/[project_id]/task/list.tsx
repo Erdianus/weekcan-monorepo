@@ -1,6 +1,7 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
+import { useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,7 +10,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import type { inferData } from "@hktekno/api";
@@ -17,9 +18,9 @@ import { k } from "@hktekno/api";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
-import { SelectAsync } from "@hktekno/ui/components/select";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
+import { Checkbox } from "@hktekno/ui/components/ui/checkbox";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
 import {
   DropdownMenu,
@@ -28,25 +29,24 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
-import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
+import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { dateRange } from "@hktekno/ui/lib/date";
-import { loadCompanyOptions } from "@hktekno/ui/lib/select";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
 
-type Project = inferData<typeof k.project.all>["data"][number];
-const colHelper = createColumnHelper<Project>();
+type TaskProject = inferData<typeof k.project.task.all>["data"][number];
+const colHelper = createColumnHelper<TaskProject>();
 
-const Actions = ({ row }: CellContext<Project, unknown>) => {
+const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
   const alert = useAlertStore();
 
   const { original: data } = row;
 
   const client = useQueryClient();
-  const del = k.project.delete.useMutation({
+  const del = k.project.task.delete.useMutation({
     async onSuccess({ message }) {
       toast.success(message);
-      await client.invalidateQueries({ queryKey: k.project.all.getKey() });
+      await client.invalidateQueries({ queryKey: k.project.task.all.getKey() });
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -82,10 +82,10 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
               alert.setData({
                 open: true,
                 confirmText: "Ya, Hapus",
-                header: `Yakin ingin mengapus '${data.project_name}'?`,
-                desc: "Proyek yang dihapus tidak dapat dikembalikan lagi",
+                header: `Yakin ingin mengapus '${data.task_name}'?`,
+                desc: "Kerjaan yang dihapus tidak dapat dikembalikan lagi",
                 onConfirm: () => {
-                  del.mutate({ id: data.id });
+                  del.mutate({ id: [`${data.id}`] });
                 },
               })
             }
@@ -102,28 +102,42 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
 
 const columns = [
   colHelper.display({
-    header: "No",
-    cell: ({ row }) => row.index + 1,
+    id: "checkbox",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   }),
-  colHelper.accessor("project_name", {
-    header: "Nama Proyek",
+  colHelper.accessor("task_name", {
+    header: "Kerjaan",
   }),
   colHelper.display({
     header: "Tanggal",
-    cell: ({ row }) =>
-      dateRange(row.original.start_date, row.original.end_date),
+    cell: ({ row }) => {
+      const { start_date, end_date } = row.original;
+      return dateRange(start_date, end_date);
+    },
   }),
-  colHelper.display({
-    header: "Tempat",
-    cell: ({ row: { original: data } }) => (
-      <div className="truncate">{`${data.venue_name}, ${data.location}`}</div>
-    ),
+  colHelper.accessor("set_by", {
+    header: "Karyawan",
   }),
-  colHelper.accessor("pic_name", {
-    header: "PIC",
-  }),
-  colHelper.accessor("progress", {
-    header: "Progress",
+  colHelper.accessor("task_status", {
+    header: "Status",
     cell: ({ getValue }) => <Badge variant={getValue()}>{getValue()}</Badge>,
   }),
   colHelper.display({
@@ -132,54 +146,74 @@ const columns = [
   }),
 ];
 
-const ListProject = () => {
+const ListTaskProject = ({ project_id }: { project_id: string }) => {
+  const alert = useAlertStore();
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
-  const { data: projects, isLoading } = k.project.all.useQuery({
-    variables,
+
+  const client = useQueryClient();
+  const { data: tasks, isLoading } = k.project.task.all.useQuery({
+    variables: { ...variables, project_id },
+  });
+
+  const del = k.project.task.delete.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      table.toggleAllPageRowsSelected(false);
+      await client.invalidateQueries({ queryKey: k.project.task.all.getKey() });
+    },
   });
 
   const table = useReactTable({
-    data: projects?.data ?? [],
+    data: tasks?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const isload = !projects && isLoading;
+  const onClickDelete = useCallback(() => {
+    alert.setData({
+      open: true,
+      header: "Yakin ingin menghapus banyak kerjaan ini?",
+      desc: "Kerjaan yang sudah dihapus tidak dapat dikembalikan lagi",
+      onConfirm: () => {
+        const id = table
+          .getFilteredSelectedRowModel()
+          .rows.map((r) => `${r.original.id}`);
+        del.mutate({ id });
+      },
+    });
+  }, []);
+
+  const isChecked = !!table.getFilteredSelectedRowModel().rows.length;
 
   return (
     <>
-      <PortalSearch placeholder="Cari Proyek..." />
-
-      <div className="mb-2">
-        <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
-          Filter
-          <Separator className="flex-1" />
-        </div>
-        <div className="flex flex-wrap gap-4">
-          <FilterProject />
-        </div>
+      <div className="mb-4 flex w-full items-center justify-between">
+        <H3 className="">Tugas</H3>
+        <Button
+          variant={isChecked ? "destructive" : "default"}
+          type="button"
+          size={"icon"}
+          asChild={!isChecked}
+          onClick={isChecked ? onClickDelete : undefined}
+        >
+          {isChecked ? (
+            <>{del.isPending ? <Spinner /> : <Trash2 />}</>
+          ) : (
+            <Link href={"project/create"}>
+              <Plus />
+            </Link>
+          )}
+        </Button>
       </div>
-      <DataTable table={table} columns={columns} isloading={isload} />
+      <PortalSearch placeholder="Cari Kerjaan..." />
+      <DataTable table={table} columns={columns} isloading={isLoading} />
       <div className="mt-4 flex w-full items-center justify-end">
         <Paginate />
-        <PaginationParams meta={projects?.meta} />
+        <PaginationParams meta={tasks?.meta} />
       </div>
     </>
   );
 };
 
-const FilterProject = () => {
-  return (
-    <>
-      <SelectAsync
-        loadOptions={loadCompanyOptions}
-        additional={{
-          page: 1,
-        }}
-      />
-    </>
-  );
-};
-
-export default ListProject;
+export default ListTaskProject;
