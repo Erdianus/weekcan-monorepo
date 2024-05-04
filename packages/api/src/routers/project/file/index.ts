@@ -1,10 +1,11 @@
-import { router } from 'react-query-kit';
-import z from 'zod';
+import type z from "zod";
+import { router } from "react-query-kit";
 
-import Axios from '@repo/utils/axios';
+import Axios from "@hktekno/utils/axios";
 
-import { Meta } from '../../meta';
-import fileBaseSchema, { fileFormSchema } from './schema';
+import type { Meta } from "../../meta";
+import type { fileFormSchema } from "./schema";
+import type fileBaseSchema from "./schema";
 
 type FileProject = z.infer<typeof fileBaseSchema>;
 
@@ -16,7 +17,9 @@ const file = {
       paginate?: string | number | null;
       search?: string | null;
     }) => {
-      const res = await Axios('/file-project', { params: { ...variables, have_detail_id: 0 } });
+      const res = await Axios("/file-project", {
+        params: { ...variables, have_detail_id: 0 },
+      });
 
       return res.data as { data: FileProject[]; meta: Meta };
     },
@@ -24,12 +27,12 @@ const file = {
   create: router.mutation({
     mutationFn: async (variables: { data: z.infer<typeof fileFormSchema> }) => {
       const res = await Axios.post(
-        '/file-project',
+        "/file-project",
         { ...variables.data, is_permanent: 1 },
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json',
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
           },
         },
       );

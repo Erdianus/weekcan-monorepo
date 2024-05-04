@@ -7,10 +7,16 @@ import { logoutAction } from "./logout-action";
 
 export type { Session } from "next-auth";
 
-const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
+const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth(authConfig);
 
 export {
-  handlers,
+  GET,
+  POST,
   auth,
   signIn,
   signOut,

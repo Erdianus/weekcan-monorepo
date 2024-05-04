@@ -1,5 +1,1 @@
-import { handlers } from "@repo/auth";
-
-export const { GET, POST } = handlers
-
-
+export { GET, POST } from "@hktekno/auth";

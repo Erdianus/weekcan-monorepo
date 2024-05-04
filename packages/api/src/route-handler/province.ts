@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import type { NextRequest } from "next/server";
 
-export async function province_get(req: NextRequest) {
+export async function province_get(req: NextRequest): Promise<Response> {
   const searchParams = req.nextUrl.searchParams;
   const search = searchParams.get("search");
   // return Response.json({ data: process.cwd() });

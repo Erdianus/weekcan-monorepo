@@ -1,10 +1,10 @@
-import { router } from 'react-query-kit';
-import z from 'zod';
+import { router } from "react-query-kit";
+import z from "zod";
 
-import Axios from '@repo/utils/axios';
+import Axios from "@hktekno/utils/axios";
 
-import { Meta } from '../../meta';
-import memberBaseSchema from './schema';
+import type { Meta } from "../../meta";
+import memberBaseSchema from "./schema";
 
 const memberSchema = memberBaseSchema.extend({
   role_name: z.string(),
@@ -27,7 +27,7 @@ const member = {
       paginate?: string | number | null;
       search?: string | null;
     }) => {
-      const res = await Axios('/project-member', { params: variables });
+      const res = await Axios("/project-member", { params: variables });
 
       return res.data as { data: MemberProject[]; meta: Meta };
     },
@@ -40,14 +40,16 @@ const member = {
       paginate?: string | number | null;
       search?: string | null;
     }) => {
-      const res = await Axios('/project-member', { params: variables });
+      const res = await Axios("/project-member", { params: variables });
 
       return res.data as { data: MemberProject[]; meta: Meta };
     },
   }),
   create: router.mutation({
-    mutationFn: async (variables: { data: z.infer<typeof memberFormSchema> }) => {
-      const res = await Axios.post('/project-member', variables.data);
+    mutationFn: async (variables: {
+      data: z.infer<typeof memberFormSchema>;
+    }) => {
+      const res = await Axios.post("/project-member", variables.data);
 
       return res.data as { message: string };
     },
@@ -57,13 +59,19 @@ const member = {
       id: string | number;
       data: { project_id: string; user_id: number; role: string };
     }) => {
-      const res = await Axios.put(`/project-member/${variables.id}`, variables.data);
+      const res = await Axios.put(
+        `/project-member/${variables.id}`,
+        variables.data,
+      );
 
       return res.data as { message: string };
     },
   }),
   delete: router.mutation({
-    mutationFn: async (variables: { user_id: string | number; project_id: string | number }) => {
+    mutationFn: async (variables: {
+      user_id: string | number;
+      project_id: string | number;
+    }) => {
       const res = await Axios.delete(`/project-member`, { params: variables });
 
       return res.data as { message: string };

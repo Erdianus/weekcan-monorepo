@@ -1,7 +1,16 @@
-import axios, { type AxiosError, RawAxiosRequestHeaders } from "axios";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { AxiosError, RawAxiosRequestHeaders } from "axios";
+import axios from "axios";
+
+import { env } from "../env";
 
 const Axios = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_BASE_API}/api`,
+  baseURL: `${env.NEXT_PUBLIC_BASE_API}/api`,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -18,20 +27,19 @@ type UserSession = {
   token: string;
 };
 
-export async function headerAuth(session: Promise<{user: UserSession} | null> ): Promise<RawAxiosRequestHeaders> {
+export async function headerAuth(
+  session: Promise<{ user: UserSession } | null>,
+): Promise<RawAxiosRequestHeaders> {
   const sesh = await session;
   return {
-    Authorization: `Bearer ${sesh?.user.token}`
-  }
-
+    Authorization: `Bearer ${sesh?.user.token}`,
+  };
 }
 
 Axios.interceptors.response.use(
   (response) => response,
   (error) => {
     const message: unknown = error.response.data.message;
-    // console.log(error);
-    console.log(`aku error interceptor awal: ${message}`);
     if (error.response.data.errors) {
       const errs = error.response.data.errors;
 
@@ -45,7 +53,7 @@ Axios.interceptors.response.use(
       error.message = message;
     } else if (typeof message === "object") {
       error.message = Object.keys(message as any)
-        // @ts-ignore
+        // @ts-expect-error gapapa gan error
         .map((m: any) => message[m])
         .join("\n");
     }
@@ -71,15 +79,11 @@ export const axiosError = (error: AxiosError) => {
     error.message = message;
   } else if (typeof message === "object") {
     error.message = Object.keys(message as any)
-      // @ts-ignore
       .map((m: any) => message[m])
       .join("\n");
   }
 };
 
-export {
-  Axios,
-  axios,
-}
+export { Axios, axios };
 
 export default Axios;

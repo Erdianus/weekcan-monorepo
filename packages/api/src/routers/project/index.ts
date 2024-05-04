@@ -1,6 +1,7 @@
-import Axios from "@repo/utils/axios";
 import { router } from "react-query-kit";
 import z from "zod";
+
+import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../meta";
 import companyBaseSchema from "../company/schema";

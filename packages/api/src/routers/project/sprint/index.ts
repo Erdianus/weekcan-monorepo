@@ -1,10 +1,11 @@
-import { router } from 'react-query-kit';
-import z from 'zod';
+import type z from "zod";
+import { router } from "react-query-kit";
 
-import Axios from '@repo/utils/axios';
+import Axios from "@hktekno/utils/axios";
 
-import { Meta } from '../../meta';
-import sprintBaseSchema, { sprintFormSchema } from './schema';
+import type { Meta } from "../../meta";
+import type { sprintFormSchema } from "./schema";
+import type sprintBaseSchema from "./schema";
 
 const sprint = {
   all: router.query({
@@ -14,9 +15,12 @@ const sprint = {
       search?: string | null;
       project_id: string | null;
     }) => {
-      const res = await Axios('/sprint', { params: variables });
+      const res = await Axios("/sprint", { params: variables });
 
-      return res.data as { data: z.infer<typeof sprintBaseSchema>[]; meta: Meta };
+      return res.data as {
+        data: z.infer<typeof sprintBaseSchema>[];
+        meta: Meta;
+      };
     },
   }),
   single: router.query({
@@ -27,8 +31,10 @@ const sprint = {
     },
   }),
   create: router.mutation({
-    mutationFn: async (variables: { data: z.infer<typeof sprintFormSchema> }) => {
-      const res = await Axios.post('/sprint', variables.data);
+    mutationFn: async (variables: {
+      data: z.infer<typeof sprintFormSchema>;
+    }) => {
+      const res = await Axios.post("/sprint", variables.data);
 
       return res.data as { message: string };
     },

@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export async function city_get(
   req: NextRequest,
   { params }: { params: { province_id: string } },
-) {
+): Promise<Response> {
   const searchParams = req.nextUrl.searchParams;
   const search = searchParams.get("search");
   const json = await fs.readFile(

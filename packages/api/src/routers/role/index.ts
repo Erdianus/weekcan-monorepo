@@ -1,17 +1,17 @@
-import { router } from 'react-query-kit';
-import z from 'zod';
+import type z from "zod";
+import { router } from "react-query-kit";
 
-import Axios from '@repo/utils/axios';
+import Axios from "@hktekno/utils/axios";
 
-import { Meta } from '../meta';
-import { roleBaseSchema } from './schema';
+import type { Meta } from "../meta";
+import type { roleBaseSchema } from "./schema";
 
 type Role = z.infer<typeof roleBaseSchema>;
 
-const role = router('role', {
+const role = router("role", {
   all: router.query({
     fetcher: async (variables?: { search?: string; page?: number }) => {
-      const res = await Axios('/roles', { params: variables });
+      const res = await Axios("/roles", { params: variables });
 
       return res.data as { data: Role[]; meta: Meta };
     },
