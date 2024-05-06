@@ -138,7 +138,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
 
   return (
     <>
-      <H3 className="mb-4">Update Kerjaan Proyek</H3>
+      <H3 className="mb-4">Buat Tugas Proyek Baru</H3>
       <Form {...form}>
         <form
           className="space-y-4"
@@ -166,7 +166,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Nama Kerjaan</FormLabel>
+                    <FormLabel>Nama Tugas</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Contoh: Desain Spanduk" />
                     </FormControl>
@@ -217,7 +217,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
               name="status"
               render={({ field }) => (
                 <FormItem className="col-span-2">
-                  <FormLabel>Status Kerjaan</FormLabel>
+                  <FormLabel>Status Tugas</FormLabel>
                   <FormControl>
                     <Select
                       {...field}
@@ -257,7 +257,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                           />
                         </FormControl>
                         <FormDescription>
-                          Pakai jika ingin memberi kerjaan ke karyawan lain.
+                          Pakai jika ingin memberi tugas ke karyawan lain.
                           Kosongkan jika tugas sendiri
                         </FormDescription>
                         <FormMessage />
@@ -289,7 +289,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                             />
                           </FormControl>
                           <FormDescription>
-                            Pakai jika kerjaan ada di skema jadwal
+                            Pakai jika tugas ada di skema jadwal
                           </FormDescription>
                           <FormMessage />
                         </FormItem>

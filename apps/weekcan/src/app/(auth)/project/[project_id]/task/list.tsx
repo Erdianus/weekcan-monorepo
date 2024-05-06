@@ -66,7 +66,7 @@ const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <Link href={`/project/${data.id}`}>
+          <Link href={`/project/${params.project_id}/task/${data.id}`}>
             <DropdownMenuItem>
               <Eye className="mr-2 h-4 w-4" />
               <span>Detail</span>

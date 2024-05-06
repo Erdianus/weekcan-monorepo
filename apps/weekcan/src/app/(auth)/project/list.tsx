@@ -52,7 +52,13 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
   });
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu
+        onOpenChange={async () => {
+          await client.prefetchQuery(
+            k.project.single.getFetchOptions({ id: data.id }),
+          );
+        }}
+      >
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
