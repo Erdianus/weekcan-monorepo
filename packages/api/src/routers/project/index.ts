@@ -18,8 +18,8 @@ const projectParamsSchema = z
     company_name: z.string().nullish(), // Aslinya gak ada,
     search: z.string().nullish(),
     progress: z.string().nullish(),
-    page: z.string().nullish(),
-    paginate: z.string().nullish(),
+    page: z.union([z.string(), z.number()]).nullish(),
+    paginate: z.union([z.string(), z.number()]).nullish(),
     user_id: z.string().nullish(),
     user_name: z.string().nullish(), // Aslinya gak ada
     from: z.string().nullish(),

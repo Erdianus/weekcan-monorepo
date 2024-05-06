@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const taskStatus = ["On Going", "Done", "Pending"];
+const taskProjectStatus = ["On Going", "Done", "Pending"];
 
 const taskProjectBaseSchema = z.object({
   id: z.number(),
@@ -29,6 +29,6 @@ const taskProjectFormSchema = taskProjectBaseSchema.pick({
   have_daily_task: true,
 });
 
-export { taskStatus, taskProjectFormSchema, taskProjectBaseSchema };
+export { taskProjectStatus, taskProjectFormSchema, taskProjectBaseSchema };
 
 export default taskProjectBaseSchema;

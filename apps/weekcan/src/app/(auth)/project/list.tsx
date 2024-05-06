@@ -17,7 +17,6 @@ import { k } from "@hktekno/api";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
-import { SelectAsync } from "@hktekno/ui/components/select";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
@@ -31,8 +30,9 @@ import {
 import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { dateRange } from "@hktekno/ui/lib/date";
-import { loadCompanyOptions } from "@hktekno/ui/lib/select";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
+
+import FilterProject from "./filter";
 
 type Project = inferData<typeof k.project.all>["data"][number];
 const colHelper = createColumnHelper<Project>();
@@ -122,6 +122,21 @@ const columns = [
   colHelper.accessor("pic_name", {
     header: "PIC",
   }),
+  colHelper.accessor("company", {
+    header: "Perusahaan",
+    cell: ({ getValue }) => {
+      if (!getValue().length) return "-";
+
+      return (
+        <div className="flex items-center gap-4">
+          {getValue()[0]?.company_name}
+          {getValue().length > 1 && (
+            <Badge variant={"secondary"}>{getValue().length - 1}+</Badge>
+          )}
+        </div>
+      );
+    },
+  }),
   colHelper.accessor("progress", {
     header: "Progress",
     cell: ({ getValue }) => <Badge variant={getValue()}>{getValue()}</Badge>,
@@ -151,7 +166,7 @@ const ListProject = () => {
     <>
       <PortalSearch placeholder="Cari Proyek..." />
 
-      <div className="mb-2">
+      <div className="mb-4">
         <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
           Filter
           <Separator className="flex-1" />
@@ -165,19 +180,6 @@ const ListProject = () => {
         <Paginate />
         <PaginationParams meta={projects?.meta} />
       </div>
-    </>
-  );
-};
-
-const FilterProject = () => {
-  return (
-    <>
-      <SelectAsync
-        loadOptions={loadCompanyOptions}
-        additional={{
-          page: 1,
-        }}
-      />
     </>
   );
 };

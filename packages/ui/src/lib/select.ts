@@ -7,6 +7,7 @@ import {
   projectStatus,
   projectType,
 } from "@hktekno/api/routers/project/schema";
+import { taskProjectStatus } from "@hktekno/api/routers/project/task/schema";
 import { axios } from "@hktekno/utils/axios";
 
 type OptionType =
@@ -23,6 +24,60 @@ interface GroupBase<Option> {
 }
 
 // --NOTE: Dynamic Options
+const loadProjectOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.project.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const projects = await k.project.all.fetcher({
+    ...params,
+    page,
+    search,
+  });
+
+  const options = projects.data.map((d) => ({
+    label: `${d.project_name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: projects.meta.current_page !== projects.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
+const loadProjectSprintOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.project.sprint.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const sprints = await k.project.sprint.all.fetcher({
+    ...params,
+    page,
+    search,
+  });
+
+  const options = sprints.data.map((d) => ({
+    label: `${d.title}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: sprints.meta.current_page !== sprints.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
 const loadUserOptions: LoadOptions<
   OptionType,
   GroupBase<OptionType>,
@@ -198,6 +253,9 @@ const optionsProjectStatus = () =>
 const optionsProjectProgress = () =>
   projectProgress.map((v) => ({ label: v, value: v }));
 
+const optionsTaskProjectStatus = () =>
+  taskProjectStatus.map((v) => ({ label: v, value: v }));
+
 const optionsTime = () => {
   return Array.from({ length: 24 }, (_, i) => {
     const v = `${i}`.length === 1 ? `0${i}` : `${i}`;
@@ -218,6 +276,8 @@ const loadOptions = Object.freeze({
 
 export {
   loadOptions,
+  loadProjectOptions,
+  loadProjectSprintOptions,
   loadUserOptions,
   loadCompanyOptions,
   loadRoleOptions,
@@ -230,5 +290,6 @@ export {
   optionsProjectType,
   optionsProjectStatus,
   optionsProjectProgress,
+  optionsTaskProjectStatus,
   optionsTime,
 };

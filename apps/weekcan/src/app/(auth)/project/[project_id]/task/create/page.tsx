@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 
-import ListTaskProject from "./list";
+import CreateTask from "./create";
 
 export const metadata: Metadata = {
-  title: "Kerjaan Proyek",
+  title: "Buat Kerjaan Baru",
 };
 
-export default function TaskProjectPage({
+export default function CreateTaskPage({
   params,
 }: {
   params: { project_id: string };
 }) {
   return (
     <>
-      <ListTaskProject project_id={params.project_id} />
+      <CreateTask project_id={params.project_id} />
     </>
   );
 }

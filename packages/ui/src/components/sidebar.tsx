@@ -2,17 +2,12 @@
 
 import type { PropsWithChildren, SVGProps } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
-import { toast } from "sonner";
-
-import { logoutAction } from "@hktekno/auth/logout-action";
+import { usePathname } from "next/navigation";
 
 import { cn } from "../lib/utils";
 import { Client, Company, Dashboard, Project, Venue } from "./icon";
 import User from "./icon/user";
 import Logo from "./logo";
-import ButtonSubmit from "./ui/button-submit";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "./ui/sheet";
 import { Muted } from "./ui/typograhpy";
 
@@ -50,7 +45,6 @@ const SidebarItems = (props: SidebarItemProps) => {
 };
 
 const SidebarList = () => {
-  const router = useRouter();
   return (
     <>
       <div className="overflow-y-auto p-0 py-5 sm:h-full sm:px-3">
@@ -63,24 +57,6 @@ const SidebarList = () => {
           <SidebarItems text="Tempat Acara" link="/venue" icon={Venue} />
           <SidebarItems text="Klien" link="/client" icon={Client} />
         </ul>
-      </div>
-      <div className="absolute bottom-0 left-0 z-20 hidden w-full justify-center space-x-4 bg-background p-4 lg:flex">
-        <form
-          action={async () => {
-            const res = await logoutAction();
-            if (!res.status) {
-              toast.error(res.message);
-              return;
-            }
-
-            toast.success(res.message);
-            router.push("/login");
-          }}
-        >
-          <ButtonSubmit variant={"ghost"} size={"icon"}>
-            <LogOut />
-          </ButtonSubmit>
-        </form>
       </div>
     </>
   );

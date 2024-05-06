@@ -1,6 +1,6 @@
 "use client";
 
-import type { DateRange } from "react-day-picker";
+import type { DateRange, SelectRangeEventHandler } from "react-day-picker";
 import * as React from "react";
 import dayjs from "dayjs";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -51,8 +51,7 @@ type DateRangePickerProps = CalendarProps & {
     from: Date;
     to?: Date;
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onChange: (...event: any[]) => void;
+  onChange?: SelectRangeEventHandler;
   className?: string;
 };
 function DateRangePicker(props?: DateRangePickerProps) {

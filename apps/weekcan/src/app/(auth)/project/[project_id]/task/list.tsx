@@ -200,7 +200,7 @@ const ListTaskProject = ({ project_id }: { project_id: string }) => {
           {isChecked ? (
             <>{del.isPending ? <Spinner /> : <Trash2 />}</>
           ) : (
-            <Link href={"project/create"}>
+            <Link href={`/project/${project_id}/task/create`}>
               <Plus />
             </Link>
           )}

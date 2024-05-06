@@ -29,8 +29,10 @@ const user = router("user", {
       search?: string | null;
       page?: number | string | null;
       paginate?: string | null;
-      company_id?: string[] | null;
+      company_id?: (string | null)[];
       company_name?: string[] | null;
+      project_id?: string;
+      project_name?: string;
       isOwner?: boolean;
     }) => {
       const res = await Axios("/user", {

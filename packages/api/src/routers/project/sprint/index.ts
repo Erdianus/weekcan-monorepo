@@ -13,7 +13,7 @@ const sprint = {
       page?: string | number | null;
       paginate?: string | number | null;
       search?: string | null;
-      project_id: string | null;
+      project_id?: string | null;
     }) => {
       const res = await Axios("/sprint", { params: variables });
 
