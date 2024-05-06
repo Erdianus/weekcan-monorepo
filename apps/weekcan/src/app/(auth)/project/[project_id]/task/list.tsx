@@ -3,7 +3,7 @@
 import type { CellContext } from "@tanstack/react-table";
 import { useCallback } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   createColumnHelper,
@@ -38,6 +38,7 @@ type TaskProject = inferData<typeof k.project.task.all>["data"][number];
 const colHelper = createColumnHelper<TaskProject>();
 
 const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
+  const params = useParams<{ project_id: string }>();
   const alert = useAlertStore();
 
   const { original: data } = row;
@@ -71,7 +72,7 @@ const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
               <span>Detail</span>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/project/update/${data.id}`}>
+          <Link href={`/project/${params.project_id}/task/update/${data.id}`}>
             <DropdownMenuItem>
               <Pencil className="mr-2 h-4 w-4" />
               <span>Edit</span>

@@ -12,7 +12,7 @@ const taskProjectBaseSchema = z.object({
   project_id: z.string().min(1, "Tolong Pilih Proyek"),
   sprint_id: z.string().nullish(),
   task_status: z.string().min(1, "Tolong Pilih Status").default("On Going"),
-  have_daily_task: z.union([z.literal(0), z.literal(1)]),
+  have_daily_task: z.union([z.number(), z.boolean()]),
   set_by: z.string().nullish(),
 });
 
@@ -27,6 +27,7 @@ const taskProjectFormSchema = taskProjectBaseSchema.pick({
   end_date: true,
   task_status: true,
   have_daily_task: true,
+  set_by: true,
 });
 
 export { taskProjectStatus, taskProjectFormSchema, taskProjectBaseSchema };

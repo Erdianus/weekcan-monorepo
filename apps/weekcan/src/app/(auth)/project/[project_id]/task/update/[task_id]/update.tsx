@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -91,12 +92,18 @@ const taskProjectForm = taskProjectFormSchema
     ),
   });
 
-const CreateTask = ({ project_id }: { project_id: string }) => {
+const UpdateTaskProject = ({
+  project_id,
+  id,
+}: {
+  project_id: string;
+  id: string;
+}) => {
   const router = useRouter();
   const user = useUserStore();
-  const { data: project } = k.project.single.useQuery({
-    variables: { id: project_id },
-  });
+
+  const { data: task } = k.project.task.single.useQuery({ variables: { id } });
+  const isload = !task;
 
   const form = useForm<z.infer<typeof taskProjectForm>>({
     resolver: zodResolver(taskProjectForm),
@@ -118,7 +125,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
 
   const client = useQueryClient();
 
-  const create = k.project.task.create.useMutation({
+  const update = k.project.task.update.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
       router.push(`/project/${project_id}/task`);
@@ -128,13 +135,36 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
   });
 
   useEffect(() => {
-    if (project) {
-      form.setValue("project", {
-        label: project.data.project_name,
-        value: `${project.data.id}`,
+    if (task) {
+      const { data } = task;
+      form.reset({
+        task_name: data.task_name,
+        desc: data.desc,
+        date: {
+          from: dayjs(data.start_date).toDate(),
+          to: dayjs(data.end_date).toDate(),
+        },
+        status: {
+          label: data.task_status,
+          value: data.task_status,
+        },
+        task_for:
+          `${data.task_for.id}` === `${user.id}`
+            ? null
+            : {
+                label: data.task_for.username,
+                value: `${data.task_for.id}`,
+              },
+        have_daily_task: +data.have_daily_task,
+        set_by:
+          `${user.id}` === `${data.task_for.id}` ? null : `${data.set_by.id}`,
+        project: {
+          label: data.project.project_name,
+          value: `${data.project.id}`,
+        },
       });
     }
-  }, [project]);
+  }, [task]);
 
   return (
     <>
@@ -143,7 +173,8 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
         <form
           className="space-y-4"
           onSubmit={form.handleSubmit((v) => {
-            create.mutate({
+            update.mutate({
+              id,
               data: {
                 ...v,
                 project_id: v.project?.value ?? project_id,
@@ -153,8 +184,6 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                   ? date4Y2M2D(v.date.to)
                   : date4Y2M2D(v.date.from),
                 task_status: v.status.value ?? "On Going",
-                set_by:
-                  `${user.id}` === `${v.task_for?.value}` ? null : `${user.id}`,
               },
             });
           })}
@@ -167,7 +196,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                 return (
                   <FormItem>
                     <FormLabel>Nama Kerjaan</FormLabel>
-                    <FormControl>
+                    <FormControl isloading={isload}>
                       <Input {...field} placeholder="Contoh: Desain Spanduk" />
                     </FormControl>
                     <FormMessage />
@@ -182,7 +211,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                 return (
                   <FormItem>
                     <FormLabel>Deskripsi</FormLabel>
-                    <FormControl>
+                    <FormControl isloading={isload}>
                       <Input
                         {...field}
                         placeholder="Contoh: Desain Spanduk untuk instagram"
@@ -201,7 +230,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
               render={({ field }) => (
                 <FormItem className="col-span-2 flex flex-col gap-2">
                   <FormLabel>Tanggal</FormLabel>
-                  <FormControl>
+                  <FormControl isloading={isload}>
                     <DateRangePicker
                       value={field.value}
                       onChange={field.onChange}
@@ -218,7 +247,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
               render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Status Kerjaan</FormLabel>
-                  <FormControl>
+                  <FormControl isloading={isload}>
                     <Select
                       {...field}
                       options={optionsTaskProjectStatus()}
@@ -241,7 +270,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                     return (
                       <FormItem>
                         <FormLabel>Karyawan</FormLabel>
-                        <FormControl>
+                        <FormControl isloading={isload}>
                           <SelectAsync
                             cacheUniqs={[form.watch("project")]}
                             placeholder="Pilih Karyawan"
@@ -273,7 +302,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                       return (
                         <FormItem>
                           <FormLabel>Jadwal</FormLabel>
-                          <FormControl>
+                          <FormControl isloading={isload}>
                             <SelectAsync
                               cacheUniqs={[form.watch("project")]}
                               placeholder="Pilih Jadwal"
@@ -303,10 +332,10 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                       return (
                         <FormItem>
                           <FormLabel>Proyek</FormLabel>
-                          <FormControl>
+                          <FormControl isloading={isload}>
                             <SelectAsync
                               isClearable
-                              placeholder={`Default: ${project?.data.project_name}`}
+                              placeholder={`Default: ${task?.data.project.project_name}`}
                               selectRef={field.ref}
                               value={field.value}
                               onChange={(e) => {
@@ -333,7 +362,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                   render={({ field }) => {
                     return (
                       <FormItem className="flex items-center gap-2 space-y-0">
-                        <FormControl>
+                        <FormControl isloading={isload}>
                           <Checkbox
                             checked={Boolean(field.value)}
                             onClick={() => field.onChange(Number(!field.value))}
@@ -347,8 +376,8 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <Button disabled={create.isPending}>
-            {create.isPending ? <Spinner /> : "Submit"}
+          <Button disabled={update.isPending}>
+            {update.isPending ? <Spinner /> : "Submit"}
           </Button>
         </form>
       </Form>
@@ -356,4 +385,4 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
   );
 };
 
-export default CreateTask;
+export default UpdateTaskProject;
