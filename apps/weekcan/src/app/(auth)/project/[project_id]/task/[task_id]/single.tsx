@@ -15,7 +15,10 @@ const SingleTaskProject = ({ id }: { id: string }) => {
   const links = useMemo(() => {
     return [
       { label: "Rincian", href: `/project/${params.project_id}/task/${id}` },
-      { label: "Perihal", href: `minum` },
+      {
+        label: "Perihal",
+        href: `/project/${params.project_id}/task/${id}/daily`,
+      },
     ];
   }, [id]);
 

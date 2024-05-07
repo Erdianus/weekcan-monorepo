@@ -29,6 +29,7 @@ import {
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
+import { Task } from "@hktekno/ui/icon";
 import { dateRange } from "@hktekno/ui/lib/date";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
 
@@ -55,7 +56,7 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
       <DropdownMenu
         onOpenChange={async () => {
           await client.prefetchQuery(
-            k.project.single.getFetchOptions({ id: data.id }),
+            k.project.single.getFetchOptions({ id: `${data.id}` }),
           );
         }}
       >
@@ -75,6 +76,12 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
             <DropdownMenuItem>
               <Eye className="mr-2 h-4 w-4" />
               <span>Detail</span>
+            </DropdownMenuItem>
+          </Link>
+          <Link href={`/project/${data.id}/task`}>
+            <DropdownMenuItem>
+              <Task className="mr-2 h-4 w-4" />
+              <span>Tugas</span>
             </DropdownMenuItem>
           </Link>
           <Link href={`/project/update/${data.id}`}>

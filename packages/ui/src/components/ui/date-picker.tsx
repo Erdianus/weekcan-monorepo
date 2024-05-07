@@ -1,7 +1,7 @@
 "use client";
 
 import type { DateRange, SelectRangeEventHandler } from "react-day-picker";
-import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { Calendar as CalendarIcon } from "lucide-react";
 
@@ -14,7 +14,7 @@ import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 function DatePicker() {
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = useState<Date>();
 
   return (
     <Popover>
@@ -53,11 +53,30 @@ type DateRangePickerProps = CalendarProps & {
   };
   onChange?: SelectRangeEventHandler;
   className?: string;
+  defaultValue?: {
+    from: Date;
+    to?: Date;
+  };
 };
 function DateRangePicker(props?: DateRangePickerProps) {
-  const [date, setDate] = React.useState<DateRange>();
+  const [date, setDate] = useState<DateRange>();
 
   const selected = props?.value ?? date;
+
+  const text = useMemo(() => {
+    if (selected) return dateRange(selected.from, selected.to);
+
+    if (props?.defaultValue)
+      return dateRange(props.defaultValue.from, props.defaultValue.to);
+
+    return <span>Pilih Tanggal</span>;
+  }, [selected, props?.defaultValue]);
+
+  useEffect(() => {
+    if (props?.defaultValue) {
+      setDate(props.defaultValue);
+    }
+  }, []);
 
   return (
     <Popover>
@@ -72,11 +91,7 @@ function DateRangePicker(props?: DateRangePickerProps) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {selected ? (
-            dateRange(selected.from, selected.to)
-          ) : (
-            <span>Pilih Tanggal</span>
-          )}
+          {text}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
@@ -89,7 +104,12 @@ function DateRangePicker(props?: DateRangePickerProps) {
           toMonth={props?.toMonth}
           mode="range"
           selected={props?.value ?? date}
-          onSelect={props?.onChange ?? setDate}
+          onSelect={(dr, d, a, m) => {
+            setDate(dr);
+            if (props?.onChange) {
+              props.onChange(dr, d, a, m);
+            }
+          }}
           initialFocus
         />
       </PopoverContent>

@@ -87,8 +87,8 @@ const FilterProject = () => {
       />
       <DateRangePicker
         mode="range"
-        value={
-          searchParams.get("from") ?? searchParams.get("to")
+        defaultValue={
+          searchParams.get("from")
             ? {
                 from: dayjs(searchParams.get("from")).toDate(),
                 to: searchParams.get("to")
@@ -100,9 +100,10 @@ const FilterProject = () => {
         onChange={(e) => {
           const hasPage = !!searchParams.get("page");
           const params = new URLSearchParams(searchParams);
+          console.log(e);
 
           if (e?.from) params.set("from", `${date4Y2M2D(e.from)}`);
-          if (e?.to) params.set("from", `${date4Y2M2D(e.to)}`);
+          if (e?.to) params.set("to", `${date4Y2M2D(e.to)}`);
 
           if (!e?.from) params.delete("from");
           if (!e?.to) params.delete("to");

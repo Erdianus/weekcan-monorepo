@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 
 import SingleTaskProject from "./single";
 
-export default function LayoutTaskProjectSingle({
+export default function Layout({
   params,
   children,
 }: { params: { task_id: string } } & PropsWithChildren) {
