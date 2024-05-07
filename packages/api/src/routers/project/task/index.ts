@@ -8,6 +8,7 @@ import type { taskProjectFormSchema } from "./schema";
 import userBaseSchema from "../../user/schema";
 import projectBaseSchema from "../schema";
 import sprintBaseSchema from "../sprint/schema";
+import daily from "./daily";
 import taskProjectBaseSchema from "./schema";
 
 const taskProjectSchema = taskProjectBaseSchema.extend({
@@ -69,6 +70,7 @@ const task = {
       return res.data as { message: string };
     },
   }),
+  daily,
 };
 
 export default task;

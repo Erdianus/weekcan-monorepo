@@ -44,7 +44,9 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
           <Navbar />
           {/* <!-- Sidebar --> */}
           <Sidebar />
-          <main className="min-h-svh p-4 pt-20 md:ml-64">{children}</main>
+          <main className="relative h-full min-h-lvh p-4 pt-20 md:ml-64 ">
+            {children}
+          </main>
         </div>
       </QueryProvider>
     </>
