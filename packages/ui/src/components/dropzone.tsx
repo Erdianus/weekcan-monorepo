@@ -11,7 +11,7 @@ const Dropzone = (props: DropzoneProps & { className?: string }) => {
         <section>
           <div
             className={cn(
-              "flex w-full flex-col items-center justify-center rounded-lg border border-muted p-2",
+              "flex w-full flex-col items-center justify-center rounded-lg border border-border p-2",
               props.className,
             )}
             {...getRootProps()}

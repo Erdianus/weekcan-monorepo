@@ -58,6 +58,9 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
           await client.prefetchQuery(
             k.project.single.getFetchOptions({ id: `${data.id}` }),
           );
+          await client.prefetchQuery(
+            k.project.task.all.getFetchOptions({ project_id: `${data.id}` }),
+          );
         }}
       >
         <DropdownMenuTrigger asChild>

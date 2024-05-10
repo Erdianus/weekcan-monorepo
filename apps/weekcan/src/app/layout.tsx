@@ -1,3 +1,6 @@
+// Lightbox CSS
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/captions.css";
 import "~/app/globals.css";
 
 import type { Metadata } from "next";
@@ -5,6 +8,7 @@ import { Inter } from "next/font/google";
 
 import { ThemeProvider } from "@hktekno/ui/components/theme-provider";
 import { Toaster } from "@hktekno/ui/components/ui/sonner";
+import { TooltipProvider } from "@hktekno/ui/components/ui/tooltip";
 import { cn } from "@hktekno/ui/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,7 +30,7 @@ export default function RootLayout({
       </head>
       <body className={cn("", inter.className)}>
         <ThemeProvider disableTransitionOnChange attribute="class">
-          {children}
+          <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
         </ThemeProvider>
         <Toaster richColors closeButton />
       </body>

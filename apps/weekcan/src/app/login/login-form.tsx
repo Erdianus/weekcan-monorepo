@@ -39,7 +39,9 @@ const formSchema = z.object({
 const ButtonSubmit = () => {
   const { pending } = useFormStatus();
   return (
-    <Button className="w-full">{pending ? <Spinner /> : "Sign In"}</Button>
+    <Button disabled={pending} className="w-full">
+      {pending ? <Spinner /> : "Sign In"}
+    </Button>
   );
 };
 

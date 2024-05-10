@@ -1,8 +1,8 @@
 import type { DefaultSession, NextAuthConfig } from "next-auth";
-import axios from "axios";
+import { AxiosError } from "axios";
 import Credentials from "next-auth/providers/credentials";
 
-import { env } from "../env";
+import Axios from "@hktekno/utils/axios";
 
 export type UserSession = {
   id: string;
@@ -28,8 +28,8 @@ export const authConfig = {
         credentials: Partial<Record<"username" | "password", unknown>>,
       ) => {
         try {
-          const res = await axios.post<{ data: UserSession }>(
-            `${env.NEXT_PUBLIC_BASE_API}/api/login`,
+          const res = await Axios.post<{ data: UserSession }>(
+            `/login`,
             {
               username: credentials.username,
               password: credentials.password,
@@ -43,11 +43,11 @@ export const authConfig = {
           );
           const { data: user } = res.data;
 
-          console.log("Halo config auth");
-          console.log(user);
-
           return user;
         } catch (e: unknown) {
+          if (e instanceof AxiosError) {
+            throw new Error(e.message);
+          }
           return null;
         }
       },

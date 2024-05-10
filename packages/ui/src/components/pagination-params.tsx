@@ -42,7 +42,7 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
                     console.log(page);
                     const params = new URLSearchParams(searchParams);
                     params.set("page", `${page - 1}`);
-                    router.replace(`${pathname}?${params.toString()}`);
+                    router.push(`${pathname}?${params.toString()}`);
                   }}
                 />
               )}
@@ -56,7 +56,7 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
                     const params = new URLSearchParams(searchParams);
                     if (page === last_page) return;
                     params.set("page", `${page + 1}`);
-                    router.replace(`${pathname}?${params.toString()}`);
+                    router.push(`${pathname}?${params.toString()}`);
                   }}
                 />
               )}
@@ -68,7 +68,7 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
                     if (link.active) return;
                     const params = new URLSearchParams(searchParams);
                     params.set("page", `${link.label}`);
-                    router.replace(`${pathname}?${params.toString()}`);
+                    router.push(`${pathname}?${params.toString()}`);
                   }}
                 >
                   {link.label}

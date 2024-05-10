@@ -5,6 +5,7 @@ import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
 import { logoutAction } from "@hktekno/auth";
+import Axios from "@hktekno/utils/axios";
 
 import useAlertStore from "../lib/store/useAlertStore";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -49,8 +50,10 @@ const UserMenu = () => {
                   return;
                 }
 
-                toast.success(res.message);
+                Axios.interceptors.request.clear();
+
                 router.push("/login");
+                toast.success(res.message);
                 alert.reset();
               },
             });

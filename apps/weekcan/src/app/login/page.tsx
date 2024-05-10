@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { auth } from "@hktekno/auth";
 
 import { LoginForm } from "./login-form";
+
+export const metadata: Metadata = {
+  title: "Login",
+};
 
 export default async function LoginPage() {
   const sesh = await auth();

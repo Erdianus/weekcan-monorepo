@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthError } from "next-auth";
 import { useSession } from "next-auth/react";
 
 import type { UserSession } from "./config";
@@ -16,11 +16,13 @@ const {
 
 export {
   GET,
+  AuthError,
   POST,
   auth,
   signIn,
   signOut,
   useSession,
-  type UserSession,
   logoutAction,
 };
+
+export { type UserSession };

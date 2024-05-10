@@ -31,6 +31,7 @@ import {
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
+import { Chat } from "@hktekno/ui/icon";
 import { dateRange } from "@hktekno/ui/lib/date";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
 
@@ -53,7 +54,18 @@ const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
   });
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu
+        onOpenChange={async () => {
+          await client.prefetchQuery(
+            k.project.task.single.getFetchOptions({ id: `${data.id}` }),
+          );
+          await client.prefetchQuery(
+            k.project.task.daily.dateGroup.getFetchOptions({
+              task_project_id: `${data.id}`,
+            }),
+          );
+        }}
+      >
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -69,7 +81,13 @@ const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
           <Link href={`/project/${params.project_id}/task/${data.id}`}>
             <DropdownMenuItem>
               <Eye className="mr-2 h-4 w-4" />
-              <span>Detail</span>
+              <span>Rincian</span>
+            </DropdownMenuItem>
+          </Link>
+          <Link href={`/project/${params.project_id}/task/${data.id}/daily`}>
+            <DropdownMenuItem>
+              <Chat className="mr-2 h-4 w-4" />
+              <span>Perihal</span>
             </DropdownMenuItem>
           </Link>
           <Link href={`/project/${params.project_id}/task/update/${data.id}`}>

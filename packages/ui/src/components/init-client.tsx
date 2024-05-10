@@ -24,7 +24,7 @@ function InitClient({ user }: { user: { id: string; token: string } }) {
       },
       (err) => err,
     );
-  }, []);
+  }, [user]);
   return <Fragment />;
 }
 

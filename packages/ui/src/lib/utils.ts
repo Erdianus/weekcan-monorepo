@@ -6,6 +6,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/*
+ * @return Bakal return kayak 'file.png' => 'png'
+ */
 export function fileExt(text: string) {
   const t = text.match(/[0-9a-z]+$/);
 

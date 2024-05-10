@@ -1,61 +1,33 @@
-"use client";
+import type { PropsWithChildren } from "react";
 
-import type { PropsWithChildren, SVGProps } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { auth } from "@hktekno/auth";
 
-import { cn } from "../lib/utils";
-import { Client, Company, Dashboard, Project, Venue } from "./icon";
-import User from "./icon/user";
 import Logo from "./logo";
+import { SidebarItems } from "./sidebar-items";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "./ui/sheet";
 import { Muted } from "./ui/typograhpy";
 
-type SidebarItemProps = {
-  link: string;
-  text: string;
-  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
-};
-
-const SidebarItems = (props: SidebarItemProps) => {
-  const pathname = usePathname();
-  const isActive = pathname === props.link;
-  return (
-    <li>
-      <Link
-        href={props.link}
-        className={cn(
-          "group flex items-center rounded-lg p-2 text-base font-medium hover:bg-muted",
-          isActive &&
-            "bg-main-500 text-white hover:bg-main-600 dark:bg-main-900 dark:text-main-500 dark:hover:bg-main-950",
-        )}
-      >
-        <props.icon
-          aria-hidden="true"
-          className={cn("h-6 w-6")}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        />
-
-        <span className="ml-3">{props.text}</span>
-      </Link>
-    </li>
-  );
-};
-
-const SidebarList = () => {
+const SidebarList = async () => {
+  const sesh = await auth();
   return (
     <>
       <div className="overflow-y-auto p-0 py-5 sm:h-full sm:px-3">
         <ul className="space-y-2">
-          <SidebarItems text="Dashboard" link="/dashboard" icon={Dashboard} />
-          <SidebarItems text="Proyek/Event" link="/project" icon={Project} />
-          <Muted>Master Data</Muted>
-          <SidebarItems text="User" link="/user" icon={User} />
-          <SidebarItems text="Perusahaan" link="/company" icon={Company} />
-          <SidebarItems text="Tempat Acara" link="/venue" icon={Venue} />
-          <SidebarItems text="Klien" link="/client" icon={Client} />
+          <SidebarItems text="Dashboard" link="/dashboard" icon={"dashboard"} />
+          <SidebarItems text="Proyek/Event" link="/project" icon={"project"} />
+          {sesh?.user.role === "Admin" && (
+            <>
+              <Muted>Master Data</Muted>
+              <SidebarItems text="User" link="/user" icon={"user"} />
+              <SidebarItems
+                text="Perusahaan"
+                link="/company"
+                icon={"company"}
+              />
+              <SidebarItems text="Tempat Acara" link="/venue" icon={"venue"} />
+              <SidebarItems text="Klien" link="/client" icon={"client"} />
+            </>
+          )}
         </ul>
       </div>
     </>

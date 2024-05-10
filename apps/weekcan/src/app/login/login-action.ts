@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 "use server";
 
 import { signIn } from "@hktekno/auth";
 
-export async function loginAction(formdata: FormData) {
+export async function loginAction(
+  formdata: FormData,
+): Promise<{ status: boolean; message: string }> {
   try {
     await signIn("credentials", {
       username: formdata.get("username"),
@@ -13,10 +16,11 @@ export async function loginAction(formdata: FormData) {
       status: true,
       message: "Berhasil Login",
     };
-  } catch (_: unknown) {
+  } catch (e) {
     return {
       status: false,
-      message: `Gagal Login`,
+      // @ts-expect-error gapapa gan error
+      message: `${e.cause?.err?.message ?? "Gagal Login"}`,
     };
   }
 }

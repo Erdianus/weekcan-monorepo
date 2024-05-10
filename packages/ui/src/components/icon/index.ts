@@ -1,3 +1,4 @@
+import Chat from "./chat";
 import Client from "./client";
 import Company from "./company";
 import Dashboard from "./dashboard";
@@ -18,6 +19,7 @@ import User from "./user";
 import Venue from "./venue";
 
 export {
+  Chat,
   Client,
   Company,
   Dashboard,
