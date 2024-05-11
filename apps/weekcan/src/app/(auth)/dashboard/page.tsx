@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex w-full items-center justify-center">
       <h1 className="text-3xl font-bold">
-        Selamat Datang {session?.user.name}
+        Selamat Datang {session?.user.name} 😆
       </h1>
     </div>
   );
