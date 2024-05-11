@@ -33,27 +33,6 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
     }
   } catch (e) {
     redirect("/api/auth/signout");
-    const res = await fetch(`${env.BASE_URL}/api/auth/csrf`);
-    const { csrfToken } = (await res.json()) as { csrfToken: string };
-    console.log(`csrf: ${csrfToken}`);
-
-    try {
-      await axios.post(
-        `${env.BASE_URL}/api/auth/signout`,
-        {
-          csrfToken,
-        },
-        {
-          headers: {
-            "CSRF-Token": csrfToken,
-          },
-        },
-      );
-      redirect("/login");
-    } catch (e) {
-      console.log(e);
-      throw new Error("Error gan");
-    }
   }
   return (
     <>
