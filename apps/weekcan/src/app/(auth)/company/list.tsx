@@ -17,6 +17,11 @@ import { k } from "@hktekno/api";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@hktekno/ui/components/ui/avatar";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
 import {
@@ -29,6 +34,7 @@ import {
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
+import { shortName } from "@hktekno/ui/lib/utils";
 
 import FilterCompany from "./filter";
 
@@ -99,6 +105,15 @@ const columns = [
   }),
   colHelper.accessor("company_name", {
     header: "Nama",
+    cell: ({ row, getValue }) => (
+      <div className="flex items-center gap-2">
+        <Avatar>
+          <AvatarImage src={row.original.picture_link ?? ""} />
+          <AvatarFallback>{shortName(getValue())}</AvatarFallback>
+        </Avatar>
+        <div>{getValue()}</div>
+      </div>
+    ),
   }),
   colHelper.accessor("email", {
     header: "Email",

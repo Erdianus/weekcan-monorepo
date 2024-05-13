@@ -16,7 +16,12 @@ import ButtonSubmit from "./ui/button-submit";
 const AlertConfirm = () => {
   const alert = useAlertStore();
   return (
-    <AlertDialog open={alert.open} onOpenChange={alert.setOpen}>
+    <AlertDialog
+      open={alert.open}
+      onOpenChange={() => {
+        alert.reset();
+      }}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{alert.header}</AlertDialogTitle>

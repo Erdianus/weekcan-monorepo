@@ -1,23 +1,23 @@
 "use client";
 
-import type { z } from "zod";
-import { useState } from "react";
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, Info, Pencil, Plus, Trash2, X } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Info, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { k } from "@hktekno/api";
-import { detailFormSchema } from "@hktekno/api/routers/project/detail/schema";
 import Flashlist from "@hktekno/ui/components/flashlist";
 import Loading from "@hktekno/ui/components/loading";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Button } from "@hktekno/ui/components/ui/button";
-import { Input } from "@hktekno/ui/components/ui/input";
-import { Label } from "@hktekno/ui/components/ui/label";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@hktekno/ui/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverContent,
@@ -27,101 +27,26 @@ import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
 
-const EditCustom = (props: {
-  data: { title: string; desc: string; id: number };
-  onClose: () => void;
-}) => {
-  const params = useParams<{ project_id: string }>();
-
-  const form = useForm<z.infer<typeof detailFormSchema>>({
-    resolver: zodResolver(detailFormSchema),
-    values: {
-      title: props.data.title,
-      desc: props.data.desc,
-      project_id: params.project_id,
-    },
-  });
-
-  const client = useQueryClient();
-  const update = k.project.detail.update.useMutation({
-    onSuccess: async ({ message }) => {
-      await client.invalidateQueries({
-        queryKey: k.project.detail.all.getKey(),
-      });
-      toast.success(message);
-      props.onClose();
-    },
-    onError: ({ message }) => toast.error(message),
-  });
-
-  return (
-    <form
-      className="flex w-full items-center justify-between"
-      onSubmit={form.handleSubmit((data) => {
-        update.mutate({
-          id: props.data.id,
-          data,
-        });
-      })}
-    >
-      <div className="space-y-1">
-        <div>
-          <Label className="mb-1.5">Judul</Label>
-          <Input {...form.register("title")} />
-        </div>
-        <div>
-          <Label className="mb-1.5">Deskripsi</Label>
-          <Input {...form.register("desc")} />
-        </div>
-      </div>
-      <div className="flex items-center gap-4">
-        <Button
-          variant={"ghost"}
-          size={"icon"}
-          type="button"
-          onClick={props.onClose}
-        >
-          <X size={20} />
-        </Button>
-        <Button variant={"ghost"} size={"icon"} type="submit">
-          {update.isPending ? <Spinner /> : <Check />}
-        </Button>
-      </div>
-    </form>
-  );
-};
-
 const ListMemberProject = ({ id }: { id: string }) => {
   const searchParams = useSearchParams();
+  const params = Object.fromEntries(searchParams.entries());
   const alert = useAlertStore();
-  const [editID, setEditID] = useState(0);
-
-  const form = useForm<z.infer<typeof detailFormSchema>>({
-    resolver: zodResolver(detailFormSchema),
-    values: {
-      title: "",
-      desc: "",
-      project_id: `${id}`,
-    },
-  });
 
   const client = useQueryClient();
+  const { data: project } = k.project.single.useQuery({ variables: { id } });
   const { data: members } = k.project.member.all.useQuery({
     variables: {
       project_id: id,
-      search: searchParams.get("search"),
-      page: searchParams.get("page"),
-      paginate: searchParams.get("paginate"),
+      params,
     },
   });
 
-  //--NOTE: Create Mutation
-  const create = k.project.detail.create.useMutation({
+  // --NOTE: Update Mutation
+  const update = k.project.member.update.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
-      form.reset();
       await client.invalidateQueries({
-        queryKey: k.project.detail.all.getKey(),
+        queryKey: k.project.member.all.getKey(),
       });
     },
     onError: ({ message }) => toast.error(message),
@@ -185,59 +110,77 @@ const ListMemberProject = ({ id }: { id: string }) => {
             key={member.id}
             className="flex items-center justify-between gap-4 border-b border-border p-4"
           >
-            {/* {editID === member.id && (
-              <EditCustom
-                data={member}
-                onClose={() => {
-                  setEditID(0);
-                }}
-              />
-            )} */}
-            {editID !== member.id && (
-              <>
-                <div>
-                  <div className="">{member.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {member.role_name}
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    type="button"
-                    onClick={() => setEditID(member.id)}
-                  >
-                    <Pencil size={20} />
-                  </Button>
-                  <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    type="button"
-                    onClick={() => {
-                      alert.setData({
-                        open: true,
-                        header: `Yakin ingin menghapus '${member.name}'?`,
-                        desc: "Member yang sudah dihapus tidak dapat dikembalikan lagi dan harus ditambahkan manual lagi",
-                        confirmText: "Ya, Hapus",
-                        onConfirm: () => {
-                          del.mutate({
-                            user_id: `${member.id}`,
+            <div>
+              <div className="">{member.name}</div>
+              <div className="text-sm text-muted-foreground">
+                {member.role_member.role}
+              </div>
+            </div>
+            {!(
+              `${project?.data.pic}` === `${member.id}` ||
+              `${member.role_name}` === "Owner"
+            ) && (
+              <div className="flex items-center gap-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Button variant={"ghost"} size={"icon"} type="button">
+                      {update.isPending &&
+                      update.variables.data.user_id == member.id ? (
+                        <Spinner />
+                      ) : (
+                        <Pencil size={20} />
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuRadioGroup
+                      value={member.role_member.role}
+                      onValueChange={(role) => {
+                        if (role === member.role_member.role) return;
+                        update.mutate({
+                          data: {
                             project_id: id,
-                          });
-                        },
-                      });
-                    }}
-                  >
-                    {del.isPending &&
-                    del.variables.user_id === `${member.id}` ? (
-                      <Spinner />
-                    ) : (
-                      <Trash2 size={20} />
-                    )}
-                  </Button>
-                </div>
-              </>
+                            role,
+                            user_id: member.id,
+                          },
+                        });
+                      }}
+                    >
+                      <DropdownMenuRadioItem value="Admin">
+                        Admin
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="Member">
+                        Member
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button
+                  variant={"ghost"}
+                  size={"icon"}
+                  type="button"
+                  onClick={() => {
+                    alert.setData({
+                      open: true,
+                      header: `Yakin ingin menghapus '${member.name}'?`,
+                      desc: "Member yang sudah dihapus tidak dapat dikembalikan lagi dan harus ditambahkan manual lagi",
+                      confirmText: "Ya, Hapus",
+                      onConfirm: () => {
+                        del.mutate({
+                          user_id: `${member.id}`,
+                          project_id: id,
+                        });
+                      },
+                    });
+                  }}
+                >
+                  {del.isPending && del.variables.user_id === `${member.id}` ? (
+                    <Spinner />
+                  ) : (
+                    <Trash2 size={20} />
+                  )}
+                </Button>
+              </div>
             )}
           </div>
         ))}

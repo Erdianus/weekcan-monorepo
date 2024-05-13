@@ -15,6 +15,7 @@ const userSchema = userBaseSchema.extend({
   role_name: z.string(),
   role: roleBaseSchema,
   company: companyBaseSchema.array(),
+  picture_link: z.string(),
 });
 
 type User = z.infer<typeof userSchema>;

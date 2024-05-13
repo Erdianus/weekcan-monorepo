@@ -8,6 +8,11 @@ import memberBaseSchema from "./schema";
 
 const memberSchema = memberBaseSchema.extend({
   role_name: z.string(),
+  role_member: z.object({
+    project_id: z.string(),
+    user_id: z.string(),
+    role: z.string(),
+  }),
 });
 
 type MemberProject = z.infer<typeof memberSchema>;
@@ -22,25 +27,33 @@ const memberFormSchema = z.object({
 const member = {
   all: router.query({
     fetcher: async (variables: {
-      project_id: string | null;
-      page?: string | number | null;
-      paginate?: string | number | null;
-      search?: string | null;
+      project_id: string;
+      params: {
+        page?: string | number | null;
+        paginate?: string | number | null;
+        search?: string | null;
+      };
     }) => {
-      const res = await Axios("/project-member", { params: variables });
+      const res = await Axios(`/project-member/${variables.project_id}`, {
+        params: variables.params,
+      });
 
       return res.data as { data: MemberProject[]; meta: Meta };
     },
   }),
-  all_add: router.query({
+  notInProject: router.query({
     fetcher: async (variables: {
-      skip_project: string | null;
-      company_id?: string[];
-      page?: string | number | null;
-      paginate?: string | number | null;
-      search?: string | null;
+      project_id: string;
+      params: {
+        page?: string | number | null;
+        paginate?: string | number | null;
+        search?: string | null;
+      };
     }) => {
-      const res = await Axios("/project-member", { params: variables });
+      const res = await Axios(
+        `/member-outside-project/${variables.project_id}`,
+        { params: variables.params },
+      );
 
       return res.data as { data: MemberProject[]; meta: Meta };
     },
@@ -56,13 +69,9 @@ const member = {
   }),
   update: router.mutation({
     mutationFn: async (variables: {
-      id: string | number;
       data: { project_id: string; user_id: number; role: string };
     }) => {
-      const res = await Axios.put(
-        `/project-member/${variables.id}`,
-        variables.data,
-      );
+      const res = await Axios.put(`/project-member`, variables.data);
 
       return res.data as { message: string };
     },

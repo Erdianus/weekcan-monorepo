@@ -4,10 +4,13 @@ import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 
+import { k } from "@hktekno/api";
 import { logoutAction } from "@hktekno/auth";
 import Axios from "@hktekno/utils/axios";
 
 import useAlertStore from "../lib/store/useAlertStore";
+import useUserStore from "../lib/store/useUserStore";
+import { shortName } from "../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -20,18 +23,24 @@ import {
 } from "./ui/dropdown-menu";
 
 const UserMenu = () => {
+  const user = useUserStore();
   const alert = useAlertStore();
   const router = useRouter();
+
+  const { data: profile } = k.user.single.useQuery({
+    variables: { id: `${user.id}` },
+  });
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src={""} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={profile?.data.picture_link} />
+          <AvatarFallback>{shortName(profile?.data.username)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{profile?.data.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Profile</DropdownMenuItem>
         <DropdownMenuItem>Billing</DropdownMenuItem>

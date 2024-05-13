@@ -14,3 +14,16 @@ export function fileExt(text: string) {
 
   return t?.[0] ?? "";
 }
+
+/*
+ * @return Bakal return Oktavian Yoga => OY
+ */
+export const shortName = (text?: string) => {
+  const txt = text ?? "";
+  const rgx = new RegExp(/(\p{L}{1})\p{L}+/, "gu");
+  const initial = [...txt.matchAll(rgx)];
+
+  return (
+    (initial.shift()?.[1] ?? "") + (initial.pop()?.[1] ?? "")
+  ).toUpperCase();
+};

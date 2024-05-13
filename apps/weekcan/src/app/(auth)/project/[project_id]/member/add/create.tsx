@@ -3,12 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
@@ -27,15 +24,10 @@ import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 
-const memberFormSchema = z.object({
-  project_id: z.string(),
-  user: z.record(z.number(), z.string()),
-});
-
 const Member = ({
   member,
 }: {
-  member: inferData<typeof k.project.member.all_add>["data"][number];
+  member: inferData<typeof k.project.member.notInProject>["data"][number];
 }) => {
   const params = useParams<{ project_id: string }>();
   const [role, setRole] = useState<string>("");
@@ -48,7 +40,7 @@ const Member = ({
         queryKey: k.project.member.all.getKey(),
       });
       await client.invalidateQueries({
-        queryKey: k.project.member.all_add.getKey(),
+        queryKey: k.project.member.notInProject.getKey(),
       });
     },
   });
@@ -67,7 +59,6 @@ const Member = ({
             <SelectValue placeholder="Pilih Role" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Leader">Leader</SelectItem>
             <SelectItem value="Admin">Admin</SelectItem>
             <SelectItem value="Member">Member</SelectItem>
           </SelectContent>
@@ -95,12 +86,9 @@ const Member = ({
 
 const CreateMember = ({ id }: { id: string }) => {
   const searchParams = useSearchParams();
-  const { data: members } = k.project.member.all_add.useQuery({
-    variables: { skip_project: id, search: searchParams.get("search") },
-  });
-
-  const form = useForm<z.infer<typeof memberFormSchema>>({
-    resolver: zodResolver(memberFormSchema),
+  const params = Object.fromEntries(searchParams.entries());
+  const { data: members } = k.project.member.notInProject.useQuery({
+    variables: { project_id: id, params },
   });
 
   return (
@@ -125,7 +113,7 @@ const CreateMember = ({ id }: { id: string }) => {
           </Loading>
         }
         isfallback={members?.data.length === 0}
-        fallback={<div>Tidak Ada Data Kustom</div>}
+        fallback={<div>Tidak Ada Karyawan yang bisa ditambahkan lagi</div>}
       >
         {members?.data.map((member) => <Member member={member} />)}
       </Flashlist>

@@ -29,7 +29,7 @@ export default function Navbar() {
           <div id="portal-search" />
         </div>
         <div className="flex items-center gap-2 lg:order-2">
-          <CopyToken />
+          {process.env.NODE_ENV === "development" && <CopyToken />}
           <ModeToggle />
           <UserMenu />
           {/* <!-- Dropdown menu --> */}

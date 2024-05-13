@@ -3,7 +3,7 @@ import type { PropsWithChildren } from "react";
 import { auth } from "@hktekno/auth";
 
 import Logo from "./logo";
-import { SidebarItems } from "./sidebar-items";
+import { SidebarItems } from "./sidebar-clients";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "./ui/sheet";
 import { Muted } from "./ui/typograhpy";
 
@@ -15,7 +15,7 @@ const SidebarList = async () => {
         <ul className="space-y-2">
           <SidebarItems text="Dashboard" link="/dashboard" icon={"dashboard"} />
           <SidebarItems text="Proyek/Event" link="/project" icon={"project"} />
-          {sesh?.user.role === "Admin" && (
+          {["Admin", "Owner"].includes(sesh?.user.role ?? "") && (
             <>
               <Muted>Master Data</Muted>
               <SidebarItems text="User" link="/user" icon={"user"} />
