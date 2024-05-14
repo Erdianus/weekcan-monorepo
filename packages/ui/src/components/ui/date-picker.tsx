@@ -61,16 +61,16 @@ type DateRangePickerProps = CalendarProps & {
 function DateRangePicker(props?: DateRangePickerProps) {
   const [date, setDate] = useState<DateRange>();
 
-  const selected = props?.value ?? date;
-
   const text = useMemo(() => {
-    if (selected) return dateRange(selected.from, selected.to);
+    if (props?.value) return dateRange(props.value?.from, props.value.to);
+
+    if (date) return dateRange(date.from, date.to);
 
     if (props?.defaultValue)
       return dateRange(props.defaultValue.from, props.defaultValue.to);
 
     return <span>Pilih Tanggal</span>;
-  }, [selected, props?.defaultValue]);
+  }, [date, props?.defaultValue, props?.value]);
 
   useEffect(() => {
     if (props?.defaultValue) {
@@ -105,10 +105,11 @@ function DateRangePicker(props?: DateRangePickerProps) {
           mode="range"
           selected={props?.value ?? date}
           onSelect={(dr, d, a, m) => {
-            setDate(dr);
             if (props?.onChange) {
               props.onChange(dr, d, a, m);
+              return;
             }
+            setDate(dr);
           }}
           initialFocus
         />

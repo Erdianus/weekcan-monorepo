@@ -51,6 +51,37 @@ const loadProjectOptions: LoadOptions<
   };
 };
 
+const loadProjectJSONOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.project.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const projects = await k.project.all.fetcher({
+    ...params,
+    page,
+    search,
+  });
+
+  const options = projects.data.map((d) => ({
+    label: `${d.project_name}`,
+    value: JSON.stringify({
+      id: `${d.id}`,
+      start_date: d.start_date,
+      end_date: d.end_date,
+    }),
+  }));
+
+  return {
+    options,
+    hasMore: projects.meta.current_page !== projects.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
 const loadProjectSprintOptions: LoadOptions<
   OptionType,
   GroupBase<OptionType>,
@@ -66,6 +97,37 @@ const loadProjectSprintOptions: LoadOptions<
   const options = sprints.data.map((d) => ({
     label: `${d.title}`,
     value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: sprints.meta.current_page !== sprints.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
+const loadProjectSprintJSONOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.project.sprint.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const sprints = await k.project.sprint.all.fetcher({
+    ...params,
+    page,
+    search,
+  });
+
+  const options = sprints.data.map((d) => ({
+    label: `${d.title}`,
+    value: JSON.stringify({
+      id: `${d.id}`,
+      start_date: d.start_date,
+      end_date: d.end_date,
+    }),
   }));
 
   return {
@@ -277,7 +339,9 @@ const loadOptions = Object.freeze({
 export {
   loadOptions,
   loadProjectOptions,
+  loadProjectJSONOptions,
   loadProjectSprintOptions,
+  loadProjectSprintJSONOptions,
   loadUserOptions,
   loadCompanyOptions,
   loadRoleOptions,

@@ -2,6 +2,8 @@ import { create } from "zustand";
 
 interface State {
   id: string | number;
+  role: string;
+  role_id: string | number;
   token: string;
 }
 
@@ -13,6 +15,8 @@ interface UserState extends State {
 
 const initialState: State = {
   id: 0,
+  role: "",
+  role_id: 0,
   token: "",
 };
 

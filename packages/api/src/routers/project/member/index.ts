@@ -28,7 +28,7 @@ const member = {
   all: router.query({
     fetcher: async (variables: {
       project_id: string;
-      params: {
+      params?: {
         page?: string | number | null;
         paginate?: string | number | null;
         search?: string | null;
@@ -44,7 +44,7 @@ const member = {
   notInProject: router.query({
     fetcher: async (variables: {
       project_id: string;
-      params: {
+      params?: {
         page?: string | number | null;
         paginate?: string | number | null;
         search?: string | null;

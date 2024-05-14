@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -36,7 +36,7 @@ import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import {
   loadProjectOptions,
-  loadProjectSprintOptions,
+  loadProjectSprintJSONOptions,
   loadUserOptions,
   optionsTaskProjectStatus,
 } from "@hktekno/ui/lib/select";
@@ -123,6 +123,15 @@ const UpdateTaskProject = ({
     },
   });
 
+  const projectID = useMemo(() => {
+    const data = JSON.parse(form.watch("project.value") ?? '{"id": null}') as {
+      id: string | null;
+    };
+    if (data.id) return data.id;
+
+    return project_id;
+  }, [form.watch("project"), project_id]);
+
   const client = useQueryClient();
 
   const update = k.project.task.update.useMutation({
@@ -133,6 +142,31 @@ const UpdateTaskProject = ({
     },
     onError: ({ message }) => toast.error(message),
   });
+
+  const disableDate = useMemo(() => {
+    if (form.watch("sprint")) {
+      const data = JSON.parse(`${form.watch("sprint")?.value}`) as {
+        start_date: string;
+        end_date: string;
+      };
+      return {
+        before: dayjs(data.start_date).toDate(),
+        after: dayjs(data.end_date).toDate(),
+      };
+    }
+
+    if (form.watch("project")) {
+      const data = JSON.parse(`${form.watch("project.value")}`) as {
+        start_date: string;
+        end_date: string;
+      };
+      return {
+        before: dayjs(data.start_date).toDate(),
+        after: dayjs(data.end_date).toDate(),
+      };
+    }
+    return undefined;
+  }, [form.watch("project"), form.watch("sprint")]);
 
   useEffect(() => {
     if (task) {
@@ -160,8 +194,22 @@ const UpdateTaskProject = ({
           `${user.id}` === `${data.task_for.id}` ? null : `${data.set_by.id}`,
         project: {
           label: data.project.project_name,
-          value: `${data.project.id}`,
+          value: JSON.stringify({
+            id: `${data.project.id}`,
+            start_date: data.project.start_date,
+            end_date: data.project.end_date,
+          }),
         },
+        sprint: !data.sprint
+          ? null
+          : {
+              label: data.sprint.title,
+              value: JSON.stringify({
+                id: `${data.sprint.id}`,
+                start_date: data.sprint.start_date,
+                end_date: data.sprint.end_date,
+              }),
+            },
       });
     }
   }, [task]);
@@ -173,11 +221,18 @@ const UpdateTaskProject = ({
         <form
           className="space-y-4"
           onSubmit={form.handleSubmit((v) => {
+            const sprint = JSON.parse(v.sprint?.value ?? `{"id": null}`) as {
+              id: string | null;
+            };
+            const proyek = JSON.parse(v.project?.value ?? `{"id": null}`) as {
+              id: string | null;
+            };
             update.mutate({
               id,
               data: {
                 ...v,
-                project_id: v.project?.value ?? project_id,
+                project_id: proyek.id ?? project_id,
+                sprint_id: sprint.id,
                 task_for: v.task_for?.value ?? `${user.id}`,
                 start_date: date4Y2M2D(v.date.from),
                 end_date: v.date.to
@@ -232,6 +287,7 @@ const UpdateTaskProject = ({
                   <FormLabel>Tanggal</FormLabel>
                   <FormControl isloading={isload}>
                     <DateRangePicker
+                      disabled={disableDate}
                       value={field.value}
                       onChange={field.onChange}
                       className="w-full"
@@ -280,8 +336,7 @@ const UpdateTaskProject = ({
                             loadOptions={loadUserOptions}
                             additional={{
                               page: 1,
-                              project_id:
-                                form.watch("project.value") ?? project_id,
+                              project_id: projectID,
                             }}
                           />
                         </FormControl>
@@ -306,14 +361,18 @@ const UpdateTaskProject = ({
                             <SelectAsync
                               cacheUniqs={[form.watch("project")]}
                               placeholder="Pilih Jadwal"
+                              isClearable
                               selectRef={field.ref}
                               value={field.value}
-                              onChange={field.onChange}
-                              loadOptions={loadProjectSprintOptions}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                // @ts-expect-error gapapa error gan
+                                form.setValue("date", null);
+                              }}
+                              loadOptions={loadProjectSprintJSONOptions}
                               additional={{
                                 page: 1,
-                                project_id:
-                                  form.watch("project.value") ?? project_id,
+                                project_id: projectID,
                               }}
                             />
                           </FormControl>
@@ -342,6 +401,8 @@ const UpdateTaskProject = ({
                                 field.onChange(e);
                                 form.setValue("sprint", null);
                                 form.setValue("task_for", null);
+                                // @ts-expect-error gapapa gan error
+                                form.setValue("date", null);
                               }}
                               loadOptions={loadProjectOptions}
                               additional={{ page: 1 }}

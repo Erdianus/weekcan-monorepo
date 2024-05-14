@@ -12,7 +12,11 @@ import useUserStore from "../lib/store/useUserStore";
 
 dayjs.locale("id");
 
-function InitClient({ user }: { user: { id: string; token: string } }) {
+function InitClient({
+  user,
+}: {
+  user: { id: string; role: string; role_id: string; token: string };
+}) {
   const userStore = useUserStore();
 
   useEffect(() => {

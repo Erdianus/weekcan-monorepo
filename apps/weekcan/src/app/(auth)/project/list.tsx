@@ -32,6 +32,7 @@ import Spinner from "@hktekno/ui/components/ui/spinner";
 import { Task } from "@hktekno/ui/icon";
 import { dateRange } from "@hktekno/ui/lib/date";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
+import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 
 import FilterProject from "./filter";
 
@@ -39,9 +40,13 @@ type Project = inferData<typeof k.project.all>["data"][number];
 const colHelper = createColumnHelper<Project>();
 
 const Actions = ({ row }: CellContext<Project, unknown>) => {
+  const user = useUserStore();
   const alert = useAlertStore();
 
   const { original: data } = row;
+  const hasAccess =
+    ["Admin", "Owner", "Manager"].includes(user.role) &&
+    `${data.pic}` === `${user.id}`;
 
   const client = useQueryClient();
   const del = k.project.delete.useMutation({
@@ -60,6 +65,9 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
           );
           await client.prefetchQuery(
             k.project.task.all.getFetchOptions({ project_id: `${data.id}` }),
+          );
+          await client.prefetchQuery(
+            k.project.member.all.getFetchOptions({ project_id: `${data.id}` }),
           );
         }}
       >
@@ -87,29 +95,33 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
               <span>Tugas</span>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/project/update/${data.id}`}>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Edit</span>
+          {hasAccess && (
+            <Link href={`/project/update/${data.id}`}>
+              <DropdownMenuItem>
+                <Pencil className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
+          {hasAccess && (
+            <DropdownMenuItem
+              onClick={() =>
+                alert.setData({
+                  open: true,
+                  confirmText: "Ya, Hapus",
+                  header: `Yakin ingin mengapus '${data.project_name}'?`,
+                  desc: "Proyek yang dihapus tidak dapat dikembalikan lagi",
+                  onConfirm: () => {
+                    del.mutate({ id: data.id });
+                  },
+                })
+              }
+              className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Hapus</span>
             </DropdownMenuItem>
-          </Link>
-          <DropdownMenuItem
-            onClick={() =>
-              alert.setData({
-                open: true,
-                confirmText: "Ya, Hapus",
-                header: `Yakin ingin mengapus '${data.project_name}'?`,
-                desc: "Proyek yang dihapus tidak dapat dikembalikan lagi",
-                onConfirm: () => {
-                  del.mutate({ id: data.id });
-                },
-              })
-            }
-            className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            <span>Hapus</span>
-          </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

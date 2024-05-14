@@ -29,6 +29,7 @@ const UserMenu = () => {
 
   const { data: profile } = k.user.single.useQuery({
     variables: { id: `${user.id}` },
+    enabled: !!Number(user.id),
   });
 
   return (

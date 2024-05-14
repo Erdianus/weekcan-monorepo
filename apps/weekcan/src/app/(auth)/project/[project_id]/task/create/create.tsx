@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -34,8 +35,7 @@ import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import {
-  loadProjectOptions,
-  loadProjectSprintOptions,
+  loadProjectSprintJSONOptions,
   loadUserOptions,
   optionsTaskProjectStatus,
 } from "@hktekno/ui/lib/select";
@@ -94,9 +94,6 @@ const taskProjectForm = taskProjectFormSchema
 const CreateTask = ({ project_id }: { project_id: string }) => {
   const router = useRouter();
   const user = useUserStore();
-  const { data: project } = k.project.single.useQuery({
-    variables: { id: project_id },
-  });
 
   const form = useForm<z.infer<typeof taskProjectForm>>({
     resolver: zodResolver(taskProjectForm),
@@ -116,7 +113,20 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
     },
   });
 
+  const projectID = useMemo(() => {
+    const data = JSON.parse(form.watch("project.value") ?? '{"id": null}') as {
+      id: string | null;
+    };
+    if (data.id) return data.id;
+
+    return project_id;
+  }, [form.watch("project"), project_id]);
+
   const client = useQueryClient();
+
+  const { data: project } = k.project.single.useQuery({
+    variables: { id: project_id },
+  });
 
   const create = k.project.task.create.useMutation({
     onSuccess: async ({ message }) => {
@@ -127,14 +137,30 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
     onError: ({ message }) => toast.error(message),
   });
 
-  useEffect(() => {
-    if (project) {
-      form.setValue("project", {
-        label: project.data.project_name,
-        value: `${project.data.id}`,
-      });
+  const disableDate = useMemo(() => {
+    if (form.watch("sprint")) {
+      const data = JSON.parse(`${form.watch("sprint")?.value}`) as {
+        start_date: string;
+        end_date: string;
+      };
+      return {
+        before: dayjs(data.start_date).toDate(),
+        after: dayjs(data.end_date).toDate(),
+      };
     }
-  }, [project]);
+
+    if (form.watch("project")) {
+      const data = JSON.parse(`${form.watch("project.value")}`) as {
+        start_date: string;
+        end_date: string;
+      };
+      return {
+        before: dayjs(data.start_date).toDate(),
+        after: dayjs(data.end_date).toDate(),
+      };
+    }
+    return undefined;
+  }, [form.watch("project"), form.watch("sprint")]);
 
   return (
     <>
@@ -143,10 +169,17 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
         <form
           className="space-y-4"
           onSubmit={form.handleSubmit((v) => {
+            const sprint = JSON.parse(v.sprint?.value ?? `{"id": null}`) as {
+              id: string | null;
+            };
+            const proyek = JSON.parse(v.project?.value ?? `{"id": null}`) as {
+              id: string | null;
+            };
             create.mutate({
               data: {
                 ...v,
-                project_id: v.project?.value ?? project_id,
+                project_id: proyek.id ?? project_id,
+                sprint_id: sprint.id,
                 task_for: v.task_for?.value ?? `${user.id}`,
                 start_date: date4Y2M2D(v.date.from),
                 end_date: v.date.to
@@ -203,6 +236,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                   <FormLabel>Tanggal</FormLabel>
                   <FormControl>
                     <DateRangePicker
+                      disabled={disableDate}
                       value={field.value}
                       onChange={field.onChange}
                       className="w-full"
@@ -275,16 +309,20 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                           <FormLabel>Jadwal</FormLabel>
                           <FormControl>
                             <SelectAsync
-                              cacheUniqs={[form.watch("project")]}
+                              cacheUniqs={[projectID]}
                               placeholder="Pilih Jadwal"
+                              isClearable
                               selectRef={field.ref}
                               value={field.value}
-                              onChange={field.onChange}
-                              loadOptions={loadProjectSprintOptions}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                // @ts-expect-error gapapa error gan
+                                form.setValue("date", null);
+                              }}
+                              loadOptions={loadProjectSprintJSONOptions}
                               additional={{
                                 page: 1,
-                                project_id:
-                                  form.watch("project.value") ?? project_id,
+                                project_id: projectID,
                               }}
                             />
                           </FormControl>
@@ -313,8 +351,10 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                                 field.onChange(e);
                                 form.setValue("sprint", null);
                                 form.setValue("task_for", null);
+                                // @ts-expect-error gapapa gan error
+                                form.setValue("date", null);
                               }}
-                              loadOptions={loadProjectOptions}
+                              loadOptions={loadProjectSprintJSONOptions}
                               additional={{ page: 1 }}
                             />
                           </FormControl>
