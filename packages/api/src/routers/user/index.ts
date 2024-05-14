@@ -22,7 +22,11 @@ type User = z.infer<typeof userSchema>;
 
 //--NOTE: FORM
 const userCreateForm = userCreateFormSchema.omit({ company: true, role: true });
-const userUpdateForm = userUpdateFormSchema.omit({ company: true, role: true });
+const userUpdateForm = userUpdateFormSchema.omit({
+  company: true,
+  role: true,
+  company_id: true,
+});
 
 const user = router("user", {
   all: router.query({
