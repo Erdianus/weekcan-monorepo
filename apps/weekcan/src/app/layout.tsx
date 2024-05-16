@@ -1,6 +1,8 @@
 // Lightbox CSS
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/captions.css";
+// react image crop
+import "react-image-crop/dist/ReactCrop.css";
 import "~/app/globals.css";
 
 import type { Metadata } from "next";

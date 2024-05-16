@@ -105,8 +105,7 @@ const CreateDailyTask = () => {
         onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
-
-          if (data.file) {
+          /* if (data.file) {
             const mutates = data.file.map((file) =>
               create.mutateAsync({
                 data: {
@@ -125,7 +124,12 @@ const CreateDailyTask = () => {
 
               if (res) {
                 toast.success(res[0]?.message);
-                setData(initData);
+                setData((o) => ({
+                  ...o,
+                  desc_detail_task: "",
+                  file: undefined,
+                  is_done: false,
+                }));
                 await client.invalidateQueries({
                   queryKey: k.project.task.daily.dateGroup.getKey(),
                 });
@@ -140,7 +144,7 @@ const CreateDailyTask = () => {
             }
 
             return;
-          }
+          } */
 
           create.mutate(
             {
@@ -150,12 +154,18 @@ const CreateDailyTask = () => {
                 is_done: Number(data.is_done),
                 task_project_id: params.task_id,
                 is_permanent: Number(data.is_permanent),
+                file: data.file,
               },
             },
             {
               onSuccess: async ({ message }) => {
                 toast.success(message);
-                setData(initData);
+                setData((o) => ({
+                  ...o,
+                  desc_detail_task: "",
+                  file: undefined,
+                  is_done: false,
+                }));
                 await client.invalidateQueries({
                   queryKey: k.project.task.daily.dateGroup.getKey(),
                 });

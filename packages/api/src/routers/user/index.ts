@@ -86,9 +86,18 @@ const user = router("user", {
       id: string | number;
       picture_path: File;
     }) => {
-      const res = await Axios.post(`/user/${variables.id}`, {
-        picture_path: variables.picture_path,
-      });
+      const res = await Axios.post(
+        `/user/update/profile-picture/${variables.id}`,
+        {
+          picture_path: variables.picture_path,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+          },
+        },
+      );
 
       return res.data as { message: string };
     },

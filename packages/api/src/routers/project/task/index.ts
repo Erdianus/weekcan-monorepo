@@ -12,11 +12,17 @@ import daily from "./daily";
 import taskProjectBaseSchema from "./schema";
 
 const taskProjectSchema = taskProjectBaseSchema.extend({
-  task_for: userBaseSchema,
+  // task_for: userBaseSchema,
+  task_for: z.string(),
+  task_for_name: z.string(),
   have_daily_task: z.boolean(),
   set_by: userBaseSchema,
   sprint: sprintBaseSchema.nullish(),
   project: projectBaseSchema,
+});
+
+const taskProjectSingleSchema = taskProjectSchema.extend({
+  task_for: userBaseSchema,
 });
 
 type TaskProject = z.infer<typeof taskProjectSchema>;
@@ -38,7 +44,7 @@ const task = {
     fetcher: async (variables: { id: string }) => {
       const res = await Axios(`/task-project/${variables.id}`);
 
-      return res.data as { data: TaskProject };
+      return res.data as { data: z.infer<typeof taskProjectSingleSchema> };
     },
   }),
   create: router.mutation({

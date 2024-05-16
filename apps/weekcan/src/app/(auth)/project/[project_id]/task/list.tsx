@@ -152,7 +152,7 @@ const columns = [
       return dateRange(start_date, end_date);
     },
   }),
-  colHelper.accessor("set_by", {
+  colHelper.accessor("task_for_name", {
     header: "Karyawan",
   }),
   colHelper.accessor("task_status", {

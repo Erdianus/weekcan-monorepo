@@ -43,9 +43,17 @@ const ListTaskProject = ({ id }: { id: string }) => {
   const client = useQueryClient();
   const { data: task } = k.project.task.single.useQuery({ variables: { id } });
 
-  const { data: dailys } = k.project.task.daily.dateGroup.useQuery({
+  /* const { data: dailys } = k.project.task.daily.dateGroup.useQuery({
+    variables: { ...variables, task_project_id: id },
+  }); */
+  const {
+    data: infiniteDailys,
+    hasNextPage,
+    fetchNextPage,
+  } = k.project.task.daily.dateGroupInfinite.useInfiniteQuery({
     variables: { ...variables, task_project_id: id },
   });
+  console.log(infiniteDailys);
 
   const del = k.project.task.daily.delete.useMutation({
     onSuccess: async ({ message }) => {
@@ -62,34 +70,38 @@ const ListTaskProject = ({ id }: { id: string }) => {
 
   let index_for_image = useMemo(() => {
     return -1;
-  }, [dailys]);
+  }, [infiniteDailys]);
 
   const slides = useMemo(() => {
     let slideList: { src: string; title: string }[] = [];
-    if (dailys && !Array.isArray(dailys?.data)) {
-      Object.keys(dailys.data).forEach((key) => {
-        const dailyList = dailys.data[key];
+    if (infiniteDailys) {
+      infiniteDailys.pages.forEach((dailys) =>
+        Object.keys(dailys.data).forEach((key) => {
+          const dailyList = dailys.data[key];
 
-        if (dailyList) {
-          const b = dailyList.filter((daily) => {
-            const extension = fileExt(daily.link_file ?? "").toLowerCase();
+          if (dailyList) {
+            const b = dailyList.filter((daily) => {
+              const extension = fileExt(daily.link_file ?? "").toLowerCase();
 
-            return (
-              extension === "png" || extension === "jpg" || extension === "jpeg"
-            );
-          });
+              return (
+                extension === "png" ||
+                extension === "jpg" ||
+                extension === "jpeg"
+              );
+            });
 
-          const c = b.map((bb) => ({
-            src: bb.link_file ?? "",
-            title: bb.desc_detail_task,
-          }));
-          slideList = [...slideList, ...c];
-        }
-      });
+            const c = b.map((bb) => ({
+              src: bb.link_file ?? "",
+              title: bb.desc_detail_task,
+            }));
+            slideList = [...slideList, ...c];
+          }
+        }),
+      );
     }
 
     return slideList;
-  }, [dailys]);
+  }, [infiniteDailys]);
 
   useEffect(() => {
     setMount(true);
@@ -132,114 +144,125 @@ const ListTaskProject = ({ id }: { id: string }) => {
       />
       <div className="relative mt-4 pb-20 md:min-h-svh">
         <Flashlist
-          isloading={!dailys}
+          isloading={!infiniteDailys}
           loading={
             <Loading>
               <Skeleton className="mb-2 h-10 w-1/2 rounded-lg" />
             </Loading>
           }
-          isfallback={Array.isArray(dailys?.data)}
-          fallback={<div>Tidak Ada Data Perihal </div>}
+          /* isfallback={Array.isArray(dailys?.data)}
+          fallback={<div>Tidak Ada Data Perihal </div>} */
         >
-          {Object.keys(dailys?.data ?? {}).map((date) => {
-            const dailyList = dailys?.data[date];
-            return (
-              <div key={`date-${date}`} className="mb-4">
-                <div className="sticky top-16 z-10 flex w-full items-center justify-center pb-1 sm:justify-start">
-                  {" "}
-                  <Badge>{date}</Badge>
-                </div>
-                {dailyList?.map((daily, i) => {
-                  const ext = fileExt(daily.link_file ?? "").toLowerCase();
-                  const isImage =
-                    ext === "png" || ext === "jpg" || ext === "jpeg";
+          {infiniteDailys?.pages.map((dailys) =>
+            Object.keys(dailys?.data ?? {}).map((date) => {
+              const dailyList = dailys?.data[date];
+              return (
+                <div key={`date-${date}`} className="mb-4">
+                  <div className="sticky top-16 z-10 flex w-full items-center justify-center pb-1 sm:justify-start">
+                    <Badge>{dayjs(date).format("DD-MMMM-YYYY")}</Badge>
+                  </div>
+                  {dailyList?.map((daily, i) => {
+                    return (
+                      <Fragment key={`daily-${daily.id}`}>
+                        {daily.file.map((f) => {
+                          const ext = fileExt(f.label ?? "").toLowerCase();
+                          const isImage =
+                            ext === "png" || ext === "jpg" || ext === "jpeg";
 
-                  if (isImage) index_for_image++;
-                  return (
-                    <Fragment key={`daily-${daily.id}`}>
-                      {daily.link_file && isImage && (
-                        <button
-                          type="button"
-                          data-index={index_for_image}
-                          className="relative mb-2 block w-auto flex-1 rounded-lg bg-main-500 p-1 dark:bg-main-900 sm:max-w-sm sm:flex-none"
-                        >
-                          <img
-                            data-index={index_for_image}
-                            onClick={(e) => {
-                              if (e.currentTarget.dataset.index)
-                                setIndexLB(
-                                  Number(e.currentTarget.dataset.index),
-                                );
-                            }}
-                            className="rounded-lg"
-                            src={daily.link_file}
-                          />
-                          {isItHim &&
-                            dailyList[i + 1]?.desc_detail_task ===
-                              daily.desc_detail_task && (
-                              <Button
-                                type="button"
-                                className="absolute right-1 top-1 z-10"
-                                onClick={() => {
+                          if (isImage) index_for_image++;
+                          if (!isImage) return null;
+
+                          return (
+                            <button
+                              type="button"
+                              data-index={index_for_image}
+                              className="relative mb-2 block w-auto flex-1 rounded-lg bg-main-500 p-1 dark:bg-main-900 sm:max-w-sm sm:flex-none"
+                            >
+                              <img
+                                data-index={index_for_image}
+                                onClick={(e) => {
+                                  if (e.currentTarget.dataset.index)
+                                    setIndexLB(
+                                      Number(e.currentTarget.dataset.index),
+                                    );
+                                }}
+                                className="rounded-lg"
+                                src={f.file_link}
+                              />
+                              {isItHim &&
+                                dailyList[i + 1]?.desc_detail_task ===
+                                  daily.desc_detail_task && (
+                                  <Button
+                                    type="button"
+                                    className="absolute right-1 top-1 z-10"
+                                    onClick={() => {
+                                      alert.setData({
+                                        header:
+                                          "Yakin ingin menghapus gambar ini?",
+                                        confirmText: "Ya, Hapus",
+                                        open: true,
+                                        onConfirm: () => {
+                                          del.mutate({ id: `${daily.id}` });
+                                        },
+                                      });
+                                    }}
+                                    variant={"secondary"}
+                                    size={"icon"}
+                                  >
+                                    {del.isPending &&
+                                    del.variables.id === `${daily.id}` ? (
+                                      <Spinner />
+                                    ) : (
+                                      <Trash2 />
+                                    )}
+                                  </Button>
+                                )}
+                            </button>
+                          );
+                        })}
+                        {dailyList[i + 1]?.desc_detail_task !==
+                          daily.desc_detail_task && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger disabled={!isItHim} asChild>
+                              <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
+                                <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
+                                  {daily.desc_detail_task}
+                                </div>
+                              </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                onClick={() =>
                                   alert.setData({
-                                    header: "Yakin ingin menghapus gambar ini?",
-                                    confirmText: "Ya, Hapus",
                                     open: true,
+                                    confirmText: "Ya, Hapus",
+                                    header: `Yakin ingin mengapus Perihal?`,
+                                    desc: "Perihal yang dihapus tidak dapat dikembalikan lagi",
                                     onConfirm: () => {
                                       del.mutate({ id: `${daily.id}` });
                                     },
-                                  });
-                                }}
-                                variant={"secondary"}
-                                size={"icon"}
+                                  })
+                                }
+                                className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
                               >
-                                {del.isPending &&
-                                del.variables.id === `${daily.id}` ? (
-                                  <Spinner />
-                                ) : (
-                                  <Trash2 />
-                                )}
-                              </Button>
-                            )}
-                        </button>
-                      )}
-                      {dailyList[i + 1]?.desc_detail_task !==
-                        daily.desc_detail_task && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger disabled={!isItHim} asChild>
-                            <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
-                              <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
-                                {daily.desc_detail_task}
-                              </div>
-                            </div>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                alert.setData({
-                                  open: true,
-                                  confirmText: "Ya, Hapus",
-                                  header: `Yakin ingin mengapus Perihal?`,
-                                  desc: "Perihal yang dihapus tidak dapat dikembalikan lagi",
-                                  onConfirm: () => {
-                                    del.mutate({ id: `${daily.id}` });
-                                  },
-                                })
-                              }
-                              className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              <span>Hapus</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                    </Fragment>
-                  );
-                })}
-              </div>
-            );
-          })}
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                <span>Hapus</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </Fragment>
+                    );
+                  })}
+                </div>
+              );
+            }),
+          )}
+          {hasNextPage && (
+            <Button type="button" onClick={() => fetchNextPage()}>
+              Tampilkan Lebih
+            </Button>
+          )}
         </Flashlist>
       </div>
       {mount &&

@@ -8,14 +8,22 @@ import dailyTaskSchema, { dailyTaskFormSchema } from "./schema";
 
 const dailySchema = dailyTaskSchema.extend({
   link_file: z.string().nullish(),
-  file: z.string().nullish(),
+  file: z
+    .object({
+      id: z.number(),
+      label: z.string(),
+      file_link: z.string(),
+    })
+    .array(),
 });
 
 // NOTE: FORM
 const dailyTaskCreateForm = dailyTaskFormSchema.extend({
+  file: z.instanceof(File).array().nullish(),
   is_done: z.number(),
   is_permanent: z.number(),
 });
+
 const dailyTaskUpdateForm = dailyTaskFormSchema.omit({
   file: true,
   is_permanent: true,
@@ -47,6 +55,29 @@ const daily = {
         meta: { hasMore: boolean };
       };
     },
+  }),
+  dateGroupInfinite: router.infiniteQuery({
+    fetcher: async (variables: {
+      task_project_id: string;
+      from?: string;
+      to?: string;
+      page?: number;
+    }) => {
+      const res = await Axios("/detail-task/by-date", { params: variables });
+
+      const r = res.data as {
+        data: Record<string, z.infer<typeof dailySchema>[]>;
+        meta: { hasMore: boolean };
+      };
+
+      return { ...r, meta: { ...r.meta, page: variables.page ?? 1 } };
+    },
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.meta.hasMore) return null;
+
+      return lastPage.meta.page + 1;
+    },
+    initialPageParam: 1,
   }),
   single: router.query({
     fetcher: async (variables: { id: string }) => {

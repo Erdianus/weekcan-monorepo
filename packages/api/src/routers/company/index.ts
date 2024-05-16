@@ -6,6 +6,7 @@ import Axios from "@hktekno/utils/axios";
 import type { Meta } from "../meta";
 import userBaseSchema from "../user/schema";
 import companyBaseSchema, { companyFormSchema as companyForm } from "./schema";
+import task from "./task";
 
 const companySchema = companyBaseSchema.extend({
   picture_link: z.string().nullish(),
@@ -81,6 +82,7 @@ const company = router("company", {
       return res.data as { message: string };
     },
   }),
+  task,
 });
 
 export { type Company };

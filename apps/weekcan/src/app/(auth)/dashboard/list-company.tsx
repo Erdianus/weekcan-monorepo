@@ -21,7 +21,7 @@ const ListCompany = () => {
             <AvatarImage src={company.picture_link ?? ""} />
             <AvatarFallback>{shortName(company.company_name)}</AvatarFallback>
             <div className="absolute top-0 flex h-full w-full items-center justify-center bg-gray-900/60 text-xs opacity-0 transition-opacity group-hover:opacity-100">
-              <div className="rounded-lg bg-gray-950 p-1">
+              <div className="rounded-lg bg-gray-950 p-1 text-white">
                 {company.company_name}
               </div>
             </div>
