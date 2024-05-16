@@ -1,6 +1,7 @@
 {
-  "name": "weeekcan 📅",
-  "short_name": "weekcan 📅",
+  "name": "weeekcan📅",
+  "short_name": "weekcan📅",
+  "description": "aplikasi kelola kerjaan",
   "icons": [
     {
       "src": "/icons/maskable_icon_x192.png",
@@ -23,9 +24,18 @@
       "type": "image/png"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/icons/rich-ui.png",
+      "sizes": "640x320",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "weekcan 🔥"
+    }
+  ],
   "display": "standalone",
   "theme_color": "#FFFFFF",
-  "background_color": "#FFFFFF",
+  "background_color": "#FFFFFE",
   "start_url": "/dashboard",
   "orientation": "portrait"
 }
