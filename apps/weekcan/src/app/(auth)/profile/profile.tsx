@@ -129,7 +129,6 @@ const Profile = ({ id }: { id: string }) => {
           }}
         />
       </Avatar>
-      {fileRef.current?.files?.[0]?.name}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((v) => {
@@ -147,7 +146,7 @@ const Profile = ({ id }: { id: string }) => {
               return (
                 <FormItem>
                   <FormLabel>Nama</FormLabel>
-                  <FormControl>
+                  <FormControl isloading={!user}>
                     <Input {...field} placeholder="Masukkan Nama Lengkap" />
                   </FormControl>
                   <FormMessage />
@@ -162,7 +161,7 @@ const Profile = ({ id }: { id: string }) => {
               return (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
-                  <FormControl>
+                  <FormControl isloading={!user}>
                     <Input {...field} placeholder="Masukkan Nama Pengguna" />
                   </FormControl>
                   <FormMessage />
@@ -177,7 +176,7 @@ const Profile = ({ id }: { id: string }) => {
               return (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl>
+                  <FormControl isloading={!user}>
                     <Input {...field} placeholder="Masukkan Email" />
                   </FormControl>
                   <FormMessage />
@@ -185,7 +184,9 @@ const Profile = ({ id }: { id: string }) => {
               );
             }}
           />
-          <Button>{update.isPending ? <Spinner /> : "Update Profile"} </Button>
+          <Button disabled={update.isPending}>
+            {update.isPending ? <Spinner /> : "Update Profile"}{" "}
+          </Button>
         </form>
       </Form>
     </>

@@ -33,3 +33,9 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# pwa
+sw.js
+sw.js.map
+workbox-*.js
+workbox-*.js.map
