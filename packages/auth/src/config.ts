@@ -10,7 +10,7 @@ export type UserSession = {
   username: string;
   role: string;
   // company: Array<Company>;
-  role_id: number;
+  role_id: string;
   token: string;
 };
 
