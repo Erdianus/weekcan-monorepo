@@ -15,38 +15,32 @@ const DetailCompany = ({ id }: { id: string }) => {
       <ItemDetail
         icon={BookUser}
         label={"Alamat"}
-        isload={isLoading}
         value={company?.data.address ?? "-"}
       />
       <ItemDetail icon={Mail} label={"Email"} value={company?.data.email} />
       <ItemDetail
         icon={Instagram}
         label={"Instagram"}
-        isload={isLoading}
         value={company?.data.instagram ?? "-"}
       />
       <ItemDetail
         icon={Twitter}
         label={"Twitter"}
-        isload={isLoading}
         value={company?.data.twitter ?? "-"}
       />
       <ItemDetail
         icon={Facebook}
         label={"Facebook"}
-        isload={isLoading}
         value={company?.data.facebook ?? "-"}
       />
       <ItemDetail
         icon={Tiktok}
         label={"Tiktok"}
-        isload={isLoading}
         value={company?.data.tiktok ?? "-"}
       />
       <ItemDetail
         icon={Phone}
         label={"No. Telp/HP"}
-        isload={isLoading}
         value={company?.data.no_telp ?? "-"}
       />
     </>
