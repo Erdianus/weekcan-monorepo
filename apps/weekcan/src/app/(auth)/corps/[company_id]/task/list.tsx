@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 import { k } from "@hktekno/api";
@@ -12,13 +13,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import Spinner from "@hktekno/ui/components/ui/spinner";
-import { Project, User } from "@hktekno/ui/icon";
+import { Chat, Project, User } from "@hktekno/ui/icon";
 import { relativeDate } from "@hktekno/ui/lib/date";
 
 const ListCompanyTask = ({ company_id }: { company_id: string }) => {
@@ -55,14 +54,18 @@ const ListCompanyTask = ({ company_id }: { company_id: string }) => {
                       {task.task_name}
                     </p>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Billing</DropdownMenuItem>
-                    <DropdownMenuItem>Team</DropdownMenuItem>
-                    <DropdownMenuItem>Subscription</DropdownMenuItem>
-                  </DropdownMenuContent>
+                  {task.project_id && (
+                    <DropdownMenuContent align="end">
+                      <Link
+                        href={`/project/${task.project_id}/task/${task.id}/daily`}
+                      >
+                        <DropdownMenuItem>
+                          <Chat className="mr-2 h-4 w-4" />
+                          <span>Perihal</span>
+                        </DropdownMenuItem>
+                      </Link>{" "}
+                    </DropdownMenuContent>
+                  )}
                 </DropdownMenu>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">

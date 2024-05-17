@@ -65,7 +65,7 @@ const ListTaskProject = ({ id }: { id: string }) => {
     onError: ({ message }) => toast.error(message),
   });
 
-  const isItHim = task && `${task.data.task_for.id}` === `${user.id}`;
+  const isItHim = task && `${task.data.task_for}` === `${user.id}`;
 
   let index_for_image = useMemo(() => {
     return -1;
