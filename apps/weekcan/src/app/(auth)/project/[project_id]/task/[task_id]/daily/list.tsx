@@ -4,7 +4,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { Trash2 } from "lucide-react";
+import { ThumbsUp, Trash2 } from "lucide-react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
 
@@ -59,7 +59,7 @@ const ListTaskProject = ({ id }: { id: string }) => {
       toast.success(message);
       alert.reset();
       await client.invalidateQueries({
-        queryKey: k.project.task.daily.dateGroup.getKey(),
+        queryKey: k.project.task.daily.dateGroupInfinite.getKey(),
       });
     },
     onError: ({ message }) => toast.error(message),
@@ -228,6 +228,15 @@ const ListTaskProject = ({ id }: { id: string }) => {
 
                         <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
                           <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
+                            <div className="absolute bottom-1 right-1 flex items-center gap-1 text-xs">
+                              <div className="h-3 w-3">
+                                {daily.is_done && <ThumbsUp size={12} />}
+                              </div>
+                              <div>
+                                {dayjs(daily.created_at).format("HH:mm")}
+                              </div>
+                            </div>
+
                             <DropdownMenu>
                               <DropdownMenuTrigger disabled={!isItHim} asChild>
                                 <div className="cursor-pointer underline">

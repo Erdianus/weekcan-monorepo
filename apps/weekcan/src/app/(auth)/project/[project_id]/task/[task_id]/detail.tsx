@@ -49,17 +49,18 @@ const DetailTaskProject = ({ id }: { id: string }) => {
           </Badge>
         }
       />
-      {`${task?.data.set_by.id}` !== `${task?.data.task_for.id}` && (
-        <Item
-          icon={Leader}
-          label="Pemberi Tugas"
-          value={task?.data.set_by.name}
-        />
-      )}
+      {task?.data.set_by &&
+        `${task.data.set_by}` !== `${task.data.task_for}` && (
+          <Item
+            icon={Leader}
+            label="Pemberi Tugas"
+            value={task.data.set_by_name}
+          />
+        )}
       <Item
         icon={UserRound}
         label="Tugas Siapa"
-        value={task?.data.task_for.name}
+        value={task?.data.task_for_name}
       />
     </>
   );

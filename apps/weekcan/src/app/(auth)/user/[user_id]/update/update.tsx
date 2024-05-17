@@ -33,7 +33,10 @@ const userFormSchema = userUpdateFormSchema.omit({
 const UpdateUser = ({ id }: { id: string | number }) => {
   const router = useRouter();
 
-  const { data: user } = k.user.single.useQuery({ variables: { id } });
+  const { data: user } = k.user.single.useQuery({
+    variables: { id },
+    enabled: !!id,
+  });
 
   const form = useForm<z.infer<typeof userFormSchema>>({
     resolver: zodResolver(userFormSchema),
@@ -88,7 +91,6 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               data: {
                 ...v,
                 role_id: v.role.value ?? "",
-                company_id: v.company.map(({ value }) => value),
               },
             });
           })}

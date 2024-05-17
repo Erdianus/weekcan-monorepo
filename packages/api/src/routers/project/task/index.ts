@@ -5,7 +5,6 @@ import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../../meta";
 import type { taskProjectFormSchema } from "./schema";
-import userBaseSchema from "../../user/schema";
 import projectBaseSchema from "../schema";
 import sprintBaseSchema from "../sprint/schema";
 import daily from "./daily";
@@ -21,10 +20,6 @@ const taskProjectSchema = taskProjectBaseSchema.extend({
   set_by_name: z.string(),
   sprint: sprintBaseSchema.nullish(),
   project: projectBaseSchema,
-});
-
-const taskProjectSingleSchema = taskProjectSchema.extend({
-  task_for: userBaseSchema,
 });
 
 type TaskProject = z.infer<typeof taskProjectSchema>;
@@ -46,7 +41,7 @@ const task = {
     fetcher: async (variables: { id: string }) => {
       const res = await Axios(`/task-project/${variables.id}`);
 
-      return res.data as { data: z.infer<typeof taskProjectSingleSchema> };
+      return res.data as { data: z.infer<typeof taskProjectSchema> };
     },
   }),
   create: router.mutation({

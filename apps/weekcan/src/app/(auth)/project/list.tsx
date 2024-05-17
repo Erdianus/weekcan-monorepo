@@ -193,7 +193,6 @@ const ListProject = () => {
   return (
     <>
       <PortalSearch placeholder="Cari Proyek..." />
-
       <div className="mb-4">
         <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
           Filter
@@ -211,5 +210,9 @@ const ListProject = () => {
     </>
   );
 };
+
+const columnsListProject = columns;
+
+export { columnsListProject };
 
 export default ListProject;

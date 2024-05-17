@@ -21,7 +21,7 @@ const SingleCorps = ({ id }: { id: string }) => {
   const links = useMemo(() => {
     return [
       { label: "Detail", href: `/corps/${id}` },
-      { label: "Proyek", href: `/coprs/${id}/project` },
+      { label: "Proyek", href: `/corps/${id}/project` },
       { label: "Tugas", href: `/corps/${id}/task` },
       { label: "Perihal", href: `/corps/${id}/daily` },
     ];
