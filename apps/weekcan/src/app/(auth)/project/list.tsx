@@ -204,7 +204,7 @@ const ListProject = () => {
         </div>
       </div>
       <DataTable table={table} columns={columns} isloading={isload} />
-      <div className="mt-4 flex w-full items-center justify-end">
+      <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />
         <PaginationParams meta={projects?.meta} />
       </div>

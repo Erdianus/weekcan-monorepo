@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CircleUserRound, LogOut } from "lucide-react";
+import { CircleUserRound, KeyRound, LogOut } from "lucide-react";
 import { toast } from "sonner";
 
 import { k } from "@hktekno/api";
@@ -47,6 +47,12 @@ const UserMenu = () => {
           <DropdownMenuItem>
             <CircleUserRound className="mr-2 h-4 w-4" />
             <span>Profil</span>
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/profile/change-password">
+          <DropdownMenuItem>
+            <KeyRound className="mr-2 h-4 w-4" />
+            <span>Ubah Password</span>
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />

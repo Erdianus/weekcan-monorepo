@@ -201,9 +201,13 @@ const ListFileProject = ({ id }: { id: string | number }) => {
           >
             <div className="flex items-center gap-3">
               <FileIcon text={file.label} />
-              <div className="text-muted-foreground">
+              <a
+                href={file.file_link}
+                target="_blank"
+                className="text-muted-foreground hover:underline"
+              >
                 {label_format(file.label)}
-              </div>
+              </a>
             </div>
             <div className="flex items-center gap-4">
               <Button

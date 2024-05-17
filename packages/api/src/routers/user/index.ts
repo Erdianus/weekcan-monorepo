@@ -109,6 +109,17 @@ const user = router("user", {
       return res.data as { message: string };
     },
   }),
+  changePassword: router.mutation({
+    mutationFn: async (variables: {
+      old_password: string;
+      new_password: string;
+      confirm_password: string;
+    }) => {
+      const res = await Axios.put("/reset-pass", variables);
+
+      return res.data as { message: string };
+    },
+  }),
 });
 
 export { type User };
