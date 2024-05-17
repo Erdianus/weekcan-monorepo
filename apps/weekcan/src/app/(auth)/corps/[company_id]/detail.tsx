@@ -7,7 +7,7 @@ import { ItemDetail } from "@hktekno/ui/components/item-detail";
 import { Facebook, Instagram, Tiktok, Twitter } from "@hktekno/ui/icon";
 
 const DetailCompany = ({ id }: { id: string }) => {
-  const { data: company, isLoading } = k.company.single.useQuery({
+  const { data: company } = k.company.single.useQuery({
     variables: { id },
   });
   return (
