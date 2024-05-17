@@ -225,42 +225,37 @@ const ListTaskProject = ({ id }: { id: string }) => {
                             </button>
                           );
                         })}
-                        {dailyList[i + 1]?.desc_detail_task !==
-                          daily.desc_detail_task && (
-                          <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
-                            <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger
-                                  disabled={!isItHim}
-                                  asChild
+
+                        <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
+                          <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger disabled={!isItHim} asChild>
+                                <div className="cursor-pointer underline">
+                                  {daily.desc_detail_task}
+                                </div>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    alert.setData({
+                                      open: true,
+                                      confirmText: "Ya, Hapus",
+                                      header: `Yakin ingin mengapus Perihal?`,
+                                      desc: "Perihal yang dihapus tidak dapat dikembalikan lagi",
+                                      onConfirm: () => {
+                                        del.mutate({ id: `${daily.id}` });
+                                      },
+                                    })
+                                  }
+                                  className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
                                 >
-                                  <div className="cursor-pointer underline">
-                                    {daily.desc_detail_task}
-                                  </div>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                  <DropdownMenuItem
-                                    onClick={() =>
-                                      alert.setData({
-                                        open: true,
-                                        confirmText: "Ya, Hapus",
-                                        header: `Yakin ingin mengapus Perihal?`,
-                                        desc: "Perihal yang dihapus tidak dapat dikembalikan lagi",
-                                        onConfirm: () => {
-                                          del.mutate({ id: `${daily.id}` });
-                                        },
-                                      })
-                                    }
-                                    className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
-                                  >
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    <span>Hapus</span>
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  <span>Hapus</span>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
-                        )}
+                        </div>
                       </Fragment>
                     );
                   })}
