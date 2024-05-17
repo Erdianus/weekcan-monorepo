@@ -62,7 +62,7 @@ const ListProject = () => {
   const { data: projects, isLoading } = k.project.all.useQuery();
 
   const table = useReactTable({
-    data: projects?.data.slice(0, 3) ?? [],
+    data: projects?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
