@@ -5,7 +5,6 @@ import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../../meta";
 import type { taskProjectFormSchema } from "./schema";
-import projectBaseSchema from "../schema";
 import sprintBaseSchema from "../sprint/schema";
 import daily from "./daily";
 import taskProjectBaseSchema from "./schema";
@@ -19,7 +18,9 @@ const taskProjectSchema = taskProjectBaseSchema.extend({
   set_by: z.string(),
   set_by_name: z.string(),
   sprint: sprintBaseSchema.nullish(),
-  project: projectBaseSchema,
+  project_id: z.string(),
+  project_name: z.string(),
+  // project: projectBaseSchema,
 });
 
 type TaskProject = z.infer<typeof taskProjectSchema>;

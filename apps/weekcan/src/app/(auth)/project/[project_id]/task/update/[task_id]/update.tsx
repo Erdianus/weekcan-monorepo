@@ -183,21 +183,20 @@ const UpdateTaskProject = ({
           value: data.task_status,
         },
         task_for:
-          `${data.task_for.id}` === `${user.id}`
+          `${data.task_for}` === `${user.id}`
             ? null
             : {
-                label: data.task_for.username,
-                value: `${data.task_for.id}`,
+                label: data.task_for_name,
+                value: `${data.task_for}`,
               },
         have_daily_task: +data.have_daily_task,
-        set_by:
-          `${user.id}` === `${data.task_for.id}` ? null : `${data.set_by.id}`,
+        set_by: `${user.id}` === `${data.task_for}` ? null : `${data.set_by}`,
         project: {
-          label: data.project.project_name,
+          label: data.project_name,
           value: JSON.stringify({
-            id: `${data.project.id}`,
-            start_date: data.project.start_date,
-            end_date: data.project.end_date,
+            id: `${data.project_id}`,
+            start_date: date4Y2M2D(),
+            end_date: date4Y2M2D(),
           }),
         },
         sprint: !data.sprint
@@ -394,7 +393,7 @@ const UpdateTaskProject = ({
                           <FormControl isloading={isload}>
                             <SelectAsync
                               isClearable
-                              placeholder={`Default: ${task?.data.project.project_name}`}
+                              placeholder={`Default: ${task?.data.project_name}`}
                               selectRef={field.ref}
                               value={field.value}
                               onChange={(e) => {
