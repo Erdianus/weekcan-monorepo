@@ -28,6 +28,28 @@ const task = {
       };
     },
   }),
+  allInfinity: router.infiniteQuery({
+    fetcher: async (variables: {
+      company_id: string;
+      page?: string | number;
+      paginate?: string | number;
+      search?: string;
+    }) => {
+      const res = await Axios("/task-project", { params: variables });
+
+      return res.data as {
+        data: z.infer<typeof taskCompanySchema>[];
+        meta: Meta;
+      };
+    },
+    getNextPageParam: (last) => {
+      const { current_page, last_page } = last.meta;
+
+      if (current_page === last_page) return null;
+      return current_page + 1;
+    },
+    initialPageParam: 1,
+  }),
 };
 
 export default task;

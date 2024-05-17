@@ -200,7 +200,7 @@ const ListProject = () => {
           <Separator className="flex-1" />
         </div>
         <div className="flex flex-wrap gap-4">
-          <FilterProject />
+          <FilterProject isLoading={isload} />
         </div>
       </div>
       <DataTable table={table} columns={columns} isloading={isload} />

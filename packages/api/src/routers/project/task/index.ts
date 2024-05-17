@@ -16,7 +16,9 @@ const taskProjectSchema = taskProjectBaseSchema.extend({
   task_for: z.string(),
   task_for_name: z.string(),
   have_daily_task: z.boolean(),
-  set_by: userBaseSchema,
+  // set_by: userBaseSchema,
+  set_by: z.string(),
+  set_by_name: z.string(),
   sprint: sprintBaseSchema.nullish(),
   project: projectBaseSchema,
 });

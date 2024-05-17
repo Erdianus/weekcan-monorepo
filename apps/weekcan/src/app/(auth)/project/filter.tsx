@@ -6,7 +6,7 @@ import { DateRangePicker } from "@hktekno/ui/components/ui/date-picker";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import { loadCompanyOptions, loadUserOptions } from "@hktekno/ui/lib/select";
 
-const FilterProject = () => {
+const FilterProject = ({ isLoading }: { isLoading: boolean }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -87,7 +87,8 @@ const FilterProject = () => {
       />
       <DateRangePicker
         mode="range"
-        defaultValue={
+        disabled={isLoading}
+        value={
           searchParams.get("from")
             ? {
                 from: dayjs(searchParams.get("from")).toDate(),

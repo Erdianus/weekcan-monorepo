@@ -1,7 +1,6 @@
 import { SVGProps, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { Paperclip, SendHorizontal } from "lucide-react";
@@ -78,7 +77,21 @@ const CreateDailyTask = () => {
   const { data: task } = k.project.task.single.useQuery({
     variables: { id: params.task_id },
   });
-  const create = k.project.task.daily.create.useMutation();
+  const create = k.project.task.daily.create.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      setData((o) => ({
+        ...o,
+        desc_detail_task: "",
+        file: undefined,
+        is_done: false,
+      }));
+      await client.invalidateQueries({
+        queryKey: k.project.task.daily.dateGroupInfinite.getKey(),
+      });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
 
   useEffect(() => {
     if (task) {
@@ -105,74 +118,17 @@ const CreateDailyTask = () => {
         onSubmit={async (e) => {
           e.preventDefault();
           e.stopPropagation();
-          /* if (data.file) {
-            const mutates = data.file.map((file) =>
-              create.mutateAsync({
-                data: {
-                  desc_detail_task: data.desc_detail_task,
-                  date: date4Y2M2D(data.date),
-                  is_done: Number(data.is_done),
-                  task_project_id: params.task_id,
-                  is_permanent: Number(data.is_permanent),
-                  file,
-                },
-              }),
-            );
 
-            try {
-              const res = await Promise.all(mutates);
-
-              if (res) {
-                toast.success(res[0]?.message);
-                setData((o) => ({
-                  ...o,
-                  desc_detail_task: "",
-                  file: undefined,
-                  is_done: false,
-                }));
-                await client.invalidateQueries({
-                  queryKey: k.project.task.daily.dateGroup.getKey(),
-                });
-              }
-            } catch (e: unknown) {
-              let err = "Terjadi Kesalahan";
-              if (e instanceof AxiosError) {
-                err = e.message;
-              }
-
-              toast.error(err);
-            }
-
-            return;
-          } */
-
-          create.mutate(
-            {
-              data: {
-                desc_detail_task: data.desc_detail_task,
-                date: date4Y2M2D(data.date),
-                is_done: Number(data.is_done),
-                task_project_id: params.task_id,
-                is_permanent: Number(data.is_permanent),
-                file: data.file,
-              },
+          create.mutate({
+            data: {
+              desc_detail_task: data.desc_detail_task,
+              date: date4Y2M2D(data.date),
+              is_done: Number(data.is_done),
+              task_project_id: params.task_id,
+              is_permanent: Number(data.is_permanent),
+              file: data.file,
             },
-            {
-              onSuccess: async ({ message }) => {
-                toast.success(message);
-                setData((o) => ({
-                  ...o,
-                  desc_detail_task: "",
-                  file: undefined,
-                  is_done: false,
-                }));
-                await client.invalidateQueries({
-                  queryKey: k.project.task.daily.dateGroup.getKey(),
-                });
-              },
-              onError: ({ message }) => toast.error(message),
-            },
-          );
+          });
         }}
         className="fixed bottom-0 left-0 z-50 flex w-full flex-1 items-center gap-3 rounded-lg rounded-b-none border bg-background p-2 md:sticky"
       >

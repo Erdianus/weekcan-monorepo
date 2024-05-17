@@ -53,7 +53,6 @@ const ListTaskProject = ({ id }: { id: string }) => {
   } = k.project.task.daily.dateGroupInfinite.useInfiniteQuery({
     variables: { ...variables, task_project_id: id },
   });
-  console.log(infiniteDailys);
 
   const del = k.project.task.daily.delete.useMutation({
     onSuccess: async ({ message }) => {
@@ -80,21 +79,26 @@ const ListTaskProject = ({ id }: { id: string }) => {
           const dailyList = dailys.data[key];
 
           if (dailyList) {
-            const b = dailyList.filter((daily) => {
-              const extension = fileExt(daily.link_file ?? "").toLowerCase();
+            const dailyWithFile = dailyList.filter((daily) => {
+              return daily.file.filter((f) => {
+                const extension = fileExt(f.file_link ?? "").toLowerCase();
 
-              return (
-                extension === "png" ||
-                extension === "jpg" ||
-                extension === "jpeg"
-              );
+                return (
+                  extension === "png" ||
+                  extension === "jpg" ||
+                  extension === "jpeg"
+                );
+              });
             });
 
-            const c = b.map((bb) => ({
-              src: bb.link_file ?? "",
-              title: bb.desc_detail_task,
-            }));
-            slideList = [...slideList, ...c];
+            dailyWithFile.forEach((daily) => {
+              daily.file.forEach((f) => {
+                slideList.push({
+                  src: f.file_link,
+                  title: daily.desc_detail_task,
+                });
+              });
+            });
           }
         }),
       );
@@ -117,7 +121,8 @@ const ListTaskProject = ({ id }: { id: string }) => {
       />
       <DateRangePicker
         mode="range"
-        defaultValue={
+        disabled={!infiniteDailys}
+        value={
           searchParams.get("from")
             ? {
                 from: dayjs(searchParams.get("from")).toDate(),
@@ -150,8 +155,8 @@ const ListTaskProject = ({ id }: { id: string }) => {
               <Skeleton className="mb-2 h-10 w-1/2 rounded-lg" />
             </Loading>
           }
-          /* isfallback={Array.isArray(dailys?.data)}
-          fallback={<div>Tidak Ada Data Perihal </div>} */
+          isfallback={Array.isArray(infiniteDailys?.pages[0]?.data)}
+          fallback={<div>Tidak Ada Data Perihal. Coba ubah tanggal </div>}
         >
           {infiniteDailys?.pages.map((dailys) =>
             Object.keys(dailys?.data ?? {}).map((date) => {
@@ -222,34 +227,39 @@ const ListTaskProject = ({ id }: { id: string }) => {
                         })}
                         {dailyList[i + 1]?.desc_detail_task !==
                           daily.desc_detail_task && (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger disabled={!isItHim} asChild>
-                              <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
-                                <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
-                                  {daily.desc_detail_task}
-                                </div>
-                              </div>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  alert.setData({
-                                    open: true,
-                                    confirmText: "Ya, Hapus",
-                                    header: `Yakin ingin mengapus Perihal?`,
-                                    desc: "Perihal yang dihapus tidak dapat dikembalikan lagi",
-                                    onConfirm: () => {
-                                      del.mutate({ id: `${daily.id}` });
-                                    },
-                                  })
-                                }
-                                className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
-                              >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                <span>Hapus</span>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
+                            <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger
+                                  disabled={!isItHim}
+                                  asChild
+                                >
+                                  <div className="cursor-pointer underline">
+                                    {daily.desc_detail_task}
+                                  </div>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      alert.setData({
+                                        open: true,
+                                        confirmText: "Ya, Hapus",
+                                        header: `Yakin ingin mengapus Perihal?`,
+                                        desc: "Perihal yang dihapus tidak dapat dikembalikan lagi",
+                                        onConfirm: () => {
+                                          del.mutate({ id: `${daily.id}` });
+                                        },
+                                      })
+                                    }
+                                    className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    <span>Hapus</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          </div>
                         )}
                       </Fragment>
                     );

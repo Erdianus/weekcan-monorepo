@@ -34,11 +34,13 @@ import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { Chat } from "@hktekno/ui/icon";
 import { dateRange } from "@hktekno/ui/lib/date";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
+import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 
 type TaskProject = inferData<typeof k.project.task.all>["data"][number];
 const colHelper = createColumnHelper<TaskProject>();
 
 const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
+  const user = useUserStore();
   const params = useParams<{ project_id: string }>();
   const alert = useAlertStore();
 
@@ -52,6 +54,10 @@ const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
     },
     onError: ({ message }) => toast.error(message),
   });
+
+  const hasAccess =
+    `${user.id}` === `${data.set_by}` || `${user.id}` === `${data.task_for}`;
+
   return (
     <>
       <DropdownMenu
@@ -90,29 +96,33 @@ const Actions = ({ row }: CellContext<TaskProject, unknown>) => {
               <span>Perihal</span>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/project/${params.project_id}/task/update/${data.id}`}>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Edit</span>
+          {hasAccess && (
+            <Link href={`/project/${params.project_id}/task/update/${data.id}`}>
+              <DropdownMenuItem>
+                <Pencil className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
+          {hasAccess && (
+            <DropdownMenuItem
+              onClick={() =>
+                alert.setData({
+                  open: true,
+                  confirmText: "Ya, Hapus",
+                  header: `Yakin ingin mengapus '${data.task_name}'?`,
+                  desc: "Kerjaan yang dihapus tidak dapat dikembalikan lagi",
+                  onConfirm: () => {
+                    del.mutate({ id: [`${data.id}`] });
+                  },
+                })
+              }
+              className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Hapus</span>
             </DropdownMenuItem>
-          </Link>
-          <DropdownMenuItem
-            onClick={() =>
-              alert.setData({
-                open: true,
-                confirmText: "Ya, Hapus",
-                header: `Yakin ingin mengapus '${data.task_name}'?`,
-                desc: "Kerjaan yang dihapus tidak dapat dikembalikan lagi",
-                onConfirm: () => {
-                  del.mutate({ id: [`${data.id}`] });
-                },
-              })
-            }
-            className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            <span>Hapus</span>
-          </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
