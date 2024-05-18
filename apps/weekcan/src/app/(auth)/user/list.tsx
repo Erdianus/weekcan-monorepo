@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
@@ -129,9 +128,13 @@ const columns = [
 
 const ListUser = () => {
   const searchParams = useSearchParams();
-  const variables = Object.entries(searchParams.entries());
+  const variables = Object.fromEntries(searchParams.entries());
+  const company_id = searchParams.getAll("company_id");
+  const company_ids = company_id.length > 0 ? { company_id } : {};
 
-  const { data: users, isLoading } = k.user.all.useQuery({ variables });
+  const { data: users, isLoading } = k.user.all.useQuery({
+    variables: { ...variables, ...company_ids },
+  });
 
   const table = useReactTable({
     data: users?.data ?? [],

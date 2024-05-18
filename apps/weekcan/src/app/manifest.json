@@ -34,7 +34,7 @@
     }
   ],
   "display": "standalone",
-  "theme_color": "#6b7280",
+  "theme_color": "#2196f3",
   "background_color": "#2196f3",
   "start_url": "/dashboard",
   "orientation": "portrait"

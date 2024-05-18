@@ -13,12 +13,13 @@ const FilterUser = () => {
   return (
     <div className="flex items-center gap-4">
       <SelectAsync
+        isMulti
         defaultValue={
-          searchParams.get("company_id")
-            ? {
-                label: searchParams.get("company_name")?.toString(),
-                value: searchParams.get("company_id")?.toString(),
-              }
+          searchParams.getAll("company_id").length > 0
+            ? searchParams.getAll("company_id").map((value, i) => ({
+                value,
+                label: `${searchParams.getAll("company_name")[i]?.toString()}`,
+              }))
             : null
         }
         loadOptions={loadCompanyOptions}
@@ -32,9 +33,11 @@ const FilterUser = () => {
           const hasPage = !!searchParams.get("page");
           const params = new URLSearchParams(searchParams);
 
-          if (e) {
-            params.set("company_id", `${e.value}`);
-            params.set("company_name", `${e.label}`);
+          if (e.length > 0) {
+            e.forEach((ee) => {
+              params.append("company_id", `${ee.value}`);
+              params.append("company_name", `${ee.label}`);
+            });
           } else {
             params.delete("company_id");
             params.delete("company_name");
