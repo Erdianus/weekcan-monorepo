@@ -58,7 +58,8 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
     </>
   );
 };
-columnsListProject[columnsListProject.length - 1] = colHelper.display({
+const columns = [...columnsListProject];
+columns[columns.length - 1] = colHelper.display({
   id: "actions",
   cell: Actions,
 });
@@ -75,7 +76,7 @@ const ListProjectCompany = ({ company_id }: { company_id: string }) => {
 
   const table = useReactTable({
     data: projects?.data ?? [],
-    columns: columnsListProject,
+    columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -84,11 +85,7 @@ const ListProjectCompany = ({ company_id }: { company_id: string }) => {
   return (
     <>
       <PortalSearch placeholder="Cari Proyek..." />
-      <DataTable
-        table={table}
-        columns={columnsListProject}
-        isloading={isload}
-      />
+      <DataTable table={table} columns={columns} isloading={isload} />
       <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />
         <PaginationParams meta={projects?.meta} />
