@@ -5,6 +5,7 @@ import Dashboard from "./dashboard";
 import Facebook from "./facebook";
 import Image from "./image";
 import Instagram from "./instagram";
+import JobType from "./job-type";
 import Leader from "./leader";
 import MsExcel from "./msexcel";
 import MsWord from "./msword";
@@ -26,6 +27,7 @@ export {
   Facebook,
   Image,
   Instagram,
+  JobType,
   Leader,
   MsExcel,
   MsWord,

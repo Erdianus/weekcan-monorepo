@@ -4,7 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "../lib/utils";
-import { Client, Company, Dashboard, Project, User, Venue } from "./icon";
+import {
+  Client,
+  Company,
+  Dashboard,
+  JobType,
+  Project,
+  User,
+  Venue,
+} from "./icon";
 
 const icons = Object.freeze({
   dashboard: Dashboard,
@@ -13,6 +21,7 @@ const icons = Object.freeze({
   company: Company,
   venue: Venue,
   client: Client,
+  jobType: JobType,
 });
 
 type Icon = keyof typeof icons;

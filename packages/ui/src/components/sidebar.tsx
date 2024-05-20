@@ -26,6 +26,7 @@ const SidebarList = async () => {
               />
               <SidebarItems text="Tempat Acara" link="/venue" icon={"venue"} />
               <SidebarItems text="Klien" link="/client" icon={"client"} />
+              <SidebarItems text="Jabatan" link="/job_type" icon={"jobType"} />
             </>
           )}
         </ul>

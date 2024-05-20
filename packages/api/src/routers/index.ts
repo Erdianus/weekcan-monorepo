@@ -7,6 +7,7 @@ import type {
 
 import client from "./client";
 import company from "./company";
+import jobType from "./job-type";
 import project from "./project";
 import role from "./role";
 import user from "./user";
@@ -19,6 +20,7 @@ const k = {
   role,
   venue,
   client,
+  jobType,
 };
 
 export { k };
