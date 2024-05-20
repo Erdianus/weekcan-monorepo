@@ -140,7 +140,7 @@ function Select<
   return (
     <ReactSelect
       {...props}
-      className="w-full"
+      className={cn("w-full", props.className)}
       menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       classNames={classNames<Option, IsMulti, Group>()}
       components={{ DropdownIndicator }}
@@ -163,7 +163,7 @@ function SelectCreatable<
   return (
     <Creatable
       {...props}
-      className="w-full"
+      className={cn("w-full", props.className)}
       menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       classNames={classNames<Option, IsMulti, Group>()}
       components={{ DropdownIndicator }}

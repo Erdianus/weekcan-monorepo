@@ -29,12 +29,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
+import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { Chat } from "@hktekno/ui/icon";
 import { dateRange } from "@hktekno/ui/lib/date";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
+
+import Filter from "./filter";
 
 type TaskProject = inferData<typeof k.project.task.all>["data"][number];
 const colHelper = createColumnHelper<TaskProject>();
@@ -184,6 +187,7 @@ const ListTaskProject = ({ project_id }: { project_id: string }) => {
   const { data: tasks, isLoading } = k.project.task.all.useQuery({
     variables: { ...variables, project_id },
   });
+  const isload = !tasks;
 
   const del = k.project.task.delete.useMutation({
     onSuccess: async ({ message }) => {
@@ -217,6 +221,7 @@ const ListTaskProject = ({ project_id }: { project_id: string }) => {
 
   return (
     <>
+      <PortalSearch placeholder="Cari Kerjaan..." />
       <div className="mb-4 flex w-full items-center justify-between">
         <H3 className="">Tugas</H3>
         <Button
@@ -235,7 +240,15 @@ const ListTaskProject = ({ project_id }: { project_id: string }) => {
           )}
         </Button>
       </div>
-      <PortalSearch placeholder="Cari Kerjaan..." />
+      <div className="mb-4">
+        <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
+          Filter
+          <Separator className="flex-1" />
+        </div>
+        <div className="flex flex-wrap gap-4">
+          <Filter isLoading={isload} />
+        </div>
+      </div>
       <DataTable table={table} columns={columns} isloading={isLoading} />
       <div className="mt-4 flex w-full items-center justify-end">
         <Paginate />

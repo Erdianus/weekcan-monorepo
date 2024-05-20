@@ -116,6 +116,13 @@ const user = router("user", {
       return res.data as { message: string };
     },
   }),
+  toggleStatus: router.mutation({
+    mutationFn: async (variables: { id: string }) => {
+      const res = await Axios.put(`/user/change-status/${variables.id}`);
+
+      return res.data as { message: string };
+    },
+  }),
   changePassword: router.mutation({
     mutationFn: async (variables: {
       old_password: string;
