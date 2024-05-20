@@ -5,6 +5,7 @@ import type {
   inferVariables,
 } from "react-query-kit";
 
+import attendance from "./attendance";
 import client from "./client";
 import company from "./company";
 import jobType from "./job-type";
@@ -15,6 +16,7 @@ import venue from "./venue";
 
 const k = {
   project,
+  attendance,
   user,
   company,
   role,
