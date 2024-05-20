@@ -13,6 +13,8 @@ const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 
 const AlertDialogPortal = AlertDialogPrimitive.Portal;
 
+const AlertPrimitiveContent = AlertDialogPrimitive.Content;
+
 const AlertDialogOverlay = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
@@ -133,6 +135,7 @@ export {
   AlertDialogOverlay,
   AlertDialogTrigger,
   AlertDialogContent,
+  AlertPrimitiveContent,
   AlertDialogHeader,
   AlertDialogFooter,
   AlertDialogTitle,

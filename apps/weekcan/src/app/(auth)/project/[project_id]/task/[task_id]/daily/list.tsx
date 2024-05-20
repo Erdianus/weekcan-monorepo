@@ -4,7 +4,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { ThumbsUp, Trash2 } from "lucide-react";
+import { Pencil, ThumbsUp, Trash2 } from "lucide-react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
 
@@ -29,8 +29,12 @@ import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 import { fileExt } from "@hktekno/ui/lib/utils";
 
 import CreateDailyTask from "./create";
+import UpdateDailyTask from "./update";
 
 const ListTaskProject = ({ id }: { id: string }) => {
+  // Buat Update
+  const [edit, setEdit] = useState({ open: false, id: "" });
+
   const user = useUserStore();
   const alert = useAlertStore();
   const [mount, setMount] = useState(false);
@@ -225,7 +229,6 @@ const ListTaskProject = ({ id }: { id: string }) => {
                             </button>
                           );
                         })}
-
                         <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
                           <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
                             <div className="absolute bottom-1 right-1 flex items-center gap-1 text-xs">
@@ -244,6 +247,14 @@ const ListTaskProject = ({ id }: { id: string }) => {
                                 </div>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    setEdit({ open: true, id: `${daily.id}` })
+                                  }
+                                >
+                                  <Pencil className="mr-2 h-4 w-4" />
+                                  <span>Edit</span>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() =>
                                     alert.setData({
@@ -279,6 +290,11 @@ const ListTaskProject = ({ id }: { id: string }) => {
           )}
         </Flashlist>
       </div>
+      <UpdateDailyTask
+        open={edit.open}
+        id={edit.id}
+        onClose={() => setEdit({ open: false, id: "" })}
+      />
       {mount &&
         isItHim &&
         createPortal(

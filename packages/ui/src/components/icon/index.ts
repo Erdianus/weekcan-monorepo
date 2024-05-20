@@ -14,6 +14,7 @@ import Progress from "./progress";
 import Project from "./project";
 import Status from "./status";
 import Task from "./task";
+import ThumbsUp from "./thumbsup";
 import Tiktok from "./tiktok";
 import Twitter from "./twitter";
 import User from "./user";
@@ -36,6 +37,7 @@ export {
   Project,
   Status,
   Task,
+  ThumbsUp,
   Tiktok,
   Twitter,
   User,

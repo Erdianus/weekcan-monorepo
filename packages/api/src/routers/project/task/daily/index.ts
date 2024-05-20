@@ -24,15 +24,22 @@ const dailyTaskCreateForm = dailyTaskFormSchema.extend({
   is_permanent: z.number(),
 });
 
-const dailyTaskUpdateForm = dailyTaskFormSchema.omit({
-  file: true,
-  is_permanent: true,
-});
+const dailyTaskUpdateForm = dailyTaskFormSchema
+  .omit({
+    file: true,
+    is_permanent: true,
+  })
+  .extend({
+    is_done: z.number(),
+  });
 
-const dailyTaskUpdateFileForm = dailyTaskFormSchema.pick({
-  file: true,
-  is_permanent: true,
-});
+const dailyTaskUpdateFileForm = dailyTaskFormSchema
+  .pick({
+    is_permanent: true,
+  })
+  .extend({
+    file: z.instanceof(File).nullish(),
+  });
 
 const daily = {
   all: router.query({
@@ -85,7 +92,6 @@ const daily = {
 
       return res.data as {
         data: z.infer<typeof dailySchema>;
-        meta: Meta;
       };
     },
   }),
