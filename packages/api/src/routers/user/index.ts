@@ -5,6 +5,7 @@ import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../meta";
 import companyBaseSchema from "../company/schema";
+import jobTypeBaseSchema from "../job-type/schema";
 import { roleBaseSchema } from "../role/schema";
 import userBaseSchema, {
   userCreateFormSchema,
@@ -14,6 +15,7 @@ import userBaseSchema, {
 const userSchema = userBaseSchema.extend({
   role_name: z.string(),
   role: roleBaseSchema,
+  job_type: jobTypeBaseSchema.nullish(),
   company: companyBaseSchema.array(),
   picture_link: z.string(),
 });
@@ -21,11 +23,16 @@ const userSchema = userBaseSchema.extend({
 type User = z.infer<typeof userSchema>;
 
 //--NOTE: FORM
-const userCreateForm = userCreateFormSchema.omit({ company: true, role: true });
+const userCreateForm = userCreateFormSchema.omit({
+  company: true,
+  role: true,
+  jobType: true,
+});
 const userUpdateForm = userUpdateFormSchema.omit({
   company: true,
   role: true,
   company_id: true,
+  jobType: true,
 });
 
 const user = router("user", {

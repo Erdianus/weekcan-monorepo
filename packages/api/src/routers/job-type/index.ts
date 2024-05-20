@@ -14,6 +14,7 @@ const jobType = router("jobType", {
       search?: string;
       page?: string | number;
       paginate?: string | number;
+      company_id?: string;
     }) => {
       const res = await Axios("/job-type", { params: variables });
 

@@ -258,6 +258,29 @@ const loadClientOptions: LoadOptions<
   };
 };
 
+const loadJobTypeOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.jobType.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const datas = await k.jobType.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.job_name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
 const loadProvinceOptions: LoadOptions<
   OptionType,
   GroupBase<OptionType>,
@@ -347,6 +370,7 @@ export {
   loadRoleOptions,
   loadVenueOptions,
   loadClientOptions,
+  loadJobTypeOptions,
   loadProvinceOptions,
   loadCityOptions,
 

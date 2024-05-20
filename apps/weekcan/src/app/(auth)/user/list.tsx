@@ -27,6 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
+import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
@@ -103,7 +104,7 @@ const columns = [
     header: "Email",
   }),
   colHelper.accessor("role_name", {
-    header: "Jabatan",
+    header: "Role",
   }),
   colHelper.accessor("company", {
     header: "Perusahaan",
@@ -143,11 +144,11 @@ const ListUser = () => {
   });
 
   return (
-    <div>
+    <>
+      <PortalSearch placeholder="Cari User..." />
       <div className="mb-4 flex w-full items-center justify-between">
         <H3>User</H3>
         <div className="flex items-center gap-4">
-          <FilterUser />
           <Button size={"icon"} asChild>
             <Link href="user/create">
               <Plus />
@@ -155,13 +156,22 @@ const ListUser = () => {
           </Button>
         </div>
       </div>
-      <PortalSearch placeholder="Cari User..." />
+      <div className="mb-4">
+        <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
+          Filter
+          <Separator className="flex-1" />
+        </div>
+        <div className="flex flex-wrap gap-4">
+          <FilterUser />
+        </div>
+      </div>
+
       <DataTable table={table} isloading={isLoading} columns={columns} />
       <div className="mt-4 flex w-full items-center justify-end gap-5">
         <Paginate />
         <PaginationParams meta={users?.meta} />
       </div>
-    </div>
+    </>
   );
 };
 

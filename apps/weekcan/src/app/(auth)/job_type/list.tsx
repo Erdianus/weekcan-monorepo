@@ -12,6 +12,8 @@ import { z } from "zod";
 import { k } from "@hktekno/api";
 import Flashlist from "@hktekno/ui/components/flashlist";
 import Loading from "@hktekno/ui/components/loading";
+import Paginate from "@hktekno/ui/components/paginate";
+import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { SelectAsync } from "@hktekno/ui/components/select";
 import { Button } from "@hktekno/ui/components/ui/button";
@@ -159,9 +161,7 @@ const ListJobTypes = () => {
           <PopoverContent className="w-80">
             <div className="grid gap-4">
               <div className="space-y-2">
-                <h4 className="font-medium leading-none">
-                  Tambah Tempat Acara
-                </h4>
+                <h4 className="font-medium leading-none">Tambah Jabatan</h4>
               </div>
               <form
                 className="space-y-4"
@@ -174,24 +174,28 @@ const ListJobTypes = () => {
                   });
                 })}
               >
-                <Label>Jabatan</Label>
-                <Input
-                  {...form.register("job_name")}
-                  placeholder="Contoh: Graphic Desainer"
-                />
+                <div>
+                  <Label className="mb-2">Nama Jabatan</Label>
+                  <Input
+                    {...form.register("job_name")}
+                    placeholder="Contoh: Graphic Desainer"
+                  />
+                </div>
+
                 <Controller
                   control={form.control}
                   name="company"
                   render={({ field }) => {
                     return (
-                      <>
-                        <Label>Perusahaan</Label>
+                      <div>
+                        <Label className="mb-1">Perusahaan</Label>
                         <SelectAsync
                           loadOptions={loadCompanyOptions}
                           value={field.value}
                           onChange={field.onChange}
+                          placeholder="Pilih Perusahaan"
                         />
-                      </>
+                      </div>
                     );
                   }}
                 />
@@ -261,6 +265,10 @@ const ListJobTypes = () => {
           </div>
         ))}
       </Flashlist>
+      <div className="mt-4 flex w-full items-center justify-end gap-4">
+        <Paginate />
+        <PaginationParams meta={jobTypes?.meta} />
+      </div>
     </>
   );
 };

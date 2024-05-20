@@ -23,11 +23,16 @@ import {
 import { Input } from "@hktekno/ui/components/ui/input";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
-import { loadCompanyOptions, loadRoleOptions } from "@hktekno/ui/lib/select";
+import {
+  loadCompanyOptions,
+  loadJobTypeOptions,
+  loadRoleOptions,
+} from "@hktekno/ui/lib/select";
 
 const userFormSchema = userUpdateFormSchema.omit({
   role_id: true,
   company_id: true,
+  job_type_id: true,
 });
 
 const UpdateUser = ({ id }: { id: string | number }) => {
@@ -46,6 +51,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
       email: undefined,
       company: [],
       role: {},
+      jobType: null,
     },
   });
 
@@ -55,6 +61,9 @@ const UpdateUser = ({ id }: { id: string | number }) => {
       toast.success(message);
       router.push("/user");
       await client.invalidateQueries({ queryKey: k.user.all.getKey() });
+      await client.invalidateQueries({
+        queryKey: k.user.single.getKey({ id }),
+      });
     },
     onError: async ({ message }) => toast.error(message),
   });
@@ -75,6 +84,12 @@ const UpdateUser = ({ id }: { id: string | number }) => {
           value: `${c.id}`,
           label: c.company_name,
         })),
+        jobType: user.data.job_type
+          ? {
+              label: user.data.job_type.job_name,
+              value: `${user.data.job_type.id}`,
+            }
+          : null,
       });
     }
   }, [user]);
@@ -91,6 +106,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               data: {
                 ...v,
                 role_id: v.role.value ?? "",
+                job_type_id: v.jobType?.value,
               },
             });
           })}
@@ -142,6 +158,28 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               )}
             />
           </div>
+          <div>
+            <FormField
+              control={form.control}
+              name="company"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Perusahaan</FormLabel>
+                  <FormControl isloading={isload}>
+                    <SelectAsync
+                      {...field}
+                      isDisabled
+                      isMulti
+                      loadOptions={loadCompanyOptions}
+                      placeholder="Pilih Perusahaan"
+                      additional={{ page: 1 }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
@@ -163,16 +201,16 @@ const UpdateUser = ({ id }: { id: string | number }) => {
             />
             <FormField
               control={form.control}
-              name="company"
+              name="jobType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Perusahaan</FormLabel>
+                  <FormLabel>Jabatan</FormLabel>
                   <FormControl isloading={isload}>
                     <SelectAsync
                       {...field}
-                      isMulti
-                      loadOptions={loadCompanyOptions}
-                      placeholder="Pilih Perusahaan"
+                      isClearable
+                      loadOptions={loadJobTypeOptions}
+                      placeholder="Pilih Jabatan"
                       additional={{ page: 1 }}
                     />
                   </FormControl>

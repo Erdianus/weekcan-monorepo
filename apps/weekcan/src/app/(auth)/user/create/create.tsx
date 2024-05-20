@@ -22,10 +22,14 @@ import {
 import { Input } from "@hktekno/ui/components/ui/input";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
-import { loadCompanyOptions, loadRoleOptions } from "@hktekno/ui/lib/select";
+import {
+  loadCompanyOptions,
+  loadJobTypeOptions,
+  loadRoleOptions,
+} from "@hktekno/ui/lib/select";
 
 const userFormSchema = userCreateFormSchema
-  .omit({ role_id: true, company_id: true })
+  .omit({ role_id: true, company_id: true, job_type_id: true })
   .refine(
     ({ confirmation_password, password }) => confirmation_password === password,
     {
@@ -71,6 +75,7 @@ const CreateUser = () => {
             create.mutate({
               ...v,
               role_id: v.role.value ?? "",
+              job_type_id: v.jobType?.value,
               company_id: v.company.map(({ value }) => value),
             });
           })}
@@ -122,6 +127,28 @@ const CreateUser = () => {
               )}
             />
           </div>
+          <div>
+            <FormField
+              control={form.control}
+              name="company"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Perusahaan</FormLabel>
+                  <FormControl>
+                    <SelectAsync
+                      {...field}
+                      isMulti
+                      selectRef={field.ref}
+                      loadOptions={loadCompanyOptions}
+                      placeholder="Pilih Perusahaan"
+                      additional={{ page: 1 }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
@@ -143,17 +170,17 @@ const CreateUser = () => {
             />
             <FormField
               control={form.control}
-              name="company"
+              name="jobType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Perusahaan</FormLabel>
+                  <FormLabel>Jabatan</FormLabel>
                   <FormControl>
                     <SelectAsync
                       {...field}
-                      isMulti
-                      selectRef={field.ref}
-                      loadOptions={loadCompanyOptions}
-                      placeholder="Pilih Perusahaan"
+                      cacheUniqs={[form.watch("company")]}
+                      isClearable
+                      loadOptions={loadJobTypeOptions}
+                      placeholder="Pilih Jabatan"
                       additional={{ page: 1 }}
                     />
                   </FormControl>
