@@ -8,12 +8,13 @@ const attendance = router("attendance", {
       data: {
         user_id: string;
         latitude: number;
-        longtitude: number;
+        longitude: number;
         picture_path: string;
         ket?: string;
         status: string;
         time: string;
         date: string;
+        location_text: string;
       };
     }) => {
       const res = await Axios.post("/attendance", variables.data);
