@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -16,6 +16,7 @@ import Spinner from "@hktekno/ui/components/ui/spinner";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 
 const CreateAttendance = () => {
+  const [status, setStatus] = useState("In");
   const router = useRouter();
   const user_id = useUserStore((s) => `${s.id}`);
 
@@ -70,97 +71,105 @@ const CreateAttendance = () => {
   const create = k.attendance.create.useMutation({
     onSuccess: ({ message }) => {
       toast.success(message);
-      router.push("/dashboard");
+      router.push("/attendance");
     },
-    onError: ({ message }) => toast.error(message),
+    onError: ({ message }) => {
+      toast.error(message);
+      setStatus((o) => (o === "In" ? "Out" : "In"));
+    },
   });
 
-  const onSubmit = useCallback(() => {
-    const date = new Date();
-    const margin = 4;
-    const rect = locDivRef.current?.getClientRects().item(0);
-    const imgSrc = webcamRef.current?.getCanvas();
+  const onSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const date = new Date();
+      const margin = 4;
+      const rect = locDivRef.current?.getClientRects().item(0);
+      const imgSrc = webcamRef.current?.getCanvas();
 
-    const imgWidth = imgSrc?.width ?? 0;
-    const imgHeight = imgSrc?.height ?? 0;
-    const rectHeight = rect?.height ?? 0;
+      const imgWidth = imgSrc?.width ?? 0;
+      const imgHeight = imgSrc?.height ?? 0;
+      const rectHeight = rect?.height ?? 0;
 
-    const y = imgHeight - rectHeight - margin;
+      const y = imgHeight - rectHeight - margin;
 
-    if (imgSrc && data) {
-      const ctx = imgSrc.getContext("2d");
-      if (ctx) {
-        // Container
-        ctx.fillStyle = "#030712b3";
-        ctx.beginPath();
-        ctx.roundRect(margin, y, imgWidth - margin * 2, rectHeight, 8);
-        ctx.fill();
+      if (imgSrc && data) {
+        const ctx = imgSrc.getContext("2d");
+        if (ctx) {
+          // Container
+          ctx.fillStyle = "#030712b3";
+          ctx.beginPath();
+          ctx.roundRect(margin, y, imgWidth - margin * 2, rectHeight, 8);
+          ctx.fill();
 
-        // Text
-        ctx.fillStyle = "#fff";
-        ctx.font = "700 14px Inter";
-        ctx.fillText(
-          `${data.address.country}, ${data.address.state}, ${data.address.city_district}`,
-          margin * margin,
-          y + margin + margin * margin,
-        );
+          // Text
+          ctx.fillStyle = "#fff";
+          ctx.font = "700 14px Inter";
+          ctx.fillText(
+            `${data.address.country}, ${data.address.state}, ${data.address.city_district}`,
+            margin * margin,
+            y + margin + margin * margin,
+          );
 
-        ctx.font = "400 14px Inter";
-        ctx.fillText(
-          `${data.address.road}, ${data.address.city_district}, ${data.address.state}, ${data.address.postcode}, ${data.address.country}`,
-          margin * margin,
-          y + margin + margin * margin + margin * margin,
-        );
+          ctx.font = "400 14px Inter";
+          ctx.fillText(
+            `${data.address.road}, ${data.address.city_district}, ${data.address.state}, ${data.address.postcode}, ${data.address.country}`,
+            margin * margin,
+            y + margin + margin * margin + margin * margin,
+          );
 
-        ctx.fillText(
-          `Latitude: ${data.lat}`,
-          margin * margin,
-          y +
-            margin +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2),
-        );
+          ctx.fillText(
+            `Latitude: ${data.lat}`,
+            margin * margin,
+            y +
+              margin +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2),
+          );
 
-        ctx.fillText(
-          `Longitude: ${data.lon}`,
-          margin * margin,
-          y +
-            margin +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2),
-        );
+          ctx.fillText(
+            `Longitude: ${data.lon}`,
+            margin * margin,
+            y +
+              margin +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2),
+          );
 
-        ctx.fillText(
-          dayjs().format("DD/MM/YY HH:mm:ss"),
-          margin * margin,
-          y +
-            margin +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2) +
-            Math.pow(margin, 2),
-        );
+          ctx.fillText(
+            dayjs().format("DD/MM/YY HH:mm:ss"),
+            margin * margin,
+            y +
+              margin +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2) +
+              Math.pow(margin, 2),
+          );
+        }
+
+        create.mutate({
+          data: {
+            user_id,
+            latitude: data.lat,
+            longitude: data.lon,
+            picture_path: imgSrc.toDataURL(),
+            ket,
+            status,
+            date: dayjs(date).format("YYYY-MM-DD"),
+            time: dayjs(date).format("HH:mm:ss"),
+            location_text: data.display_name,
+          },
+        });
       }
-
-      create.mutate({
-        data: {
-          user_id,
-          latitude: data.lat,
-          longitude: data.lon,
-          picture_path: imgSrc.toDataURL(),
-          ket: ket,
-          status: "In",
-          date: dayjs(date).format("YYYY-MM-DD"),
-          time: dayjs(date).format("HH:mm:ss"),
-          location_text: data.display_name,
-        },
-      });
-    }
-  }, [webcamRef, data]);
+    },
+    [webcamRef, data, ket, status],
+  );
 
   useEffect(() => {
     setInterval(() => setDateState(new Date()), 1000);
@@ -176,7 +185,7 @@ const CreateAttendance = () => {
           />
           <div
             ref={locDivRef}
-            className="absolute bottom-1 left-1 rounded bg-gray-950/70 p-2 text-xs"
+            className="absolute bottom-1 left-1 rounded bg-gray-950/70 p-2 text-xs text-white"
           >
             {data && (
               <>
@@ -191,7 +200,10 @@ const CreateAttendance = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-1 flex-col justify-between gap-4">
+        <form
+          onSubmit={onSubmit}
+          className="flex flex-1 flex-col justify-between gap-4"
+        >
           <div className="">
             <Label>Keterangan</Label>
             <Input
@@ -201,14 +213,10 @@ const CreateAttendance = () => {
               onChange={(e) => setKet(e.currentTarget.value ?? "")}
             />
           </div>
-          <Button
-            disabled={create.isPending}
-            onClick={onSubmit}
-            className="w-full"
-          >
+          <Button disabled={create.isPending} className="w-full">
             {create.isPending ? <Spinner /> : "Submit"}
           </Button>
-        </div>
+        </form>
       </div>
     </>
   );

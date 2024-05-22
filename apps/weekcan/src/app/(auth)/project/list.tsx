@@ -211,8 +211,4 @@ const ListProject = () => {
   );
 };
 
-const columnsListProject = columns;
-
-export { columnsListProject };
-
 export default ListProject;

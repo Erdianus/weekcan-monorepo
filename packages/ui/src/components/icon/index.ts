@@ -16,6 +16,7 @@ import Status from "./status";
 import Task from "./task";
 import ThumbsUp from "./thumbsup";
 import Tiktok from "./tiktok";
+import Time from "./time";
 import Twitter from "./twitter";
 import User from "./user";
 import Venue from "./venue";
@@ -39,6 +40,7 @@ export {
   Task,
   ThumbsUp,
   Tiktok,
+  Time,
   Twitter,
   User,
   Venue,

@@ -1,8 +1,37 @@
 import { router } from "react-query-kit";
+import { z } from "zod";
 
 import Axios from "@hktekno/utils/axios";
 
+import userBaseSchema from "../user/schema";
+import attendanceBaseSchema from "./schema";
+
+const attendanceSchema = attendanceBaseSchema.extend({
+  name: z.string(),
+  picture_link: z.string(),
+  user: userBaseSchema,
+});
+
 const attendance = router("attendance", {
+  all: router.query({
+    fetcher: async (variables?: {
+      search?: string;
+      page?: string | number;
+      paginate?: string | number;
+    }) => {
+      const res = await Axios("/attendance", { params: variables });
+
+      return res.data as {
+        data: {
+          tanggal: string;
+          attendances: z.infer<typeof attendanceSchema>[];
+        }[];
+        meta: {
+          hasMore: boolean;
+        };
+      };
+    },
+  }),
   create: router.mutation({
     mutationFn: async (variables: {
       data: {

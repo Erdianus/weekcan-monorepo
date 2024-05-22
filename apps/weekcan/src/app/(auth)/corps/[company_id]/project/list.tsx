@@ -8,13 +8,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { Eye, MoreHorizontal } from "lucide-react";
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
+import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
 import {
@@ -25,8 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import { Task } from "@hktekno/ui/icon";
-
-import { columnsListProject } from "~/app/(auth)/project/list";
+import { dateRange } from "@hktekno/ui/lib/date";
 
 type Project = inferData<typeof k.project.all>["data"][number];
 const colHelper = createColumnHelper<Project>();
@@ -45,6 +45,12 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <Link href={`/project/${data.id}`}>
+            <DropdownMenuItem>
+              <Eye className="mr-2 h-4 w-4" />
+              <span>Detail</span>
+            </DropdownMenuItem>
+          </Link>
           <Link
             href={`/corps/${params.company_id}/task?project_id=${data.id}&project_name=${data.project_name}`}
           >
@@ -58,11 +64,38 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
     </>
   );
 };
-const columns = [...columnsListProject];
-columns[columns.length - 1] = colHelper.display({
-  id: "actions",
-  cell: Actions,
-});
+
+const columns = [
+  colHelper.display({
+    header: "No",
+    cell: ({ row }) => row.index + 1,
+  }),
+  colHelper.accessor("project_name", {
+    header: "Nama Proyek",
+  }),
+  colHelper.display({
+    header: "Tanggal",
+    cell: ({ row }) =>
+      dateRange(row.original.start_date, row.original.end_date),
+  }),
+  colHelper.display({
+    header: "Tempat",
+    cell: ({ row: { original: data } }) => (
+      <div className="truncate">{`${data.venue_name}, ${data.location}`}</div>
+    ),
+  }),
+  colHelper.accessor("pic_name", {
+    header: "Koor.",
+  }),
+  colHelper.accessor("progress", {
+    header: "Progress",
+    cell: ({ getValue }) => <Badge variant={getValue()}>{getValue()}</Badge>,
+  }),
+  colHelper.display({
+    id: "actions",
+    cell: Actions,
+  }),
+];
 
 const ListProjectCompany = ({ company_id }: { company_id: string }) => {
   const searchParams = useSearchParams();

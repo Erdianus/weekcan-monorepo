@@ -15,6 +15,12 @@ const SidebarList = async () => {
         <ul className="space-y-2">
           <SidebarItems text="Dashboard" link="/dashboard" icon={"dashboard"} />
           <SidebarItems text="Proyek/Event" link="/project" icon={"project"} />
+          <Muted>Absensi</Muted>
+          <SidebarItems
+            text="Kehadiran"
+            link="/attendance"
+            icon={"attendances"}
+          />
           {["Admin", "Owner"].includes(sesh?.user.role ?? "") && (
             <>
               <Muted>Master Data</Muted>
