@@ -21,6 +21,21 @@ const SidebarList = async () => {
             link="/attendance"
             icon={"attendances"}
           />
+          {["Admin", "Owner", "Manager"].includes(sesh?.user.role ?? "") && (
+            <>
+              <Muted>Inventaris</Muted>
+              <SidebarItems
+                text="Barang"
+                link="/inventory/item"
+                icon={"item"}
+              />
+              <SidebarItems
+                text="Gudang"
+                link="/inventory/warehouse"
+                icon={"warehouse"}
+              />
+            </>
+          )}
           {["Admin", "Owner"].includes(sesh?.user.role ?? "") && (
             <>
               <Muted>Master Data</Muted>

@@ -15,6 +15,7 @@ import ButtonSubmit from "./ui/button-submit";
 
 const AlertConfirm = () => {
   const alert = useAlertStore();
+  if (!alert.open) return null;
   return (
     <AlertDialog
       open={alert.open}

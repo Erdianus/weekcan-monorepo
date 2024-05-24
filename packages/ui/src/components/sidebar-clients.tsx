@@ -8,17 +8,23 @@ import {
   Client,
   Company,
   Dashboard,
+  Inventory,
+  Item,
   JobType,
   Project,
   Time,
   User,
   Venue,
+  Warehouse,
 } from "./icon";
 
 const icons = Object.freeze({
   dashboard: Dashboard,
   project: Project,
   attendances: Time,
+  inventory: Inventory,
+  warehouse: Warehouse,
+  item: Item,
   user: User,
   company: Company,
   venue: Venue,
@@ -51,7 +57,7 @@ const SidebarItems = (props: SidebarItemProps) => {
         <Icons
           aria-hidden="true"
           className={cn("h-6 w-6")}
-          viewBox="0 0 20 20"
+          viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         />
 

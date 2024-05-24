@@ -8,6 +8,7 @@ import type {
 import attendance from "./attendance";
 import client from "./client";
 import company from "./company";
+import inventory from "./inventory";
 import jobType from "./job-type";
 import project from "./project";
 import role from "./role";
@@ -17,6 +18,7 @@ import venue from "./venue";
 const k = {
   project,
   attendance,
+  inventory,
   user,
   company,
   role,

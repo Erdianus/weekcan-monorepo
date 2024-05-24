@@ -5,6 +5,8 @@ import Dashboard from "./dashboard";
 import Facebook from "./facebook";
 import Image from "./image";
 import Instagram from "./instagram";
+import Inventory from "./inventory";
+import Item from "./item";
 import JobType from "./job-type";
 import Leader from "./leader";
 import MsExcel from "./msexcel";
@@ -20,6 +22,7 @@ import Time from "./time";
 import Twitter from "./twitter";
 import User from "./user";
 import Venue from "./venue";
+import Warehouse from "./warehouse";
 
 export {
   Chat,
@@ -29,6 +32,8 @@ export {
   Facebook,
   Image,
   Instagram,
+  Inventory,
+  Item,
   JobType,
   Leader,
   MsExcel,
@@ -44,4 +49,5 @@ export {
   Twitter,
   User,
   Venue,
+  Warehouse,
 };
