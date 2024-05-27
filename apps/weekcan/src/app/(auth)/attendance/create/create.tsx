@@ -159,7 +159,7 @@ const CreateAttendance = () => {
             latitude: data.lat,
             longitude: data.lon,
             picture_path: imgSrc.toDataURL(),
-            ket,
+            ket: ket === "" ? "-" : ket,
             status,
             date: dayjs(date).format("YYYY-MM-DD"),
             time: dayjs(date).format("HH:mm:ss"),

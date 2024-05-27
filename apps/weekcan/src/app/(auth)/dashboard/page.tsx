@@ -5,7 +5,8 @@ import { auth } from "@hktekno/auth";
 import { Separator } from "@hktekno/ui/components/ui/separator";
 import { Muted } from "@hktekno/ui/components/ui/typograhpy";
 
-import ListCompany from "./list-company";
+import HelloUser from "./helo";
+import ListCompany, { CarouselCompany } from "./list-company";
 import ListProject from "./list-project";
 
 export const metadata: Metadata = {
@@ -13,19 +14,15 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const sesh = await auth();
   return (
     <>
-      <div className="mb-4 flex w-full items-center justify-center">
-        <h1 className=" text-3xl font-bold">
-          Selamat Datang {session?.user.name} 😆
-        </h1>
-      </div>
-      <div className="mb-1 flex items-center gap-1">
+      {sesh && <HelloUser id={sesh.user.id} />}
+      <div className="mb-1 mt-4 flex items-center gap-1">
         <Muted>Perusahaan</Muted>
         <Separator className="flex-1" />
       </div>
-      <ListCompany />
+      <CarouselCompany user_id={sesh?.user.id ?? ''} />
       <div className="mb-3 mt-6 flex items-center gap-1">
         <Muted>Proyek</Muted>
         <Separator className="flex-1" />
