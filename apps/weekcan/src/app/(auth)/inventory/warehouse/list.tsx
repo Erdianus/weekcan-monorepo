@@ -11,6 +11,8 @@ import { z } from "zod";
 import { k } from "@hktekno/api";
 import Flashlist from "@hktekno/ui/components/flashlist";
 import Loading from "@hktekno/ui/components/loading";
+import Paginate from "@hktekno/ui/components/paginate";
+import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { SelectAsync } from "@hktekno/ui/components/select";
 import {
@@ -290,6 +292,10 @@ const ListWarehouse = () => {
           </div>
         ))}
       </Flashlist>
+      <div className="mt-4 flex w-full items-center justify-end gap-4">
+        <Paginate />
+        <PaginationParams meta={warehouses?.meta} />
+      </div>
     </>
   );
 };
