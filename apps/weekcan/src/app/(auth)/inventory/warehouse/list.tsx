@@ -1,20 +1,16 @@
 "use client";
 
-import type { CellContext } from "@tanstack/react-table";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  createColumnHelper,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { MoreHorizontal, Pencil, Plus, Trash2, Zap } from "lucide-react";
+import { Check, Pencil, Plus, Trash2, X, Zap } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
+import Flashlist from "@hktekno/ui/components/flashlist";
+import Loading from "@hktekno/ui/components/loading";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { SelectAsync } from "@hktekno/ui/components/select";
 import {
@@ -23,13 +19,6 @@ import {
   AvatarImage,
 } from "@hktekno/ui/components/ui/avatar";
 import { Button } from "@hktekno/ui/components/ui/button";
-import { DataTable } from "@hktekno/ui/components/ui/data-table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@hktekno/ui/components/ui/dropdown-menu";
 import { Input } from "@hktekno/ui/components/ui/input";
 import { Label } from "@hktekno/ui/components/ui/label";
 import {
@@ -37,6 +26,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@hktekno/ui/components/ui/popover";
+import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { loadCompanyOptions } from "@hktekno/ui/lib/select";
@@ -54,18 +44,17 @@ const warehouseForm = z.object({
   ),
 });
 
-type Warehouse = inferData<typeof k.inventory.warehouse.all>["data"][number];
-const colHelper = createColumnHelper<Warehouse>();
-
-const Actions = ({ row }: CellContext<Warehouse, unknown>) => {
-  const alert = useAlertStore();
-
-  const { original: data } = row;
+const EditWarehouse = (props: {
+  data: z.infer<typeof warehouseForm> & { id: string | number };
+  onClose: () => void;
+}) => {
+  const [data, setData] = useState<z.infer<typeof warehouseForm>>(props.data);
 
   const client = useQueryClient();
-  const del = k.inventory.warehouse.delete.useMutation({
+  const update = k.inventory.warehouse.update.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
+      props.onClose();
       await client.invalidateQueries({
         queryKey: k.inventory.warehouse.all.getKey(),
       });
@@ -73,73 +62,63 @@ const Actions = ({ row }: CellContext<Warehouse, unknown>) => {
     onError: ({ message }) => toast.error(message),
   });
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            {del.isPending ? (
-              <Spinner />
-            ) : (
-              <MoreHorizontal className="h-4 w-4" />
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem>
-            <Pencil className="mr-2 h-4 w-4" />
-            <span>Edit</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() =>
-              alert.setData({
-                open: true,
-                confirmText: "Ya, Hapus",
-                header: `Yakin ingin mengapus '${data.name}'?`,
-                desc: "Gudang yang dihapus tidak dapat dikembalikan lagi",
-                onConfirm: () => {
-                  del.mutate({ id: `${data.id}` });
-                },
-              })
-            }
-            className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            <span>Hapus</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+    <form
+      className="flex w-full items-center justify-between"
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        update.mutate({
+          id: `${props.data.id}`,
+          data: {
+            name: data.name,
+            company_id: data.company.value,
+          },
+        });
+      }}
+    >
+      <div className="space-y-2">
+        <Label>Nama Gudang</Label>
+        <Input
+          value={data.name}
+          onChange={(e) => setData((o) => ({ ...o, name: e.target.value }))}
+        />
+        <Label>Perusahaan</Label>
+        <SelectAsync
+          loadOptions={loadCompanyOptions}
+          value={data.company}
+          onChange={(company) => {
+            // @ts-expect-error gapapa error gan
+            setData((o) => ({ ...o, company }));
+          }}
+        />
+      </div>
+
+      <div className="flex items-center gap-4">
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          type="button"
+          onClick={props.onClose}
+        >
+          <X size={20} />
+        </Button>
+        <Button variant={"ghost"} size={"icon"} type="submit">
+          {update.isPending && update.variables.id === `${props.data.id}` ? (
+            <Spinner />
+          ) : (
+            <Check />
+          )}
+        </Button>
+      </div>
+    </form>
   );
 };
 
-const columns = [
-  colHelper.display({
-    header: "No",
-    cell: ({ row }) => row.index + 1,
-  }),
-  colHelper.accessor("name", {
-    header: "Nama",
-  }),
-  colHelper.accessor("company", {
-    header: "Perusahaan",
-    cell: ({ getValue }) => (
-      <div className="flex items-center gap-3">
-        <Avatar>
-          <AvatarImage src={getValue().picture_path} />
-          <AvatarFallback>{shortName(getValue().company_name)}</AvatarFallback>
-        </Avatar>
-        <div>{getValue().company_name}</div>
-      </div>
-    ),
-  }),
-  colHelper.display({
-    id: "actions",
-    cell: Actions,
-  }),
-];
-
 const ListWarehouse = () => {
+  const [editID, setEditID] = useState(0);
+  const alert = useAlertStore();
+
   const form = useForm<z.infer<typeof warehouseForm>>({
     resolver: zodResolver(warehouseForm),
     values: {
@@ -161,10 +140,14 @@ const ListWarehouse = () => {
     },
   });
 
-  const table = useReactTable({
-    data: warehouses?.data ?? [],
-    columns,
-    getCoreRowModel: getCoreRowModel(),
+  const del = k.inventory.warehouse.delete.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      await client.invalidateQueries({
+        queryKey: k.inventory.warehouse.all.getKey(),
+      });
+    },
+    onError: ({ message }) => toast.error(message),
   });
 
   return (
@@ -223,7 +206,90 @@ const ListWarehouse = () => {
           </PopoverContent>
         </Popover>
       </div>
-      <DataTable table={table} columns={columns} isloading={!warehouses} />
+      <Flashlist
+        isloading={!warehouses}
+        loading={
+          <Loading>
+            <div className="flex items-center justify-between gap-4 border-b border-border p-4">
+              <Skeleton className="h-8 w-1/4" />
+              <Skeleton className="h-8 w-8 rounded-md" />
+            </div>
+          </Loading>
+        }
+        isfallback={warehouses?.data.length === 0}
+        fallback={<div>Tidak Ada Gudang</div>}
+      >
+        {warehouses?.data.map((warehouse) => (
+          <div
+            key={`warehouse-${warehouse.id}`}
+            className="flex items-center justify-between gap-4 border-b border-border p-4"
+          >
+            {editID === warehouse.id && (
+              <EditWarehouse
+                data={{
+                  name: warehouse.name,
+                  id: warehouse.id,
+                  company: {
+                    label: warehouse.company.company_name,
+                    value: `${warehouse.company.id}`,
+                  },
+                }}
+                onClose={() => setEditID(0)}
+              />
+            )}
+            {editID !== warehouse.id && (
+              <>
+                <div>
+                  {warehouse.name}
+                  <div className="flex items-center gap-1">
+                    <Avatar className="h-6 w-6 text-xs">
+                      <AvatarImage src={warehouse.company.picture_link} />
+                      <AvatarFallback>
+                        {shortName(warehouse.company.company_name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="text-xs text-muted-foreground">
+                      {warehouse.company.company_name}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant={"ghost"}
+                    size={"icon"}
+                    type="button"
+                    onClick={() => setEditID(warehouse.id)}
+                  >
+                    <Pencil size={20} />
+                  </Button>
+                  <Button
+                    variant={"ghost"}
+                    size={"icon"}
+                    type="button"
+                    onClick={() => {
+                      alert.setData({
+                        open: true,
+                        header: `Yakin ingin menghapus '${warehouse.name}'?`,
+                        desc: "Gudang yang sudah dihapus tidak dapat dikembalikan lagi.",
+                        confirmText: "Ya, Hapus",
+                        onConfirm: () => {
+                          del.mutate({ id: `${warehouse.id}` });
+                        },
+                      });
+                    }}
+                  >
+                    {del.isPending && del.variables.id === `${warehouse.id}` ? (
+                      <Spinner />
+                    ) : (
+                      <Trash2 size={20} />
+                    )}
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </Flashlist>
     </>
   );
 };

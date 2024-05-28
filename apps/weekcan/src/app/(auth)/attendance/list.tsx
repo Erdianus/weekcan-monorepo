@@ -58,6 +58,12 @@ const columns = [
     cell: ({ row: { original: data } }) =>
       `${data.latitude}, ${data.longitude}`,
   }),
+  colHelper.accessor("location_text", {
+    header: "Location",
+    cell: ({ getValue }) => (
+      <div className="whitespace-nowrap">{getValue()}</div>
+    ),
+  }),
 ];
 
 const TableAttendance = ({ data }: { data: Attendance[] }) => {

@@ -104,7 +104,7 @@ const Profile = ({ id }: { id: string }) => {
         <AvatarFallback>{shortName(user?.data.name)}</AvatarFallback>
         <label
           htmlFor="img"
-          className="absolute flex h-20 w-20 flex-col items-center justify-center bg-gray-900/60 text-xs opacity-0 transition group-hover:opacity-90"
+          className="absolute flex h-20 w-20 flex-col items-center justify-center bg-gray-900/60 text-xs text-white opacity-0 transition group-hover:opacity-90"
         >
           <Camera size={16} />
           <div>Ganti Foto</div>

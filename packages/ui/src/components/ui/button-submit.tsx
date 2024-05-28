@@ -7,7 +7,11 @@ import Spinner from "./spinner";
 const ButtonSubmit = (props: ButtonProps) => {
   const { pending } = useFormStatus();
 
-  return <Button {...props}>{pending ? <Spinner /> : props.children}</Button>;
+  return (
+    <Button {...props} className="w-full">
+      {pending ? <Spinner /> : props.children}
+    </Button>
+  );
 };
 
 export default ButtonSubmit;

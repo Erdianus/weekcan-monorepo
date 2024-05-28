@@ -1,5 +1,5 @@
-import type { z } from "zod";
 import { router } from "react-query-kit";
+import { z } from "zod";
 
 import Axios from "@hktekno/utils/axios";
 
@@ -8,7 +8,7 @@ import companyBaseSchema from "../../company/schema";
 import warehouseBaseSchema from "./schema";
 
 const warehouseSchema = warehouseBaseSchema.extend({
-  company: companyBaseSchema,
+  company: companyBaseSchema.extend({ picture_link: z.string() }),
 });
 
 const warehouse = {

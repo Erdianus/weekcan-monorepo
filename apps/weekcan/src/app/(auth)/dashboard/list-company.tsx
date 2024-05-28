@@ -49,24 +49,31 @@ const CarouselCompany = ({ user_id }: { user_id: string }) => {
                         {company.company_name}
                       </Link>
                     </div>
-                    <div className="flex w-full items-center justify-between gap-4">
+                    <div className="mb-2 flex w-full items-start justify-between gap-2 md:items-center md:gap-4">
                       <div className="flex items-start gap-4">
-                        <Avatar className="h-28 w-24 rounded-xl">
+                        <Avatar className="h-14 w-12 rounded-xl md:h-32 md:w-24">
                           <AvatarImage
-                            className="h-28 w-24 object-cover"
+                            className="h-14 w-12 object-cover md:h-32 md:w-24"
                             src={user?.data.picture_link}
                           />
                           <AvatarFallback>
                             {shortName(user?.data.name)}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="text-xl font-bold">
-                          {user?.data.name}
+                        <div>
+                          <div className="text-sm font-bold md:text-lg">
+                            {user?.data.name}
+                          </div>
+                          <div className="text-xs font-semibold md:text-base">
+                            PERUM BUKIT ERLISA JL. ANGGREK MERPATI 6, Kel. Air
+                            Putih, Kec. Samarinda Ulu, Kota Samarinda,
+                            Kalimantan Timur
+                          </div>
                         </div>
                       </div>
-                      <div className="bg-white p-2">
+                      <div className="bg-white p-0.5 md:p-2">
                         <QRCode
-                          size={64}
+                          className="h-8 w-8 md:h-16 md:w-16"
                           value={`mailto:${user?.data.email}`}
                         />
                       </div>
@@ -74,7 +81,7 @@ const CarouselCompany = ({ user_id }: { user_id: string }) => {
                     <div className="flex w-full justify-end text-right text-xs">
                       <div>
                         <div>{company.address}</div>
-                        <div>Contact: {company.email}</div>
+                        <div>{company.email}</div>
                       </div>
                     </div>
                   </CardContent>
