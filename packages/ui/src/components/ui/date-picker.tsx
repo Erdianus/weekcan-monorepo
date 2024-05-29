@@ -1,8 +1,11 @@
 "use client";
 
-import type { DateRange, SelectRangeEventHandler } from "react-day-picker";
+import type {
+  DateRange,
+  SelectRangeEventHandler,
+  SelectSingleEventHandler,
+} from "react-day-picker";
 import { useEffect, useMemo, useState } from "react";
-import dayjs from "dayjs";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { dateRange } from "@hktekno/ui/lib/date";
@@ -13,8 +16,31 @@ import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-function DatePicker() {
+type DatePickerProps = CalendarProps & {
+  value?: Date;
+  onChange?: SelectSingleEventHandler;
+  className?: string;
+  defaultValue?: Date;
+};
+
+function DatePicker(props: DatePickerProps) {
   const [date, setDate] = useState<Date>();
+
+  const text = useMemo(() => {
+    if (props?.value) return dateRange(props.value);
+
+    if (date) return dateRange(date);
+
+    if (props?.defaultValue) return dateRange(props.defaultValue);
+
+    return <span>Pilih Tanggal</span>;
+  }, [date, props?.defaultValue, props?.value]);
+
+  useEffect(() => {
+    if (props?.defaultValue) {
+      setDate(props.defaultValue);
+    }
+  }, []);
 
   return (
     <Popover>
@@ -24,21 +50,30 @@ function DatePicker() {
           className={cn(
             "w-[280px] justify-start text-left font-normal",
             !date && "text-muted-foreground",
+            props.className,
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? (
-            dayjs(date).format("DD MMMM YYYY")
-          ) : (
-            <span>Pilih Tanggal</span>
-          )}
+          {text}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={setDate}
+          disabled={props.disabled}
+          defaultMonth={props?.defaultMonth}
+          fromDate={props?.fromDate}
+          toDate={props?.toDate}
+          fromMonth={props?.fromMonth}
+          toMonth={props?.toMonth}
+          selected={props?.value ?? date}
+          onSelect={(date, selectedDay, activeModifier, e) => {
+            if (props.onChange) {
+              props.onChange(date, selectedDay, activeModifier, e);
+              return;
+            }
+            setDate(date);
+          }}
           initialFocus
         />
       </PopoverContent>
@@ -58,6 +93,7 @@ type DateRangePickerProps = CalendarProps & {
     to?: Date;
   };
 };
+
 function DateRangePicker(props?: DateRangePickerProps) {
   const [date, setDate] = useState<DateRange>();
 

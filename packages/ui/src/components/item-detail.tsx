@@ -18,7 +18,7 @@ const ItemDetail = (props: ItemProps) => {
         <props.icon className="h-5 w-5" />
         <p className="font-semibold">{props.label}</p>
       </div>
-      <div className="ml-7">
+      <div className="ml-7 whitespace-pre-wrap">
         {props.value === undefined ? (
           <Skeleton className="h-4 w-24" />
         ) : (

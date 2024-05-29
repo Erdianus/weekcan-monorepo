@@ -10,7 +10,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Database, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Database, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import type { inferData } from "@hktekno/api";
@@ -65,7 +65,13 @@ const Actions = ({ row }: CellContext<Item, unknown>) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <Link href={`/`}>
+          <Link href={`/inventory/item/${data.id}`}>
+            <DropdownMenuItem>
+              <Eye className="mr-2 h-4 w-4" />
+              <span>Detail</span>
+            </DropdownMenuItem>
+          </Link>
+          <Link href={`/inventory/item/${data.id}/update`}>
             <DropdownMenuItem>
               <Pencil className="mr-2 h-4 w-4" />
               <span>Edit</span>
@@ -150,7 +156,7 @@ const ListItem = () => {
   });
   return (
     <>
-      <PortalSearch />
+      <PortalSearch placeholder="Cari Barang..." />
       <DataTable table={table} columns={columns} isloading={isLoading} />
       <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />

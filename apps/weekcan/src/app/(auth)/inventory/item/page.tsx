@@ -17,7 +17,7 @@ export default function Page() {
       <div className="mb-4 flex w-full items-center justify-between">
         <H3 className="">Barang</H3>
         <Button type="button" size={"icon"} asChild>
-          <Link href={"project/create"}>
+          <Link href={"/inventory/item/create"}>
             <Plus />
           </Link>
         </Button>

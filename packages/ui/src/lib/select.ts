@@ -24,6 +24,34 @@ interface GroupBase<Option> {
 }
 
 // --NOTE: Dynamic Options
+
+const loadWarehouseOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.inventory.warehouse.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const warehouses = await k.inventory.warehouse.all.fetcher({
+    ...params,
+    page,
+    search,
+  });
+
+  const options = warehouses.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: warehouses.meta.current_page !== warehouses.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
 const loadProjectOptions: LoadOptions<
   OptionType,
   GroupBase<OptionType>,
@@ -361,6 +389,7 @@ const loadOptions = Object.freeze({
 
 export {
   loadOptions,
+  loadWarehouseOptions,
   loadProjectOptions,
   loadProjectJSONOptions,
   loadProjectSprintOptions,

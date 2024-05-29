@@ -13,7 +13,11 @@ const warehouseSchema = warehouseBaseSchema.extend({
 
 const warehouse = {
   all: router.query({
-    fetcher: async (variables?: { search: string }) => {
+    fetcher: async (variables?: {
+      search?: string;
+      page?: number | string;
+      paginate?: number | string;
+    }) => {
       const res = await Axios("/warehouse", { params: variables });
 
       return res.data as {

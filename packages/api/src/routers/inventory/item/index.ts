@@ -13,6 +13,7 @@ const itemSchema = itemBaseSchema.extend({
       name: z.string(),
       company_id: z.string(),
       warehouse_item: z.object({
+        qty: z.string(),
         ket: z.string(),
         expired_date: z.string(),
       }),
@@ -51,7 +52,7 @@ const item = {
     fetcher: async (variables: { id: string }) => {
       const res = await Axios(`/item/${variables.id}`);
 
-      return res.data as { data: z.infer<typeof itemSchema>; meta: Meta };
+      return res.data as { data: z.infer<typeof itemSchema> };
     },
   }),
   create: router.mutation({
