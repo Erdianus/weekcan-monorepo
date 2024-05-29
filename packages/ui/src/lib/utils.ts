@@ -15,6 +15,12 @@ export function fileExt(text: string) {
   return t?.[0] ?? "";
 }
 
+export function isImage(text: string) {
+  const t = text.match(/[0-9a-z]+$/);
+
+  return ["png", "jpeg", "jpg", "webp"].includes((t?.[0] ?? "").toLowerCase());
+}
+
 /*
  * @return Bakal return Oktavian Yoga => OY
  */

@@ -1,6 +1,7 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
+import { useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,11 +11,13 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
+import { atom, useAtom, useSetAtom } from "jotai";
 import { Database, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
+import { LightBox } from "@hktekno/ui/components/lightbox";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
@@ -33,6 +36,7 @@ import {
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
+import { isImage } from "@hktekno/ui/lib/utils";
 
 type Item = inferData<typeof k.inventory.item.all>["data"][number];
 const colHelper = createColumnHelper<Item>();
@@ -100,6 +104,7 @@ const Actions = ({ row }: CellContext<Item, unknown>) => {
   );
 };
 
+const idAtom = atom(-1);
 const columns = [
   colHelper.display({
     header: "No",
@@ -107,12 +112,22 @@ const columns = [
   }),
   colHelper.accessor("picture_link", {
     header: "Gambar",
-    cell: ({ getValue }) => (
-      <Avatar className="h-8 w-8 rounded-lg">
-        <AvatarImage className="h-8 w-8 object-cover" src={getValue()} />
-        <AvatarFallback>😆</AvatarFallback>
-      </Avatar>
-    ),
+    cell: ({ row, getValue }) => {
+      const setID = useSetAtom(idAtom);
+
+      return (
+        <Avatar className="h-8 w-8 rounded-lg">
+          <AvatarImage
+            onClick={() => {
+              setID(row.index);
+            }}
+            className="h-8 w-8 object-cover"
+            src={getValue()}
+          />
+          <AvatarFallback>😆</AvatarFallback>
+        </Avatar>
+      );
+    },
   }),
   colHelper.accessor("name", {
     header: "Nama",
@@ -144,19 +159,40 @@ const columns = [
 ];
 
 const ListItem = () => {
+  const [id, setID] = useAtom(idAtom);
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
   const { data: items, isLoading } = k.inventory.item.all.useQuery({
     variables,
   });
+
   const table = useReactTable({
     data: items?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const slides = useMemo(() => {
+    const v: { src: string; title: string }[] = [];
+
+    items?.data.forEach((item) => {
+      if (item.picture_link && isImage(item.picture_link)) {
+        v.push({ src: item.picture_link, title: item.name });
+      }
+    });
+
+    return v;
+  }, [items]);
+
   return (
     <>
       <PortalSearch placeholder="Cari Barang..." />
+      <LightBox
+        slides={slides}
+        open={id >= 0}
+        index={id}
+        close={() => setID(-1)}
+      />
       <DataTable table={table} columns={columns} isloading={isLoading} />
       <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />

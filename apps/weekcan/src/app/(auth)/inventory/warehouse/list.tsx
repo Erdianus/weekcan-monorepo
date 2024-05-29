@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Check, Pencil, Plus, Trash2, X, Zap } from "lucide-react";
@@ -242,7 +243,12 @@ const ListWarehouse = () => {
             {editID !== warehouse.id && (
               <>
                 <div>
-                  {warehouse.name}
+                  <Link
+                    className="hover:underline"
+                    href={`/inventory/warehouse/${warehouse.id}`}
+                  >
+                    {warehouse.name}
+                  </Link>
                   <div className="flex items-center gap-1">
                     <Avatar className="h-6 w-6 text-xs">
                       <AvatarImage src={warehouse.company.picture_link} />
