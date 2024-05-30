@@ -38,10 +38,7 @@ import Spinner from "@hktekno/ui/components/ui/spinner";
 import { Textarea } from "@hktekno/ui/components/ui/textarea";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
-import {
-  loadCompanyOptions,
-  loadWarehouseOptions,
-} from "@hktekno/ui/lib/select";
+import { loadWarehouseOptions } from "@hktekno/ui/lib/select";
 import { useImageCropStore } from "@hktekno/ui/lib/store/useImageCropStore";
 
 const itemFormSchema = z.object({
@@ -161,7 +158,7 @@ const CreateItem = () => {
           </Button>
         </DialogContent>
       </Dialog>
-      <H3 className="mb-4">Buat Proyek Baru</H3>
+      <H3 className="mb-4">Tambahkan Barang Baru</H3>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((v) => {

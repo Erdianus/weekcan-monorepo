@@ -72,7 +72,7 @@ const item = {
       data: {
         name: string;
         unit: string;
-        picture_path: File;
+        picture_path?: File;
       };
     }) => {
       const res = await Axios.post(
