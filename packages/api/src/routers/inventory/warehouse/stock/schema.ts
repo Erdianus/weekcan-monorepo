@@ -2,5 +2,15 @@ import { z } from "zod";
 
 const stockBaseSchema = z.object({
   id: z.number(),
-  name: z.string().min(1, "Tolong Isi Nama Satuan"),
+  name: z.string(),
+  picture_path: z.string(),
+  unit: z.string(),
+  category: z.string(),
+  warehouse_id: z.string(),
+  item_id: z.string(),
+  qty: z.union([z.string(), z.number()]),
+  ket: z.string(),
+  expired_date: z.string(),
 });
+
+export default stockBaseSchema;

@@ -6,6 +6,7 @@ import Axios from "@hktekno/utils/axios";
 import type { Meta } from "../../meta";
 import companyBaseSchema from "../../company/schema";
 import warehouseBaseSchema from "./schema";
+import stock from "./stock";
 
 const warehouseSchema = warehouseBaseSchema.extend({
   company: companyBaseSchema.extend({ picture_link: z.string() }),
@@ -59,6 +60,7 @@ const warehouse = {
       return res.data as { message: string };
     },
   }),
+  stock,
 };
 
 export default warehouse;
