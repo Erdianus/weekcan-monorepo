@@ -9,6 +9,7 @@ import "~/app/globals.css";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
+import QueryProvider from "@hktekno/ui/components/providers";
 import { ThemeProvider } from "@hktekno/ui/components/theme-provider";
 import { Toaster } from "@hktekno/ui/components/ui/sonner";
 import { TooltipProvider } from "@hktekno/ui/components/ui/tooltip";
@@ -61,7 +62,9 @@ export default function RootLayout({
       </head>
       <body className={cn("", inter.className)}>
         <ThemeProvider disableTransitionOnChange attribute="class">
-          <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
+          <QueryProvider>
+            <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
+          </QueryProvider>
         </ThemeProvider>
         <Toaster richColors closeButton position="top-right" />
       </body>

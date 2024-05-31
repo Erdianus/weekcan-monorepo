@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@hktekno/auth";
@@ -16,8 +17,16 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <LoginForm />
+    <div className="flex h-screen w-full flex-col items-center justify-center">
+      <div>
+        <LoginForm />
+        <Link
+          href={"/forgot-password"}
+          className="mt-1 text-sm text-main-500 hover:text-main-600 hover:underline"
+        >
+          Lupa Password?
+        </Link>
+      </div>
     </div>
   );
 }

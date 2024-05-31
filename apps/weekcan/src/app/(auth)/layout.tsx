@@ -6,7 +6,6 @@ import { auth } from "@hktekno/auth";
 import AlertConfirm from "@hktekno/ui/components/alert-confirm";
 import InitClient from "@hktekno/ui/components/init-client";
 import Navbar from "@hktekno/ui/components/navbar";
-import QueryProvider from "@hktekno/ui/components/providers";
 import { PWAConfirmInstall } from "@hktekno/ui/components/pwa-install";
 import Sidebar from "@hktekno/ui/components/sidebar";
 
@@ -38,18 +37,16 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
   return (
     <>
       <InitClient user={sesh.user} />
-      <QueryProvider>
-        <AlertConfirm />
-        <PWAConfirmInstall />
-        <div className="antialiased">
-          <Navbar />
-          {/* <!-- Sidebar --> */}
-          <Sidebar />
-          <main className="relative h-full min-h-lvh p-4 pt-20 md:ml-64 ">
-            {children}
-          </main>
-        </div>
-      </QueryProvider>
+      <AlertConfirm />
+      <PWAConfirmInstall />
+      <div className="antialiased">
+        <Navbar />
+        {/* <!-- Sidebar --> */}
+        <Sidebar />
+        <main className="relative h-full min-h-lvh p-4 pt-20 md:ml-64 ">
+          {children}
+        </main>
+      </div>
     </>
   );
 }
