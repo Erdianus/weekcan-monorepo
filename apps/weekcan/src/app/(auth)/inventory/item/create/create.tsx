@@ -139,7 +139,7 @@ const CreateItem = () => {
       <Dialog open={open} onOpenChange={(e) => setOpen(e)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Ganti Foto Profil</DialogTitle>
+            <DialogTitle>Ganti Foto</DialogTitle>
           </DialogHeader>
           <CropImage />
           <Button

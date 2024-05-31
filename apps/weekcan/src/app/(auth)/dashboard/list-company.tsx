@@ -38,7 +38,7 @@ const CarouselCompany = ({ user_id }: { user_id: string }) => {
                     <div className="mb-4 flex items-center gap-4">
                       <Avatar className="h-12 w-12 md:h-20 md:w-20">
                         <AvatarImage src={company.picture_link ?? ""} />
-                        <AvatarFallback>
+                        <AvatarFallback className="">
                           {shortName(company.company_name)}
                         </AvatarFallback>
                       </Avatar>
@@ -56,7 +56,7 @@ const CarouselCompany = ({ user_id }: { user_id: string }) => {
                             className="h-14 w-12 object-cover md:h-32 md:w-24"
                             src={user?.data.picture_link}
                           />
-                          <AvatarFallback>
+                          <AvatarFallback className="h-14 w-12 object-cover md:h-32 md:w-24">
                             {shortName(user?.data.name)}
                           </AvatarFallback>
                         </Avatar>
