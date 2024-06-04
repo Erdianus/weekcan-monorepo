@@ -58,12 +58,13 @@ function ThumbsUp(props: SVGProps<SVGSVGElement>) {
 
 // NOTE: pakai inputan manual
 // react hook form gak work di di portal
+const date = new Date();
 const CreateDailyTask = () => {
   const params = useParams<{ task_id: string }>();
   const initData = useMemo(() => {
     return {
       desc_detail_task: "",
-      date: dayjs().toDate(),
+      date,
       is_done: false,
       task_project_id: params.task_id,
       file: undefined,
@@ -162,7 +163,7 @@ const CreateDailyTask = () => {
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              defaultMonth={dayjs(task?.data.start_date).toDate()}
+              defaultMonth={data.date}
               disabled={{
                 before: dayjs(task?.data.start_date).toDate(),
                 after: dayjs(task?.data.end_date).toDate(),

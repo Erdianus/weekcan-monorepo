@@ -35,6 +35,7 @@ import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import {
+  loadProjectJSONOptions,
   loadProjectSprintJSONOptions,
   loadUserOptions,
   optionsTaskProjectStatus,
@@ -354,7 +355,7 @@ const CreateTask = ({ project_id }: { project_id: string }) => {
                                 // @ts-expect-error gapapa gan error
                                 form.setValue("date", null);
                               }}
-                              loadOptions={loadProjectSprintJSONOptions}
+                              loadOptions={loadProjectJSONOptions}
                               additional={{ page: 1 }}
                             />
                           </FormControl>
