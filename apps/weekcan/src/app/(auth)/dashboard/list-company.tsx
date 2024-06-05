@@ -43,7 +43,7 @@ const CarouselCompany = ({ user_id }: { user_id: string }) => {
                         </AvatarFallback>
                       </Avatar>
                       <Link
-                        href={`/corps/${company.id}/task`}
+                        href={`/corps/${company.id}/daily-job`}
                         className="text-lg font-bold hover:underline md:text-2xl"
                       >
                         {company.company_name}

@@ -25,6 +25,11 @@ const badgeVariants = cva<{ variant: Record<string, string> }>(
           "border-transparent bg-red-500 text-white dark:bg-red-300 dark:text-red-700",
         In: "border-transparent bg-green-500 text-white dark:bg-green-300 dark:text-green-700",
         Out: "border-transparent bg-yellow-500 text-white dark:bg-yellow-300 dark:text-yellow-700",
+        Hadir:
+          "border-transparent bg-green-500 text-white dark:bg-green-300 dark:text-green-700",
+        Izin: "border-transparent bg-purple-500 text-white dark:bg-purple-300 dark:text-purple-700",
+        Sakit:
+          "border-transparent bg-fuchsia-500 text-white dark:bg-fuchsia-300 dark:text-fuchsia-700",
       },
     },
     defaultVariants: {

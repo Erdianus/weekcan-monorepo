@@ -106,6 +106,9 @@ const columns = [
   colHelper.accessor("role_name", {
     header: "Role",
   }),
+  colHelper.accessor("job_type.job_name", {
+    header: "Jabatan",
+  }),
   colHelper.accessor("company", {
     header: "Perusahaan",
     cell: ({ getValue }) => {
