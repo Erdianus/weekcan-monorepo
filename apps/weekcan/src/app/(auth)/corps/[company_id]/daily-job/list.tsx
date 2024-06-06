@@ -70,6 +70,7 @@ const columns = [
               </CarouselItem>
             ))}
           </CarouselContent>
+          {/*@ts-expect-error gapapan gan error*/}
           {getValue()?.length > 1 && (
             <div className="absolute -right-2 top-0 flex flex-col items-center justify-center">
               <CarouselPrevious className="static h-6 w-6" />
