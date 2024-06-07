@@ -43,7 +43,7 @@ const CarouselCompany = ({ user_id }: { user_id: string }) => {
                         </AvatarFallback>
                       </Avatar>
                       <Link
-                        href={`/corps/${company.id}/task`}
+                        href={`/corps/${company.id}/daily-job`}
                         className="text-lg font-bold hover:underline md:text-2xl"
                       >
                         {company.company_name}
@@ -53,10 +53,10 @@ const CarouselCompany = ({ user_id }: { user_id: string }) => {
                       <div className="flex items-start gap-4">
                         <Avatar className="h-14 w-12 rounded-xl md:h-32 md:w-24">
                           <AvatarImage
-                            className="h-14 w-12 object-cover md:h-32 md:w-24"
+                            className="h-14 w-12 object-cover md:h-32 md:w-24 rounded-xl"
                             src={user?.data.picture_link}
                           />
-                          <AvatarFallback className="h-14 w-12 object-cover md:h-32 md:w-24">
+                          <AvatarFallback className="h-14 w-12 object-cover rounded-xl md:h-32 md:w-24">
                             {shortName(user?.data.name)}
                           </AvatarFallback>
                         </Avatar>

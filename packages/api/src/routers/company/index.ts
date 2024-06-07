@@ -5,6 +5,7 @@ import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../meta";
 import userBaseSchema from "../user/schema";
+import daily_job from "./daily-job";
 import companyBaseSchema, { companyFormSchema as companyForm } from "./schema";
 import task from "./task";
 
@@ -83,6 +84,7 @@ const company = router("company", {
     },
   }),
   task,
+  daily_job,
 });
 
 export { type Company };

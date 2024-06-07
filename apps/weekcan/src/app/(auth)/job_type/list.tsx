@@ -181,7 +181,6 @@ const ListJobTypes = () => {
                     placeholder="Contoh: Graphic Desainer"
                   />
                 </div>
-
                 <Controller
                   control={form.control}
                   name="company"

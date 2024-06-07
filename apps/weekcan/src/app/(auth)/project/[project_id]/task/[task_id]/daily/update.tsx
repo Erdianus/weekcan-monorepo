@@ -27,6 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@hktekno/ui/components/ui/popover";
+import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import {
   Tooltip,
@@ -150,15 +151,19 @@ const UpdateDailyTask = ({
               <AlertDialogCancel onClick={onClose}>
                 <X />
               </AlertDialogCancel>
-              <Input
-                value={data.desc_detail_task}
-                placeholder="Tulis Perihal"
-                className="flex-1"
-                autoFocus
-                onChange={(e) =>
-                  setData((o) => ({ ...o, desc_detail_task: e.target.value }))
-                }
-              />
+              {!daily ? (
+                <Skeleton className="h-10 flex-1" />
+              ) : (
+                <Input
+                  value={data.desc_detail_task}
+                  placeholder="Tulis Perihal"
+                  className="flex-1"
+                  autoFocus
+                  onChange={(e) =>
+                    setData((o) => ({ ...o, desc_detail_task: e.target.value }))
+                  }
+                />
+              )}
               <Popover>
                 <PopoverTrigger asChild>
                   <button
