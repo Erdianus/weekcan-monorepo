@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -68,7 +68,7 @@ const formSchema = z
     }
   });
 
-const CreateDailyJob = () => {
+const UpdateDailyJob = () => {
   const [id, setID] = useState(1);
   const user_id = useUserStore((s) => s.id);
   const params = useParams<{ company_id: string }>();
@@ -86,10 +86,20 @@ const CreateDailyJob = () => {
   });
 
   const client = useQueryClient();
-  const create = k.company.daily_job.create.useMutation({
+  const { data, isLoading } = k.company.daily_job.single.attendance.useQuery({
+    variables: { user_id: `${user_id}` },
+    enabled: !!user_id,
+  });
+  const isload = !data && isLoading && !user_id;
+  const update = k.company.daily_job.update.attendance.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
       router.push(`/corps/${params.company_id}/daily-job`);
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.single.attendance.getKey({
+          user_id: `${user_id}`,
+        }),
+      });
       await client.invalidateQueries({
         queryKey: k.company.daily_job.users.getKey(),
       });
@@ -97,13 +107,38 @@ const CreateDailyJob = () => {
     onError: ({ message }) => toast.error(message),
   });
 
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        ket: data.ket ?? "",
+        latitude: data.latitude,
+        longitude: data.longitude,
+        status:
+          data.status && data.status !== "Hadir"
+            ? {
+                label: data.status,
+                value: data.status,
+              }
+            : null,
+        daily_jobs: data.dailyJob?.map((d, i) => ({
+          id: i + 1,
+          user_id: Number(user_id),
+          status: d.status,
+          text: d.text,
+        })),
+        location_text: data.location_text,
+      });
+    }
+  }, [data]);
+
   return (
     <>
-      <H3 className="mb-4">Buat Tugas</H3>
+      <H3 className="mb-4">Edit Tugas</H3>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((v) => {
-            create.mutate({
+            update.mutate({
+              id: `${data?.attendance_id}`,
               data: {
                 status: v.status?.value ?? "In",
                 user_id: `${user_id}`,
@@ -113,10 +148,10 @@ const CreateDailyJob = () => {
                   ...dj,
                   date: dayjs().format("YYYY-MM-DD"),
                 })),
-                ket: v.ket ? v.ket : "-",
+                ket: v.ket && v.status ? v.ket : "-",
                 location_text: v.location_text ? v.location_text : "-",
-                date: dayjs().format("YYYY-MM-DD"),
-                time: dayjs().format("HH:mm:ss"),
+                date: data?.date ?? dayjs().format("YYYY-MM-DD"),
+                time: data?.time ?? dayjs().format("HH:mm:ss"),
               },
             });
           })}
@@ -128,7 +163,7 @@ const CreateDailyJob = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Lokasi</FormLabel>
-                  <FormControl>
+                  <FormControl isloading={isload}>
                     <Input {...field} placeholder="Masukkan Lokasi" />
                   </FormControl>
                   <FormDescription>Kosongkan jika dikantor</FormDescription>
@@ -142,7 +177,7 @@ const CreateDailyJob = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <FormControl>
+                  <FormControl isloading={isload}>
                     <Select
                       options={["Izin", "Sakit"].map((v) => ({
                         label: v,
@@ -176,7 +211,7 @@ const CreateDailyJob = () => {
                     <FormLabel>
                       Keterangan {form.watch("status")?.value}
                     </FormLabel>
-                    <FormControl>
+                    <FormControl isloading={isload}>
                       <Input {...field} placeholder="Masukkan Keterangan" />
                     </FormControl>
                     <FormMessage />
@@ -392,8 +427,8 @@ const CreateDailyJob = () => {
                 form.formState.errors.daily_jobs?.root?.message}
             </p>
           </div>
-          <Button disabled={create.isPending}>
-            {create.isPending ? <Spinner /> : "Submit"}
+          <Button disabled={update.isPending}>
+            {update.isPending ? <Spinner /> : "Submit"}
           </Button>
         </form>
       </Form>
@@ -401,4 +436,4 @@ const CreateDailyJob = () => {
   );
 };
 
-export default CreateDailyJob;
+export default UpdateDailyJob;

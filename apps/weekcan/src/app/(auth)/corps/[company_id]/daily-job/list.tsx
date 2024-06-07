@@ -1,12 +1,22 @@
 "use client";
 
+import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import {
+  CellContext,
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { CloudSun, Moon, Sun } from "lucide-react";
+import dayjs from "dayjs";
+import {
+  CloudSun,
+  Moon,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Sun,
+} from "lucide-react";
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
@@ -14,6 +24,7 @@ import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Badge } from "@hktekno/ui/components/ui/badge";
+import { Button } from "@hktekno/ui/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -22,9 +33,63 @@ import {
   CarouselPrevious,
 } from "@hktekno/ui/components/ui/carousel";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@hktekno/ui/components/ui/dropdown-menu";
+import useUserStore from "@hktekno/ui/lib/store/useUserStore";
+
+import Filter from "./filter";
 
 type DailyJobUser = inferData<typeof k.company.daily_job.users>["data"][number];
 const colHelper = createColumnHelper<DailyJobUser>();
+
+const Action = ({ row }: CellContext<DailyJobUser, unknown>) => {
+  const user_id = useUserStore((s) => s.id);
+  const { original: data } = row;
+
+  if (`${user_id}` !== `${row.original.id}`) return null;
+
+  if (
+    row.original.date &&
+    !dayjs().isSame(dayjs(row.original.date), "day") &&
+    row.original.status === "Belum Hadir"
+  )
+    return null;
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            {<MoreHorizontal className="h-4 w-4" />}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {data.status === "Belum Hadir" && (
+            <Link href={`daily-job/create`}>
+              <DropdownMenuItem>
+                <Plus className="mr-2 h-4 w-4" />
+                <span>Buat</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
+          {data.status !== "Belum Hadir" && (
+            <Link href={`daily-job/update`}>
+              <DropdownMenuItem>
+                <Pencil className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+};
 
 const columns = [
   colHelper.display({
@@ -81,6 +146,18 @@ const columns = [
       );
     },
   }),
+  colHelper.accessor("location_text", {
+    header: "Lokasi",
+    cell: ({ getValue }) => (getValue() ? getValue() : "-"),
+  }),
+  colHelper.accessor("ket", {
+    header: "Keterangan",
+    cell: ({ getValue }) => (getValue() ? getValue() : "-"),
+  }),
+  colHelper.display({
+    id: "actions",
+    cell: Action,
+  }),
 ];
 
 const ListDailyJobUser = () => {
@@ -101,6 +178,9 @@ const ListDailyJobUser = () => {
   return (
     <>
       <PortalSearch placeholder="Cari Tugas Harian..." />
+      <div className="mb-4 flex flex-wrap items-center gap-4">
+        <Filter isLoading={isLoading} />
+      </div>
       <DataTable table={table} columns={columns} isloading={isLoading} />
       <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />
