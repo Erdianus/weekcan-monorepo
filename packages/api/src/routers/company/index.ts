@@ -13,6 +13,12 @@ const companySchema = companyBaseSchema.extend({
   picture_link: z.string().nullish(),
   user: userBaseSchema.array(),
   owner: userBaseSchema,
+  archive_category: z
+    .object({
+      id: z.number(),
+      archive_name: z.string(),
+    })
+    .array(),
 });
 
 type Company = z.infer<typeof companySchema>;
