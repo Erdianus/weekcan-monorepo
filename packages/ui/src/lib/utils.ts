@@ -33,3 +33,7 @@ export const shortName = (text?: string) => {
     (initial.shift()?.[1] ?? "") + (initial.pop()?.[1] ?? "")
   ).toUpperCase();
 };
+
+export function slug(text: string) {
+  return text.toLowerCase().replace(/\s+/g, "-");
+}

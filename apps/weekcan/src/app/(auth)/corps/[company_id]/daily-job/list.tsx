@@ -120,7 +120,7 @@ const columns = [
       return (
         <Carousel
           opts={{ loop: true, align: "center" }}
-          className="relative"
+          className="relative pr-6 md:pr-0"
           orientation="vertical"
         >
           <CarouselContent className="h-14 py-1">
