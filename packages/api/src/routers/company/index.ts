@@ -4,6 +4,7 @@ import z from "zod";
 import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../meta";
+import { eventRouter } from "../event";
 import userBaseSchema from "../user/schema";
 import daily_job from "./daily-job";
 import companyBaseSchema, { companyFormSchema as companyForm } from "./schema";
@@ -91,6 +92,7 @@ const company = router("company", {
   }),
   task,
   daily_job,
+  event: eventRouter,
 });
 
 export { type Company };

@@ -2,7 +2,7 @@
 
 import type { CellContext } from "@tanstack/react-table";
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -28,11 +28,9 @@ import {
 import { Task } from "@hktekno/ui/icon";
 import { dateRange } from "@hktekno/ui/lib/date";
 
-type Project = inferData<typeof k.project.all>["data"][number];
-const colHelper = createColumnHelper<Project>();
-const Actions = ({ row }: CellContext<Project, unknown>) => {
-  const params = useParams<{ company_id: string }>();
-
+type Event = inferData<typeof k.company.event.all>["data"][number];
+const colHelper = createColumnHelper<Event>();
+const Actions = ({ row }: CellContext<Event, unknown>) => {
   const { original: data } = row;
   return (
     <>
@@ -45,18 +43,16 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <Link href={`/project/${data.id}`}>
+          <Link href={`event/${data.id}/list-jobs`}>
             <DropdownMenuItem>
               <Eye className="mr-2 h-4 w-4" />
               <span>Detail</span>
             </DropdownMenuItem>
           </Link>
-          <Link
-            href={`/corps/${params.company_id}/task?project_id=${data.id}&project_name=${data.project_name}`}
-          >
+          <Link href={`event/${data.id}/checklist`}>
             <DropdownMenuItem>
               <Task className="mr-2 h-4 w-4" />
-              <span>Tugas</span>
+              <span>Checklist</span>
             </DropdownMenuItem>
           </Link>
         </DropdownMenuContent>
@@ -70,7 +66,7 @@ const columns = [
     header: "No",
     cell: ({ row }) => row.index + 1,
   }),
-  colHelper.accessor("project_name", {
+  colHelper.accessor("name", {
     header: "Nama Proyek",
   }),
   colHelper.display({
@@ -78,17 +74,15 @@ const columns = [
     cell: ({ row }) =>
       dateRange(row.original.start_date, row.original.end_date),
   }),
-  colHelper.display({
+  colHelper.accessor("venue", {
     header: "Tempat",
-    cell: ({ row: { original: data } }) => (
-      <div className="truncate">{`${data.venue_name}, ${data.location}`}</div>
-    ),
+    cell: ({ getValue }) => <div className="truncate">{`${getValue()}`}</div>,
   }),
-  colHelper.accessor("pic_name", {
+  colHelper.accessor("pic", {
     header: "Koor.",
   }),
-  colHelper.accessor("progress", {
-    header: "Progress",
+  colHelper.accessor("status", {
+    header: "Status",
     cell: ({ getValue }) => <Badge variant={getValue()}>{getValue()}</Badge>,
   }),
   colHelper.display({
@@ -97,23 +91,22 @@ const columns = [
   }),
 ];
 
-const ListProjectCompany = ({ company_id }: { company_id: string }) => {
+const ListEventCompany = () => {
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
-  const { data: projects, isLoading } = k.project.all.useQuery({
+  const { data: events, isLoading } = k.company.event.all.useQuery({
     variables: {
       ...variables,
-      company_id,
     },
   });
 
   const table = useReactTable({
-    data: projects?.data ?? [],
+    data: events?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const isload = !projects && isLoading;
+  const isload = !events && isLoading;
 
   return (
     <>
@@ -121,10 +114,10 @@ const ListProjectCompany = ({ company_id }: { company_id: string }) => {
       <DataTable table={table} columns={columns} isloading={isload} />
       <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />
-        <PaginationParams meta={projects?.meta} />
+        <PaginationParams meta={events?.meta} />
       </div>
     </>
   );
 };
 
-export default ListProjectCompany;
+export default ListEventCompany;
