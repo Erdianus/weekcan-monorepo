@@ -71,6 +71,30 @@ const daily_job = {
       return res.data as { data: z.infer<typeof dailyJobSchema>[]; meta: Meta };
     },
   }),
+  userInfinity: router.infiniteQuery({
+    fetcher: async (
+      variables: {
+        company_id: string;
+        search?: string;
+        date?: string;
+        page?: number | string;
+        paginate?: number | string;
+      },
+      { pageParam },
+    ) => {
+      const res = await Axios("/daily-jobs/users", {
+        params: { ...variables, page: pageParam },
+      });
+
+      return res.data as { data: z.infer<typeof dailyJobSchema>[]; meta: Meta };
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.meta.current_page === lastPage.meta.last_page) return null;
+
+      return lastPage.meta.current_page + 1;
+    },
+    initialPageParam: 1,
+  }),
   single: {
     attendance: router.query({
       fetcher: async (variables: { user_id: string }) => {

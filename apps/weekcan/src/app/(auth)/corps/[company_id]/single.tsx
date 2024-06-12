@@ -22,7 +22,7 @@ const SingleCorps = ({ id }: { id: string }) => {
     return [
       { label: "Detail", href: `/corps/${id}` },
       { label: "Event", href: `/corps/${id}/event` },
-      { label: "Tugas Event", href: `/corps/${id}/event-jobs` },
+      // { label: "Tugas Event", href: `/corps/${id}/event-jobs` },
       { label: "Tugas Harian", href: `/corps/${id}/daily-job` },
     ];
   }, [id]);
