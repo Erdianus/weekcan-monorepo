@@ -40,7 +40,8 @@ const ButtonSubmit = () => {
   const { pending } = useFormStatus();
   return (
     <Button disabled={pending} className="w-full">
-      {pending ? <Spinner /> : "Sign In"}
+      {pending && <Spinner className="mr-2" />}
+      <span>Sign In</span>
     </Button>
   );
 };

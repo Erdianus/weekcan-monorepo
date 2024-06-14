@@ -4,6 +4,7 @@ import z from "zod";
 import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../meta";
+import { eventRouter } from "../event";
 import userBaseSchema from "../user/schema";
 import daily_job from "./daily-job";
 import companyBaseSchema, { companyFormSchema as companyForm } from "./schema";
@@ -13,6 +14,12 @@ const companySchema = companyBaseSchema.extend({
   picture_link: z.string().nullish(),
   user: userBaseSchema.array(),
   owner: userBaseSchema,
+  archive_category: z
+    .object({
+      id: z.number(),
+      archive_name: z.string(),
+    })
+    .array(),
 });
 
 type Company = z.infer<typeof companySchema>;
@@ -85,6 +92,7 @@ const company = router("company", {
   }),
   task,
   daily_job,
+  event: eventRouter,
 });
 
 export { type Company };

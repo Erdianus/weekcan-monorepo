@@ -1,9 +1,10 @@
 "use client";
 
+import type { CellContext } from "@tanstack/react-table";
+import { useMemo } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import {
-  CellContext,
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
@@ -20,8 +21,6 @@ import {
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
-import Paginate from "@hktekno/ui/components/paginate";
-import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
@@ -39,6 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
+import Spinner from "@hktekno/ui/components/ui/spinner";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 
 import Filter from "./filter";
@@ -120,7 +120,7 @@ const columns = [
       return (
         <Carousel
           opts={{ loop: true, align: "center" }}
-          className="relative"
+          className="relative pr-6 md:pr-0"
           orientation="vertical"
         >
           <CarouselContent className="h-14 py-1">
@@ -165,12 +165,29 @@ const ListDailyJobUser = () => {
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
 
-  const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    k.company.daily_job.userInfinity.useInfiniteQuery({
+      variables: { ...variables, company_id },
+    });
+
+  const dailies = useMemo(() => {
+    let d: DailyJobUser[] = [];
+
+    data?.pages.forEach((page) => {
+      d = [...page.data, ...d];
+    });
+
+    return d;
+  }, [data]);
+
+  console.log(data);
+
+  /*   const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
     variables: { ...variables, company_id },
-  });
+  }); */
 
   const table = useReactTable({
-    data: dailies?.data ?? [],
+    data: dailies,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -182,10 +199,22 @@ const ListDailyJobUser = () => {
         <Filter isLoading={isLoading} />
       </div>
       <DataTable table={table} columns={columns} isloading={isLoading} />
-      <div className="mt-4 flex w-full items-center justify-end gap-2">
+      <div className="mt-4 w-full items-center justify-center">
+        {hasNextPage && (
+          <Button
+            type="button"
+            disabled={isFetchingNextPage}
+            onClick={() => fetchNextPage()}
+          >
+            {isFetchingNextPage && <Spinner />}
+            <span>Tampilkan Lebih</span>
+          </Button>
+        )}
+      </div>
+      {/* <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />
         <PaginationParams meta={dailies?.meta} />
-      </div>
+      </div> */}
     </>
   );
 };

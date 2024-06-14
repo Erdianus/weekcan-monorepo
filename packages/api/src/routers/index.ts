@@ -9,7 +9,9 @@ import attendance from "./attendance";
 import client from "./client";
 import company from "./company";
 import dailyJob from "./daily-jobs";
+import event from "./event";
 import inventory from "./inventory";
+import job from "./job";
 import jobType from "./job-type";
 import project from "./project";
 import role from "./role";
@@ -18,6 +20,8 @@ import venue from "./venue";
 
 const k = {
   project,
+  event,
+  job,
   dailyJob,
   attendance,
   inventory,
