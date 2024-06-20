@@ -27,6 +27,13 @@ const job = router("job", {
       return res.data as { data: z.infer<typeof jobBaseSchema> };
     },
   }),
+  update: router.mutation({
+    mutationFn: async (variables: { id: string; data: { status: string } }) => {
+      const res = await Axios.put(`/list-job/${variables.id}`, variables.data);
+
+      return res.data as { message: string };
+    },
+  }),
 });
 
 export default job;
