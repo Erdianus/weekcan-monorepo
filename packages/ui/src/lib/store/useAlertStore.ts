@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 interface State {
   open: boolean;
-  header?: string;
+  header?: string | JSX.Element;
   desc?: string;
   cancelText?: string;
   confirmText?: string;

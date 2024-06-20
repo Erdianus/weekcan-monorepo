@@ -5,7 +5,7 @@ import ListJobs from "./list";
 export default function Page() {
   return (
     <>
-      <H3 className="mb-4">Kerjaan</H3>
+      <H3 className="mb-4">Rincian</H3>
       <ListJobs />
     </>
   );

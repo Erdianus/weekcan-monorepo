@@ -24,7 +24,7 @@ const eventRouter = {
     fetcher: async (variables: { id: string }) => {
       const res = await Axios.get(`/event/${variables.id}`);
 
-      return res.data as { data: z.infer<typeof eventSchema>; meta: Meta };
+      return res.data as { data: z.infer<typeof eventSchema> };
     },
   }),
   list_job: router.infiniteQuery({

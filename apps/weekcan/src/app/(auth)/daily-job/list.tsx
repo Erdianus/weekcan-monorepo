@@ -13,7 +13,6 @@ import { Plus } from "lucide-react";
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import Flashlist from "@hktekno/ui/components/flashlist";
-import Loading from "@hktekno/ui/components/loading";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
 import { Separator } from "@hktekno/ui/components/ui/separator";
