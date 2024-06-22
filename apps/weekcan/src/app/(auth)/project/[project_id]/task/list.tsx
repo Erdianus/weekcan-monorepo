@@ -157,6 +157,14 @@ const columns = [
   }),
   colHelper.accessor("task_name", {
     header: "Kerjaan",
+    cell: ({ getValue, row }) => (
+      <div>
+        {getValue()}
+        <div className="line-clamp-1 text-xs text-muted-foreground">
+          {row.original.desc}
+        </div>
+      </div>
+    ),
   }),
   colHelper.display({
     header: "Tanggal",
