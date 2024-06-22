@@ -100,6 +100,9 @@ const columns = [
   colHelper.accessor("name", {
     header: "Nama",
   }),
+  colHelper.accessor("username", {
+    header: "Username",
+  }),
   colHelper.accessor("email", {
     header: "Email",
   }),
