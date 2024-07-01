@@ -50,7 +50,6 @@ export default function Error({
           <p className="my-5 text-accent-foreground lg:text-xl">
             {error.message}
           </p>
-          <Button onClick={reset}>Reset</Button>
         </div>
       </div>
     </>
