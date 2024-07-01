@@ -22,7 +22,8 @@ const initialState: State = {
   desc: "Perbuatan ini tidak dapat dikembalikan",
   cancelText: "Batal",
   confirmText: "Lanjutkan",
-  onConfirm: () => undefined,
+  onConfirm: undefined,
+  onAction: undefined,
 };
 
 const useAlertStore = create<AlertState>()((set) => ({
