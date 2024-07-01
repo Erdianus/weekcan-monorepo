@@ -32,6 +32,14 @@ const badgeVariants = cva<{ variant: Record<string, string> }>(
         Izin: "border-transparent bg-purple-500 text-white dark:bg-purple-300 dark:text-purple-700",
         Sakit:
           "border-transparent bg-fuchsia-500 text-white dark:bg-fuchsia-300 dark:text-fuchsia-700",
+        "No Progress":
+          "border-transparent bg-gray-500 text-white dark:bg-gray-300 dark:text-gray-700",
+        Koordinasi:
+          "border-transparent bg-yellow-500 text-white dark:bg-yellow-300 dark:text-yellow-700",
+        Konfirmasi:
+          "border-transparent bg-orange-500 text-white dark:bg-orange-300 dark:text-orange-700",
+        Loading:
+          "border-transparent bg-blue-500 text-white dark:bg-blue-300 dark:text-blue-700",
       },
     },
     defaultVariants: {

@@ -92,11 +92,40 @@ const Action = ({ row }: CellContext<Job, unknown>) => {
               });
             }}
           >
-            <DropdownMenuRadioItem value="Done">Done</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="On Going">
-              On Going
+            <DropdownMenuRadioItem
+              className="hover:bg-gray-500 hover:text-white data-[state=checked]:text-gray-500 dark:hover:bg-gray-300 dark:hover:text-gray-700 "
+              value="No Progress"
+            >
+              No Progress
             </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="Canceled">
+            <DropdownMenuRadioItem
+              value="Koordinasi"
+              className="hover:bg-yellow-500 hover:text-white data-[state=checked]:text-yellow-500 dark:hover:bg-yellow-300 dark:hover:text-yellow-700 "
+            >
+              Koordinasi
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="Konfirmasi"
+              className="hover:bg-orange-500 hover:text-white data-[state=checked]:text-orange-500 dark:hover:bg-orange-300 dark:hover:text-orange-700 "
+            >
+              Konfirmasi
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="Loading"
+              className="hover:bg-blue-500 hover:text-white data-[state=checked]:text-blue-500 dark:hover:bg-blue-300 dark:hover:text-blue-700 "
+            >
+              Loading
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="Done"
+              className="hover:bg-green-500 hover:text-white data-[state=checked]:text-green-500 dark:hover:bg-green-300 dark:hover:text-green-700"
+            >
+              Done
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="Canceled"
+              className="hover:bg-red-500 hover:text-white data-[state=checked]:text-red-500 dark:hover:bg-red-300 dark:hover:text-red-700 "
+            >
               Cancel
             </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
@@ -111,9 +140,7 @@ const columns = [
     header: "No",
     cell: ({ row }) => row.index + 1,
   }),
-  colHelper.accessor("pic", {
-    header: "PIC",
-  }),
+
   colHelper.accessor("name", {
     header: "Kerjaan",
   }),
@@ -132,6 +159,9 @@ const columns = [
   colHelper.accessor("time", {
     header: "Tanggal",
     cell: ({ getValue }) => dateRange(getValue()),
+  }),
+  colHelper.accessor("pic", {
+    header: "PIC",
   }),
   colHelper.display({
     id: "Action",

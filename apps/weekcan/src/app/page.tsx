@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { auth } from "@hktekno/auth";
 import Logo from "@hktekno/ui/components/logo";
+import RotateBetween from "@hktekno/ui/components/ui/rotate-between";
 
 export const metadata: Metadata = {
   title: "weekcan",
@@ -25,7 +26,7 @@ export default async function Page() {
               <a
                 href={sesh ? "/dashboard" : "/login"}
                 target="_blank"
-                className="bg-main-700 hover:bg-main-800 focus:ring-main-300 dark:bg-main-600 dark:hover:bg-main-700 dark:focus:ring-main-800 rounded-lg px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-4 sm:mr-2 lg:mr-0 lg:px-5 lg:py-2.5"
+                className="rounded-lg bg-main-700 px-4 py-2 text-sm font-medium text-white hover:bg-main-800 focus:outline-none focus:ring-4 focus:ring-main-300 dark:bg-main-600 dark:hover:bg-main-700 dark:focus:ring-main-800 sm:mr-2 lg:mr-0 lg:px-5 lg:py-2.5"
               >
                 {sesh?.user.username ?? "Login"}
               </a>
@@ -71,7 +72,7 @@ export default async function Page() {
                 <li>
                   <a
                     href="#"
-                    className="bg-main-700 lg:text-main-700 block rounded py-2 pl-3 pr-4 text-white dark:text-white lg:bg-transparent lg:p-0"
+                    className="block rounded bg-main-700 py-2 pl-3 pr-4 text-white dark:text-white lg:bg-transparent lg:p-0 lg:text-main-700"
                     aria-current="page"
                   >
                     Home
@@ -80,7 +81,7 @@ export default async function Page() {
                 <li>
                   <a
                     href="#"
-                    className="lg:hover:text-main-700 block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent lg:dark:hover:text-white"
+                    className="block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:hover:text-main-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
                   >
                     Company
                   </a>
@@ -88,7 +89,7 @@ export default async function Page() {
                 <li>
                   <a
                     href="#"
-                    className="lg:hover:text-main-700 block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent lg:dark:hover:text-white"
+                    className="block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:hover:text-main-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
                   >
                     Marketplace
                   </a>
@@ -96,7 +97,7 @@ export default async function Page() {
                 <li>
                   <a
                     href="#"
-                    className="lg:hover:text-main-700 block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent lg:dark:hover:text-white"
+                    className="block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:hover:text-main-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
                   >
                     Features
                   </a>
@@ -104,7 +105,7 @@ export default async function Page() {
                 <li>
                   <a
                     href="#"
-                    className="lg:hover:text-main-700 block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent lg:dark:hover:text-white"
+                    className="block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:hover:text-main-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
                   >
                     Team
                   </a>
@@ -112,7 +113,7 @@ export default async function Page() {
                 <li>
                   <a
                     href="#"
-                    className="lg:hover:text-main-700 block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent lg:dark:hover:text-white"
+                    className="block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:hover:text-main-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
                   >
                     Contact
                   </a>
@@ -125,8 +126,17 @@ export default async function Page() {
       <section className="bg-white dark:bg-gray-900">
         <div className="mx-auto grid max-w-screen-xl px-4 pb-8 pt-20 lg:grid-cols-12 lg:gap-8 lg:py-16 lg:pt-28 xl:gap-0">
           <div className="mr-auto place-self-center lg:col-span-7">
-            <h1 className="mb-4 max-w-2xl text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl xl:text-6xl">
-              I can, You Can, <span className="text-main-500">Weekcan</span>
+            <h1 className="mb-4 flex max-w-2xl items-center gap-3 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl xl:text-6xl">
+              <span className="text-main-500">All in One</span>
+              <RotateBetween
+                words={[
+                  "Kerjaan",
+                  "Absensi",
+                  "Keuangan",
+                  "Inventaris",
+                  "Arsip",
+                ]}
+              />
             </h1>
             <p className="mb-6 max-w-2xl font-light text-gray-500 dark:text-gray-400 md:text-lg lg:mb-8 lg:text-xl">
               Satu-satunya alat management kantor yang kalian butuhkan karena
@@ -137,7 +147,7 @@ export default async function Page() {
               <a
                 href="/login"
                 target="_blank"
-                className="bg-main-500 hover:bg-main-600 focus:ring-main-200 dark:bg-main-800 dark:focus:ring-main-700 mb-2 mr-2 inline-flex w-full items-center justify-center rounded-lg px-5 py-3 text-sm font-medium text-gray-50 focus:z-10 focus:outline-none focus:ring-4 dark:text-gray-50 dark:hover:bg-gray-700 sm:w-auto"
+                className="mb-2 mr-2 inline-flex w-full items-center justify-center rounded-lg bg-main-500 px-5 py-3 text-sm font-medium text-gray-50 hover:bg-main-600 focus:z-10 focus:outline-none focus:ring-4 focus:ring-main-200 dark:bg-main-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:focus:ring-main-700 sm:w-auto"
               >
                 Get Started
               </a>
@@ -198,7 +208,7 @@ export default async function Page() {
               >
                 <li className="flex space-x-3">
                   <svg
-                    className="text-main-500 dark:text-main-400 h-5 w-5 flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0 text-main-500 dark:text-main-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -215,7 +225,7 @@ export default async function Page() {
                 </li>
                 <li className="flex space-x-3">
                   <svg
-                    className="text-main-500 dark:text-main-400 h-5 w-5 flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0 text-main-500 dark:text-main-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -232,7 +242,7 @@ export default async function Page() {
                 </li>
                 <li className="flex space-x-3">
                   <svg
-                    className="text-main-500 dark:text-main-400 h-5 w-5 flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0 text-main-500 dark:text-main-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -282,7 +292,7 @@ export default async function Page() {
               >
                 <li className="flex space-x-3">
                   <svg
-                    className="text-main-500 dark:text-main-400 h-5 w-5 flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0 text-main-500 dark:text-main-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -299,7 +309,7 @@ export default async function Page() {
                 </li>
                 <li className="flex space-x-3">
                   <svg
-                    className="text-main-500 dark:text-main-400 h-5 w-5 flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0 text-main-500 dark:text-main-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -316,7 +326,7 @@ export default async function Page() {
                 </li>
                 <li className="flex space-x-3">
                   <svg
-                    className="text-main-500 dark:text-main-400 h-5 w-5 flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0 text-main-500 dark:text-main-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -333,7 +343,7 @@ export default async function Page() {
                 </li>
                 <li className="flex space-x-3">
                   <svg
-                    className="text-main-500 dark:text-main-400 h-5 w-5 flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0 text-main-500 dark:text-main-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -350,7 +360,7 @@ export default async function Page() {
                 </li>
                 <li className="flex space-x-3">
                   <svg
-                    className="text-main-500 dark:text-main-400 h-5 w-5 flex-shrink-0"
+                    className="h-5 w-5 flex-shrink-0 text-main-500 dark:text-main-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -378,7 +388,7 @@ export default async function Page() {
       <section className="bg-white dark:bg-gray-900">
         <div className="mx-auto max-w-screen-xl items-center px-4 py-8 lg:grid lg:grid-cols-4 lg:gap-16 lg:px-6 lg:py-24 xl:gap-24">
           <div className="col-span-2 mb-8">
-            <p className="text-main-600 dark:text-main-500 text-lg font-medium">
+            <p className="text-lg font-medium text-main-600 dark:text-main-500">
               Trusted Worldwide
             </p>
             <h2 className="mb-4 mt-3 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white md:text-3xl">
@@ -392,7 +402,7 @@ export default async function Page() {
               <div>
                 <a
                   href="#"
-                  className="text-main-600 hover:text-main-800 dark:text-main-500 dark:hover:text-main-700 inline-flex items-center text-base font-medium"
+                  className="inline-flex items-center text-base font-medium text-main-600 hover:text-main-800 dark:text-main-500 dark:hover:text-main-700"
                 >
                   Explore Legality Guide
                   <svg
@@ -412,7 +422,7 @@ export default async function Page() {
               <div>
                 <a
                   href="#"
-                  className="text-main-600 hover:text-main-800 dark:text-main-500 dark:hover:text-main-700 inline-flex items-center text-base font-medium"
+                  className="inline-flex items-center text-base font-medium text-main-600 hover:text-main-800 dark:text-main-500 dark:hover:text-main-700"
                 >
                   Visit the Trust Center
                   <svg
@@ -434,7 +444,7 @@ export default async function Page() {
           <div className="col-span-2 space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
             <div>
               <svg
-                className="text-main-600 dark:text-main-500 mb-2 h-10 w-10 md:h-12 md:w-12"
+                className="mb-2 h-10 w-10 text-main-600 dark:text-main-500 md:h-12 md:w-12"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -454,7 +464,7 @@ export default async function Page() {
             </div>
             <div>
               <svg
-                className="text-main-600 dark:text-main-500 mb-2 h-10 w-10 md:h-12 md:w-12"
+                className="mb-2 h-10 w-10 text-main-600 dark:text-main-500 md:h-12 md:w-12"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -470,7 +480,7 @@ export default async function Page() {
             </div>
             <div>
               <svg
-                className="text-main-600 dark:text-main-500 mb-2 h-10 w-10 md:h-12 md:w-12"
+                className="mb-2 h-10 w-10 text-main-600 dark:text-main-500 md:h-12 md:w-12"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -490,7 +500,7 @@ export default async function Page() {
             </div>
             <div>
               <svg
-                className="text-main-600 dark:text-main-500 mb-2 h-10 w-10 md:h-12 md:w-12"
+                className="mb-2 h-10 w-10 text-main-600 dark:text-main-500 md:h-12 md:w-12"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -656,7 +666,7 @@ export default async function Page() {
               </ul>
               <a
                 href="#"
-                className="bg-main-600 hover:bg-main-700 focus:ring-main-200 dark:focus:ring-main-900 rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus:ring-4  dark:text-white"
+                className="rounded-lg bg-main-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-main-700 focus:ring-4 focus:ring-main-200 dark:text-white  dark:focus:ring-main-900"
               >
                 Get started
               </a>
@@ -759,7 +769,7 @@ export default async function Page() {
               </ul>
               <a
                 href="#"
-                className="bg-main-600 hover:bg-main-700 focus:ring-main-200 dark:focus:ring-main-900 rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus:ring-4  dark:text-white"
+                className="rounded-lg bg-main-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-main-700 focus:ring-4 focus:ring-main-200 dark:text-white  dark:focus:ring-main-900"
               >
                 Get started
               </a>
@@ -863,7 +873,7 @@ export default async function Page() {
               </ul>
               <a
                 href="#"
-                className="bg-main-600 hover:bg-main-700 focus:ring-main-200 dark:focus:ring-main-900 rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus:ring-4  dark:text-white"
+                className="rounded-lg bg-main-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-main-700 focus:ring-4 focus:ring-main-200 dark:text-white  dark:focus:ring-main-900"
               >
                 Get started
               </a>
@@ -882,7 +892,7 @@ export default async function Page() {
             </p>
             <a
               href="#"
-              className="bg-main-700 hover:bg-main-800 focus:ring-main-300 dark:bg-main-600 dark:hover:bg-main-700 dark:focus:ring-main-800 mb-2 mr-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4"
+              className="mb-2 mr-2 rounded-lg bg-main-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-main-800 focus:outline-none focus:ring-4 focus:ring-main-300 dark:bg-main-600 dark:hover:bg-main-700 dark:focus:ring-main-800"
             >
               Free trial for 30 days
             </a>
@@ -1038,7 +1048,7 @@ export default async function Page() {
               <a
                 href="#"
                 target="_blank"
-                className="text-main-600 dark:text-main-500 hover:underline"
+                className="text-main-600 hover:underline dark:text-main-500"
               >
                 Flowbite
               </a>{" "}
@@ -1046,7 +1056,7 @@ export default async function Page() {
               <a
                 href="#"
                 target="_blank"
-                className="text-main-600 dark:text-main-500 hover:underline"
+                className="text-main-600 hover:underline dark:text-main-500"
               >
                 Tailwind CSS
               </a>
