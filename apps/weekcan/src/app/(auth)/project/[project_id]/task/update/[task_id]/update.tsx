@@ -103,6 +103,7 @@ const UpdateTaskProject = ({
   const user = useUserStore();
 
   const { data: task } = k.project.task.single.useQuery({ variables: { id } });
+
   const isload = !task;
 
   const form = useForm<z.infer<typeof taskProjectForm>>({
@@ -132,6 +133,10 @@ const UpdateTaskProject = ({
     return project_id;
   }, [form.watch("project"), project_id]);
 
+  const { data: project } = k.project.single.useQuery({
+    variables: { id: projectID },
+  });
+
   const client = useQueryClient();
 
   const update = k.project.task.update.useMutation({
@@ -155,18 +160,24 @@ const UpdateTaskProject = ({
       };
     }
 
-    if (form.watch("project")) {
-      const data = JSON.parse(`${form.watch("project.value")}`) as {
+    if (project) {
+      return {
+        before: dayjs(project.data.start_date).toDate(),
+        after: dayjs(project.data.end_date).toDate(),
+      };
+
+      // Ini kalau pakai select
+      /* const data = JSON.parse(`${form.watch("project.value")}`) as {
         start_date: string;
         end_date: string;
       };
       return {
         before: dayjs(data.start_date).toDate(),
         after: dayjs(data.end_date).toDate(),
-      };
+      }; */
     }
     return undefined;
-  }, [form.watch("project"), form.watch("sprint")]);
+  }, [form.watch("project"), form.watch("sprint"), project]);
 
   useEffect(() => {
     if (task) {
