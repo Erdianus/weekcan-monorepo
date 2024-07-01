@@ -22,16 +22,6 @@ export default async function DashboardPage() {
         <Separator className="flex-1" />
       </div>
       <CarouselCompany user_id={sesh?.user.id ?? ""} />
-      <div className="mb-3 mt-6 flex items-center gap-1">
-        <Muted>Proyek</Muted>
-        <Separator className="flex-1" />
-        <Link
-          className="text-sm text-main-500 hover:underline dark:text-main-600"
-          href="/project"
-        >
-          Lihat Semua
-        </Link>
-      </div>
     </>
   );
 }

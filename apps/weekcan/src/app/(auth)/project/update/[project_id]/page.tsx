@@ -29,8 +29,8 @@ export default async function UpdateProjectPage({
   const { data } = (await res.json()) as { data: Project };
   const hasAccess =
     sesh &&
-    ["Admin", "Owner", "Manager"].includes(sesh.user.role) &&
-    `${data.pic}` === `${sesh.user.id}`;
+    (["Admin", "Owner", "Manager"].includes(sesh.user.role) ||
+      `${data.pic}` === `${sesh.user.id}`);
 
   if (!hasAccess) throw Error("Kayaknya Sih Gak punya Akses nih");
 

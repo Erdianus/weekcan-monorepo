@@ -3,11 +3,12 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import { CalendarDays, Sparkle } from "lucide-react";
 
 import { k } from "@hktekno/api";
-import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import { H2 } from "@hktekno/ui/components/ui/typograhpy";
+import { dateRange } from "@hktekno/ui/lib/date";
 
 const LayoutEvent = () => {
   const pathname = usePathname();
@@ -32,12 +33,23 @@ const LayoutEvent = () => {
       {isLoading ? (
         <Skeleton className="mb-4 h-8 w-24" />
       ) : (
-        <div className="mb-4 flex items-center gap-2">
-          <H2 className="border-b-0 p-0">{event?.data.name}</H2>
-          <Badge variant={"outline"}>Event</Badge>
+        <div className="mb-4">
+          <div className="mb-2 flex items-center gap-2">
+            <H2 className="border-b-0 p-0">{event?.data.name}</H2>
+            {/* <Badge variant={"outline"}>Event</Badge> */}
+          </div>
+          <div className="mb-2 flex gap-2">
+            <Sparkle />
+            <div className="font-semibold">{event?.data.pic}</div>
+          </div>
+          <div className="mb-2 flex gap-2">
+            <CalendarDays />
+            <div className="font-semibold">
+              {dateRange(event?.data.start_date)}
+            </div>
+          </div>
         </div>
       )}
-
       <div className="mb-4 flex h-10 w-auto min-w-0 max-w-min items-center overflow-x-auto rounded-md bg-muted p-1 text-muted-foreground">
         {links.map((link) => (
           <Link

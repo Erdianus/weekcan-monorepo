@@ -3,11 +3,8 @@
 // Error components must be Client Components
 import { useEffect } from "react";
 
-import { Button } from "@hktekno/ui/components/ui/button";
-
 export default function Error({
   error,
-  reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
@@ -50,7 +47,6 @@ export default function Error({
           <p className="my-5 text-accent-foreground lg:text-xl">
             {error.message}
           </p>
-          <Button onClick={reset}>Reset</Button>
         </div>
       </div>
     </>

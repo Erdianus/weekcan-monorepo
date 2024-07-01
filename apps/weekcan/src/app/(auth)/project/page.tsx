@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function ProjectPage() {
   const sesh = await auth();
+  console.log(sesh);
   return (
     <>
       <div className="mb-4 flex w-full items-center justify-between">

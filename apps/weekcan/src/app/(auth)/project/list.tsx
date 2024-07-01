@@ -45,7 +45,7 @@ const Actions = ({ row }: CellContext<Project, unknown>) => {
 
   const { original: data } = row;
   const hasAccess =
-    ["Admin", "Owner", "Manager"].includes(user.role) &&
+    ["Admin", "Owner", "Manager"].includes(user.role) ||
     `${data.pic}` === `${user.id}`;
 
   const client = useQueryClient();
