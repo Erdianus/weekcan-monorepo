@@ -6,8 +6,7 @@ import { Separator } from "@hktekno/ui/components/ui/separator";
 import { Muted } from "@hktekno/ui/components/ui/typograhpy";
 
 import HelloUser from "./helo";
-import ListCompany, { CarouselCompany } from "./list-company";
-import ListProject from "./list-project";
+import { CarouselCompany } from "./list-company";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -22,7 +21,7 @@ export default async function DashboardPage() {
         <Muted>Perusahaan</Muted>
         <Separator className="flex-1" />
       </div>
-      <CarouselCompany user_id={sesh?.user.id ?? ''} />
+      <CarouselCompany user_id={sesh?.user.id ?? ""} />
       <div className="mb-3 mt-6 flex items-center gap-1">
         <Muted>Proyek</Muted>
         <Separator className="flex-1" />
@@ -33,7 +32,6 @@ export default async function DashboardPage() {
           Lihat Semua
         </Link>
       </div>
-      <ListProject />
     </>
   );
 }

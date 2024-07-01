@@ -32,8 +32,7 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
       redirect("/login");
     }
   } catch (e) {
-    console.log(e);
-    redirect("/api/auth/signout");
+    redirect("/logout");
   }
   return (
     <>
