@@ -68,6 +68,7 @@ const Action = ({ row }: CellContext<Job, unknown>) => {
             onValueChange={(status) => {
               alert.setData({
                 open: true,
+                confirmText: "Ya, Ubah",
                 desc: "",
                 header: (
                   <div>
