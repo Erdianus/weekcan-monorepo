@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import useAlertStore from "../lib/store/useAlertStore";
 import {
   AlertDialog,
@@ -15,6 +17,13 @@ import ButtonSubmit from "./ui/button-submit";
 
 const AlertConfirm = () => {
   const alert = useAlertStore();
+
+  useEffect(() => {
+    return () => {
+      alert.reset();
+    };
+  }, []);
+
   if (!alert.open) return null;
   return (
     <AlertDialog
