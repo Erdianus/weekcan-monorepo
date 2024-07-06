@@ -30,15 +30,24 @@ const columns = [
   colHelper.accessor("jabatan", {
     header: "Jabatan",
   }),
-  colHelper.accessor("jobDone", {
+  colHelper.accessor("jobNoProgress", {
     header: () => (
-      <div className="text-green-600 dark:text-green-400">Done</div>
+      <div className="text-gray-600 dark:text-gray-400">No Progress</div>
     ),
   }),
-  colHelper.accessor("jobOnGoing", {
+  colHelper.accessor("jobKoordinasi", {
     header: () => (
-      <div className="text-yellow-600 dark:text-yellow-400">Progress</div>
+      <div className="text-yellow-600 dark:text-yellow-400">Koordinasi</div>
     ),
+  }),
+  colHelper.accessor("jobKonfirmasi", {
+    header: () => <div className="text-orange-600 dark:text-orange-400">Konfirmasi</div>,
+  }),
+  colHelper.accessor("jobLoading", {
+    header: () => <div className="text-blue-600 dark:text-blue-400">Loading</div>,
+  }),
+  colHelper.accessor("jobDone", {
+    header: () => <div className="text-green-600 dark:text-green-400">Done</div>,
   }),
   colHelper.accessor("jobCancel", {
     header: () => <div className="text-red-600 dark:text-red-400">Cancel</div>,
