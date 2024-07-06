@@ -14,11 +14,38 @@ const job = router("job", {
       event?: string;
       vendor?: string;
       pic?: string;
+      pic_id?: string;
     }) => {
       const res = await Axios("/list-jobs", { params: variables });
 
       return res.data as { data: z.infer<typeof jobBaseSchema>[]; meta: Meta };
     },
+  }),
+  all_infinity: router.infiniteQuery({
+    fetcher: async (
+      variables: {
+        search?: string;
+        status?: string;
+        event?: string;
+        vendor?: string;
+        pic?: string;
+        pic_id?: string;
+      },
+      { pageParam },
+    ) => {
+      const res = await Axios("/list-jobs", {
+        params: { ...variables, page: pageParam },
+      });
+
+      return res.data as { data: z.infer<typeof jobBaseSchema>[]; meta: Meta };
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.meta.current_page === lastPage.meta.current_page)
+        return null;
+
+      return lastPage.meta.current_page + 1;
+    },
+    initialPageParam: 1,
   }),
   single: router.query({
     fetcher: async (variables: { id: string }) => {

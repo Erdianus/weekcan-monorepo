@@ -1,13 +1,7 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
-import { useEffect } from "react";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   createColumnHelper,
@@ -19,10 +13,6 @@ import { toast } from "sonner";
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
-import Paginate from "@hktekno/ui/components/paginate";
-import PaginationParams from "@hktekno/ui/components/pagination-params";
-import PortalSearch from "@hktekno/ui/components/portal-search";
-import { Select, SelectAsync } from "@hktekno/ui/components/select";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
@@ -35,11 +25,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
-import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { dateRange } from "@hktekno/ui/lib/date";
-import { loadUserOptions, optionsJobStatus } from "@hktekno/ui/lib/select";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
+import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 import { cn } from "@hktekno/ui/lib/utils";
 
 type Job = inferData<typeof k.job.all>["data"][number];
@@ -170,136 +159,55 @@ const columns = [
     header: "Tanggal",
     cell: ({ getValue }) => dateRange(getValue()),
   }),
-  colHelper.accessor("pic", {
-    header: "PIC",
-  }),
   colHelper.display({
     id: "Action",
     cell: Action,
   }),
 ];
 
-const ListJobs = () => {
-  const params = useParams<{ event_id: string }>();
-  const searchParams = useSearchParams();
-  const variables = Object.fromEntries(searchParams.entries());
+export function ListJobs() {
+  const user = useUserStore();
   const {
     data: jobs,
     isLoading,
-    isError,
-    error,
-  } = k.job.all.useQuery({
-    variables: { ...variables, event: params.event_id },
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = k.job.all_infinity.useInfiniteQuery({
+    variables: { pic_id: `${user.id}` },
   });
 
+  const data = useMemo(() => {
+    let d: Job[] = [];
+
+    jobs?.pages.forEach((page) => {
+      d = [...page.data, ...d];
+    });
+
+    return d;
+  }, [jobs]);
+
   const table = useReactTable({
-    data: jobs?.data ?? [],
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  useEffect(() => {
-    if (isError) {
-      toast.error(error.message);
-      throw new Error("Error dari Backend 😱");
-    }
-  }, [isError, error]);
-
   return (
     <>
-      <PortalSearch placeholder="Cari Kerjaan..." />
-      <div className="mb-4">
-        <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
-          Filter
-          <Separator className="flex-1" />
-        </div>
-        <div className="flex flex-wrap gap-4">
-          <Filter isLoading={isLoading} />
-        </div>
-      </div>
       <DataTable table={table} columns={columns} isloading={isLoading} />
-      <div className="mt-4 flex flex-wrap items-center justify-end">
-        <Paginate />
-        <PaginationParams meta={jobs?.meta} />
+      <div className="mt-2 flex flex-wrap items-center justify-center">
+        {hasNextPage && (
+          <Button
+            type="button"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage && <Spinner />}
+            <span>Tampilkan Lebih</span>
+          </Button>
+        )}
       </div>
     </>
   );
-};
-
-const Filter = ({ isLoading }: { isLoading: boolean }) => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-  const params = useParams<{ company_id: string }>();
-
-  return (
-    <>
-      <SelectAsync
-        className="w-auto"
-        value={
-          searchParams.get("pic_id")
-            ? {
-                label: searchParams.get("pic_name")?.toString(),
-                value: searchParams.get("pic_id")?.toString(),
-              }
-            : null
-        }
-        isClearable
-        isDisabled={isLoading}
-        placeholder="Person In Charge"
-        loadOptions={loadUserOptions}
-        additional={{
-          page: 1,
-          company_id: [params.company_id],
-        }}
-        onChange={(e) => {
-          const hasPage = !!searchParams.get("page");
-          const params = new URLSearchParams(searchParams);
-
-          if (e) {
-            params.set("pic_id", `${e.value}`);
-            params.set("pic_name", `${e.label}`);
-          } else {
-            params.delete("pic_id");
-            params.delete("pic_name");
-          }
-
-          if (hasPage) params.delete("page");
-
-          router.replace(`${pathname}?${params.toString()}`);
-        }}
-      />
-      <Select
-        className="w-auto"
-        options={optionsJobStatus()}
-        defaultValue={
-          searchParams.get("status")
-            ? {
-                label: searchParams.get("status"),
-                value: searchParams.get("status"),
-              }
-            : null
-        }
-        isClearable
-        isDisabled={isLoading}
-        placeholder="Status Kerjaan"
-        onChange={(e) => {
-          const hasPage = !!searchParams.get("page");
-          const params = new URLSearchParams(searchParams);
-
-          if (e) {
-            params.set("status", `${e.value}`);
-          } else {
-            params.delete("status");
-          }
-
-          if (hasPage) params.delete("page");
-
-          router.replace(`${pathname}?${params.toString()}`);
-        }}
-      />
-    </>
-  );
-};
-
-export default ListJobs;
+}

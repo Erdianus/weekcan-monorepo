@@ -43,8 +43,11 @@ const eventRouter = {
         data: {
           name: string;
           jabatan: string;
+          jobNoProgress: number;
+          jobKoordinasi: number;
+          jobKonfirmasi: number;
+          jobLoading: number;
           jobDone: number;
-          jobOnGoing: number;
           jobCancel: number;
         }[];
         meta: {

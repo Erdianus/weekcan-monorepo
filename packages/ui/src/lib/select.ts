@@ -2,6 +2,8 @@ import type { LoadOptions } from "react-select-async-paginate";
 
 import type { inferVariables } from "@hktekno/api";
 import { k } from "@hktekno/api";
+import { eventStatus } from "@hktekno/api/routers/event/schema";
+import { jobStatus } from "@hktekno/api/routers/job/schema";
 import {
   projectProgress,
   projectStatus,
@@ -379,6 +381,10 @@ const optionsTime = () => {
   });
 };
 
+const optionsEventStatus = () =>
+  eventStatus.map((v) => ({ label: v, value: v }));
+const optionsJobStatus = () => jobStatus.map((v) => ({ label: v, value: v }));
+
 //
 
 const loadOptions = Object.freeze({
@@ -409,4 +415,6 @@ export {
   optionsProjectProgress,
   optionsTaskProjectStatus,
   optionsTime,
+  optionsJobStatus,
+  optionsEventStatus,
 };

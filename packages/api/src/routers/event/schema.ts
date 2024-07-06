@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const eventStatus = ["On Going", "Done", "Cancel"];
+
 const eventBaseSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -12,5 +14,7 @@ const eventBaseSchema = z.object({
   province: z.string(),
   client: z.string(),
 });
+
+export { eventStatus };
 
 export default eventBaseSchema;
