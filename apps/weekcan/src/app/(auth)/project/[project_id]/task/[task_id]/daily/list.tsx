@@ -47,9 +47,6 @@ const ListTaskProject = ({ id }: { id: string }) => {
   const client = useQueryClient();
   const { data: task } = k.project.task.single.useQuery({ variables: { id } });
 
-  /* const { data: dailys } = k.project.task.daily.dateGroup.useQuery({
-    variables: { ...variables, task_project_id: id },
-  }); */
   const {
     data: infiniteDailys,
     hasNextPage,
@@ -230,7 +227,7 @@ const ListTaskProject = ({ id }: { id: string }) => {
                           );
                         })}
                         <div className="group mb-2 flex items-center gap-1 sm:w-1/2">
-                          <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 text-white dark:bg-main-900 dark:text-main-400 ">
+                          <div className="relative flex flex-1 items-center rounded-lg bg-main-500 p-2 pr-11 text-white dark:bg-main-900 dark:text-main-400 ">
                             <div className="absolute bottom-1 right-1 flex items-center gap-1 text-xs">
                               <div className="h-3 w-3">
                                 {daily.is_done && <ThumbsUp size={12} />}
@@ -239,7 +236,6 @@ const ListTaskProject = ({ id }: { id: string }) => {
                                 {dayjs(daily.created_at).format("HH:mm")}
                               </div>
                             </div>
-
                             <DropdownMenu>
                               <DropdownMenuTrigger disabled={!isItHim} asChild>
                                 <div className="cursor-pointer underline">

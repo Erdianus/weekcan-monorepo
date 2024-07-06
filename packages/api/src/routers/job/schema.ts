@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+const jobStatus = [
+  "No Progress",
+  "Koordinasi",
+  "Konfirmasi",
+  "Loading",
+  "Done",
+  "Canceled",
+];
+
 const jobBaseSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -15,5 +24,7 @@ const jobBaseSchema = z.object({
   project_id: z.string(),
   vendor_id: z.string(),
 });
+
+export { jobStatus };
 
 export default jobBaseSchema;
