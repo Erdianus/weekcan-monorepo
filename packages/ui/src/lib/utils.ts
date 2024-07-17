@@ -37,3 +37,28 @@ export const shortName = (text?: string) => {
 export function slug(text: string) {
   return text.toLowerCase().replace(/\s+/g, "-");
 }
+
+export function isValidHttpUrl(text: string) {
+  let url;
+
+  const urls = text.match(
+    /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])/,
+  );
+
+  if (!urls) {
+    return undefined;
+  }
+
+  const firstUrl = urls[0];
+
+  try {
+    url = new URL(firstUrl);
+  } catch (_) {
+    return undefined;
+  }
+
+  if (url.protocol == "https:" || url.protocol === "http:")
+    return url.toString();
+
+  return undefined;
+}
