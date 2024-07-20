@@ -118,31 +118,33 @@ const columns = [
     cell: ({ getValue }) => {
       if (!getValue()?.length) return "-";
       return (
-        <Carousel
-          opts={{ loop: true, align: "center" }}
-          className="relative pr-6 md:pr-0"
-          orientation="vertical"
-        >
-          <CarouselContent className="h-14 py-1">
-            {getValue()?.map((v) => (
-              <CarouselItem key={`status-${v.id}`} className="">
-                <div className="flex h-10 items-center gap-2 whitespace-nowrap rounded border px-2">
-                  {v.status === "Pagi" && <CloudSun />}
-                  {v.status === "Siang" && <Sun />}
-                  {v.status === "Malam" && <Moon />}
-                  {v.text}
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          {/*@ts-expect-error gapapan gan error*/}
-          {getValue()?.length > 1 && (
-            <div className="absolute -right-2 top-0 flex flex-col items-center justify-center">
-              <CarouselPrevious className="static h-6 w-6" />
-              <CarouselNext className="static h-6 w-6" />
-            </div>
-          )}
-        </Carousel>
+        <>
+          <Carousel
+            opts={{ loop: true, align: "center" }}
+            className="relative pr-6 md:pr-0"
+            orientation="vertical"
+          >
+            <CarouselContent className="h-14 py-1">
+              {getValue()?.map((v) => (
+                <CarouselItem key={`status-${v.id}`} className="">
+                  <div className="flex h-10 items-center gap-2 whitespace-nowrap rounded border px-2">
+                    {v.status === "Pagi" && <CloudSun />}
+                    {v.status === "Siang" && <Sun />}
+                    {v.status === "Malam" && <Moon />}
+                    {v.text}
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {/*@ts-expect-error gapapan gan error*/}
+            {getValue()?.length > 1 && (
+              <div className="absolute -right-2 top-0 flex flex-col items-center justify-center">
+                <CarouselPrevious className="static h-6 w-6" />
+                <CarouselNext className="static h-6 w-6" />
+              </div>
+            )}
+          </Carousel>
+        </>
       );
     },
   }),
