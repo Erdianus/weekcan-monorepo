@@ -4,7 +4,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { Pencil, ThumbsUp, Trash2 } from "lucide-react";
+import { ArrowUpRight, Pencil, ThumbsUp, Trash2 } from "lucide-react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
 
@@ -26,7 +26,7 @@ import Spinner from "@hktekno/ui/components/ui/spinner";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
-import { fileExt } from "@hktekno/ui/lib/utils";
+import { fileExt, isValidHttpUrl } from "@hktekno/ui/lib/utils";
 
 import CreateDailyTask from "./create";
 import UpdateDailyTask from "./update";
@@ -174,7 +174,6 @@ const ListTaskProject = ({ id }: { id: string }) => {
                           const ext = fileExt(f.label ?? "").toLowerCase();
                           const isImage =
                             ext === "png" || ext === "jpg" || ext === "jpeg";
-
                           if (isImage) index_for_image++;
                           if (!isImage) return null;
 
@@ -239,10 +238,23 @@ const ListTaskProject = ({ id }: { id: string }) => {
                             <DropdownMenu>
                               <DropdownMenuTrigger disabled={!isItHim} asChild>
                                 <div className="cursor-pointer underline">
-                                  {daily.desc_detail_task}
+                                  {daily.desc_detail_task}{" "}
                                 </div>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent>
+                                {!!isValidHttpUrl(daily.desc_detail_task) && (
+                                  <a
+                                    href={isValidHttpUrl(
+                                      daily.desc_detail_task,
+                                    )}
+                                    target="_blank"
+                                  >
+                                    <DropdownMenuItem>
+                                      <ArrowUpRight className="mr-2 h-4 w-4" />
+                                      <span>Kunjungi</span>
+                                    </DropdownMenuItem>
+                                  </a>
+                                )}
                                 <DropdownMenuItem
                                   onClick={() =>
                                     setEdit({ open: true, id: `${daily.id}` })
