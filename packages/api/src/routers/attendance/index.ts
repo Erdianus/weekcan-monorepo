@@ -19,7 +19,9 @@ const attendance = router("attendance", {
       page?: string | number;
       paginate?: string | number;
     }) => {
-      const res = await Axios("/attendance", { params: variables });
+      const res = await Axios("/attendance", {
+        params: { ...variables, isHavePicture: 1 },
+      });
 
       return res.data as {
         data: {

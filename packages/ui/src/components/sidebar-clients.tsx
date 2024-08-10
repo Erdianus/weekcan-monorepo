@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "../lib/utils";
 import {
+  Absent,
   Client,
   Company,
   Dashboard,
@@ -22,6 +23,7 @@ const icons = Object.freeze({
   dashboard: Dashboard,
   project: Project,
   attendances: Time,
+  absent: Absent,
   inventory: Inventory,
   warehouse: Warehouse,
   item: Item,

@@ -7,6 +7,12 @@ import { flexRender } from "@tanstack/react-table";
 
 import Flashlist from "../flashlist";
 import Loading from "../loading";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "./context-menu";
 import { Skeleton } from "./skeleton";
 import {
   Table,
@@ -21,12 +27,14 @@ interface DataTableProps<TData> {
   columns: ColumnDef<TData, any>[];
   table: Tabel<TData>;
   isloading: boolean;
+  contextMenu?: boolean;
 }
 
 export function DataTable<TData>({
   columns,
   table,
   isloading,
+  contextMenu,
 }: DataTableProps<TData>) {
   return (
     <div className="rounded-md border">
@@ -76,21 +84,59 @@ export function DataTable<TData>({
             }
           >
             {!!table.getRowModel().rows?.length &&
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              table.getRowModel().rows.map((row) => {
+                const cells = row.getVisibleCells?.() ?? [];
+                const lastCells = cells[cells.length - 1];
+                console.log(
+                  flexRender(
+                    lastCells?.column.columnDef.cell,
+                    lastCells?.getContext(),
+                  ),
+                );
+                return (
+                  <>
+                    {contextMenu && lastCells?.id.includes("action") ? (
+                      <ContextMenu>
+                        <ContextMenuTrigger asChild>
+                          <TableRow
+                            key={row.id}
+                            data-state={row.getIsSelected() && "selected"}
+                          >
+                            {row.getVisibleCells().map((cell) => (
+                              <TableCell key={cell.id}>
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext(),
+                                )}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                          {flexRender(
+                            lastCells?.column.columnDef.cell,
+                            lastCells?.getContext(),
+                          )}
+                        </ContextMenuContent>
+                      </ContextMenu>
+                    ) : (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    )}
+                  </>
+                );
+              })}
           </Flashlist>
         </TableBody>
       </Table>

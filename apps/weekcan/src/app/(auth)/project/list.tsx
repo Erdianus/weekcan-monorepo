@@ -202,7 +202,12 @@ const ListProject = () => {
           <FilterProject isLoading={isload} />
         </div>
       </div>
-      <DataTable table={table} columns={columns} isloading={isload} />
+      <DataTable
+        table={table}
+        columns={columns}
+        isloading={isload}
+        contextMenu
+      />
       <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />
         <PaginationParams meta={projects?.meta} />

@@ -5,6 +5,7 @@ import type {
   inferVariables,
 } from "react-query-kit";
 
+import absent from "./absent";
 import attendance from "./attendance";
 import client from "./client";
 import company from "./company";
@@ -24,6 +25,7 @@ const k = {
   job,
   dailyJob,
   attendance,
+  absent,
   inventory,
   user,
   company,

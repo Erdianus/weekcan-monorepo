@@ -21,6 +21,7 @@ const SidebarList = async () => {
             link="/attendance"
             icon={"attendances"}
           />
+          <SidebarItems text="Izin" link="/absent" icon={"absent"} />
           {["Admin", "Owner", "Manager"].includes(sesh?.user.role ?? "") && (
             <>
               <Muted>Inventaris</Muted>
