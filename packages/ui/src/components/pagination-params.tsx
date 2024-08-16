@@ -22,8 +22,8 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
 
   if (!meta)
     return (
-      <Loading keyname="loadpage">
-        <Skeleton className="mr-2 h-8 w-8" />;
+      <Loading keyname="loadpage" length={3}>
+        <Skeleton className="mr-0.5 h-8 w-8" />
       </Loading>
     );
 
@@ -94,8 +94,8 @@ const PaginationMore = ({ meta }: { meta?: { hasMore: boolean } }) => {
 
   if (!meta)
     return (
-      <Loading keyname="loadpage">
-        <Skeleton className="mr-2 h-8 w-8" />;
+      <Loading keyname="loadpage" length={3}>
+        <Skeleton className="mr-0.5 h-8 w-8" />
       </Loading>
     );
 
@@ -119,11 +119,6 @@ const PaginationMore = ({ meta }: { meta?: { hasMore: boolean } }) => {
                 router.push(`${pathname}?${params.toString()}`);
               }}
             />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink isActive>
-              {searchParams.get("page") ?? "1"}
-            </PaginationLink>
           </PaginationItem>
           <PaginationItem>
             <PaginationNext

@@ -39,13 +39,15 @@ type Icon = keyof typeof icons;
 type SidebarItemProps = {
   link: string;
   text: string;
-  icon: Icon;
+  icon?: Icon;
+  activeColor?: string;
+  img?: JSX.Element;
 };
 
 const SidebarItems = (props: SidebarItemProps) => {
   const pathname = usePathname();
   const isActive = pathname === props.link;
-  const Icons = icons[props.icon];
+  const Icons = icons[props.icon ?? "item"];
   return (
     <li>
       <Link
@@ -54,14 +56,17 @@ const SidebarItems = (props: SidebarItemProps) => {
           "group flex items-center rounded-lg p-2 text-base font-medium hover:bg-muted",
           isActive &&
             "bg-main-500 text-white hover:bg-main-600 dark:bg-main-900 dark:text-main-500 dark:hover:bg-main-950",
+          isActive && props.activeColor,
         )}
       >
-        <Icons
-          aria-hidden="true"
-          className={cn("h-6 w-6")}
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        />
+        {props.img ?? (
+          <Icons
+            aria-hidden="true"
+            className={cn("h-6 w-6")}
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          />
+        )}
 
         <span className="ml-3">{props.text}</span>
       </Link>

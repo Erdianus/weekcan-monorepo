@@ -182,8 +182,6 @@ const ListDailyJobUser = () => {
     return d;
   }, [data]);
 
-  console.log(data);
-
   /*   const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
     variables: { ...variables, company_id },
   }); */

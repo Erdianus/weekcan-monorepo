@@ -10,6 +10,7 @@ import attendance from "./attendance";
 import client from "./client";
 import company from "./company";
 import dailyJob from "./daily-jobs";
+import { dashboard } from "./dashboard";
 import event from "./event";
 import inventory from "./inventory";
 import job from "./job";
@@ -20,6 +21,7 @@ import user from "./user";
 import venue from "./venue";
 
 const k = {
+  dashboard,
   project,
   event,
   job,

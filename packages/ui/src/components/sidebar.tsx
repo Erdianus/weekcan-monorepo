@@ -51,6 +51,17 @@ const SidebarList = async () => {
               <SidebarItems text="Jabatan" link="/job_type" icon={"jobType"} />
             </>
           )}
+          {!!sesh?.user.friends_id && (
+            <>
+              <Muted>Misc</Muted>
+              <SidebarItems
+                img={<img src="/img/friends_logo.png" className="w-6" />}
+                text="Friends"
+                link="/friends"
+                activeColor="bg-red-500 text-white hover:bg-red-600 dark:bg-red-900 dark:text-red-500 dark:hover:bg-red-950"
+              />
+            </>
+          )}
         </ul>
       </div>
     </>

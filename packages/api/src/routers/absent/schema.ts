@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const absentType = ["Izin", "Sakit", "Cuti"];
+
 const absentBaseSchema = z.object({
   id: z.number(),
   user_id: z.string(),
@@ -9,4 +11,4 @@ const absentBaseSchema = z.object({
   file_path: z.string(),
 });
 
-export { absentBaseSchema };
+export { absentBaseSchema, absentType };

@@ -1,6 +1,7 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
+import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   createColumnHelper,
@@ -13,6 +14,9 @@ import { toast } from "sonner";
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import FileIcon from "@hktekno/ui/components/file-icon";
+import { FilterContainer } from "@hktekno/ui/components/filter-container";
+import Paginate from "@hktekno/ui/components/paginate";
+import PaginationParams from "@hktekno/ui/components/pagination-params";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
 import {
@@ -30,6 +34,8 @@ import {
 } from "@hktekno/ui/components/ui/tooltip";
 import { dateRange } from "@hktekno/ui/lib/date";
 import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
+
+import FilterAbsent from "./filter";
 
 type Absent = inferData<typeof k.absent.all>["data"][number];
 const colHelper = createColumnHelper<Absent>();
@@ -128,7 +134,9 @@ const columns = [
 ];
 
 const ListAbsent = () => {
-  const { data: absents, isLoading } = k.absent.all.useQuery();
+  const searchParams = useSearchParams();
+  const variables = Object.fromEntries(searchParams.entries());
+  const { data: absents, isLoading } = k.absent.all.useQuery({ variables });
   const table = useReactTable({
     data: absents?.data ?? [],
     columns,
@@ -136,7 +144,14 @@ const ListAbsent = () => {
   });
   return (
     <>
+      <FilterContainer>
+        <FilterAbsent isLoading={isLoading} />
+      </FilterContainer>
       <DataTable columns={columns} table={table} isloading={isLoading} />
+      <div className="mt-4 flex w-full items-center justify-end gap-2">
+        <Paginate />
+        <PaginationParams meta={absents?.meta} />
+      </div>
     </>
   );
 };

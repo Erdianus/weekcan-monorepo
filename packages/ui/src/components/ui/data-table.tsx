@@ -10,7 +10,6 @@ import Loading from "../loading";
 import {
   ContextMenu,
   ContextMenuContent,
-  ContextMenuItem,
   ContextMenuTrigger,
 } from "./context-menu";
 import { Skeleton } from "./skeleton";
@@ -87,12 +86,6 @@ export function DataTable<TData>({
               table.getRowModel().rows.map((row) => {
                 const cells = row.getVisibleCells?.() ?? [];
                 const lastCells = cells[cells.length - 1];
-                console.log(
-                  flexRender(
-                    lastCells?.column.columnDef.cell,
-                    lastCells?.getContext(),
-                  ),
-                );
                 return (
                   <>
                     {contextMenu && lastCells?.id.includes("action") ? (
