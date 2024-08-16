@@ -4,10 +4,12 @@ import ReactDropzone from "react-dropzone";
 
 import { cn } from "@hktekno/ui/lib/utils";
 
+import FileIcon from "./file-icon";
+
 const Dropzone = (props: DropzoneProps & { className?: string }) => {
   return (
     <ReactDropzone {...props}>
-      {({ getRootProps, getInputProps }) => (
+      {({ getRootProps, getInputProps, acceptedFiles }) => (
         <section>
           <div
             className={cn(
@@ -17,7 +19,12 @@ const Dropzone = (props: DropzoneProps & { className?: string }) => {
             {...getRootProps()}
           >
             <input {...getInputProps()} />
-            <FileUp />
+            {acceptedFiles[0]?.name ? (
+              <FileIcon text={acceptedFiles[0].name} />
+            ) : (
+              <FileUp />
+            )}
+
             <p className="">Upload File, drop atau klik!</p>
           </div>
         </section>

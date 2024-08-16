@@ -5,24 +5,24 @@ import { Plus } from "lucide-react";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 
-import ListAttendance from "./list";
+import ListAbsent from "./list";
 
 export const metadata: Metadata = {
-  title: "Kehadiran",
+  title: "Izin",
 };
 
 export default function Page() {
   return (
     <>
       <div className="mb-4 flex w-full items-center justify-between">
-        <H3 className="">Kehadiran</H3>
+        <H3 className="">Izin</H3>
         <Button type="button" size={"icon"} asChild>
-          <Link href={"attendance/create"}>
+          <Link href={"absent/create"}>
             <Plus />
           </Link>
         </Button>
       </div>
-      <ListAttendance />
+      <ListAbsent />
     </>
   );
 }

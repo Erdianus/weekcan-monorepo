@@ -3,9 +3,13 @@
 import type { SVGProps } from "react";
 import React from "react";
 import dayjs from "dayjs";
+import { Sunset } from "lucide-react";
 
 export default function Time(props: SVGProps<SVGSVGElement>) {
   const time = dayjs().format("HH");
+
+  if (Number(time) > 17 && Number(time) < 8) return <Sunset {...props} />;
+
   return (
     <svg
       {...props}

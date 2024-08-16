@@ -21,6 +21,7 @@ const SidebarList = async () => {
             link="/attendance"
             icon={"attendances"}
           />
+          <SidebarItems text="Izin" link="/absent" icon={"absent"} />
           {["Admin", "Owner", "Manager"].includes(sesh?.user.role ?? "") && (
             <>
               <Muted>Inventaris</Muted>
@@ -48,6 +49,17 @@ const SidebarList = async () => {
               <SidebarItems text="Tempat Acara" link="/venue" icon={"venue"} />
               <SidebarItems text="Klien" link="/client" icon={"client"} />
               <SidebarItems text="Jabatan" link="/job_type" icon={"jobType"} />
+            </>
+          )}
+          {!!sesh?.user.friends_id && (
+            <>
+              <Muted>Misc</Muted>
+              <SidebarItems
+                img={<img src="/img/friends_logo.png" className="w-6" />}
+                text="Friends"
+                link="/friends"
+                activeColor="bg-red-500 text-white hover:bg-red-600 dark:bg-red-900 dark:text-red-500 dark:hover:bg-red-950"
+              />
             </>
           )}
         </ul>

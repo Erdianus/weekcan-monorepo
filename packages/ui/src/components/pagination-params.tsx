@@ -4,6 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import type { Meta } from "@hktekno/api/routers/meta";
 
+import Loading from "./loading";
 import {
   Pagination,
   PaginationContent,
@@ -19,7 +20,12 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  if (!meta) return <Skeleton className="h-8 w-1/5" />;
+  if (!meta)
+    return (
+      <Loading keyname="loadpage" length={3}>
+        <Skeleton className="mr-0.5 h-8 w-8" />
+      </Loading>
+    );
 
   return (
     <Pagination className="mx-0 w-auto justify-start">
@@ -39,7 +45,6 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
                       ? Number(searchParams.get("page"))
                       : 1;
                     if (page <= 1) return;
-                    console.log(page);
                     const params = new URLSearchParams(searchParams);
                     params.set("page", `${page - 1}`);
                     router.push(`${pathname}?${params.toString()}`);
@@ -81,5 +86,61 @@ const PaginationParams = ({ meta }: { meta?: Meta }) => {
     </Pagination>
   );
 };
+
+const PaginationMore = ({ meta }: { meta?: { hasMore: boolean } }) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  if (!meta)
+    return (
+      <Loading keyname="loadpage" length={3}>
+        <Skeleton className="mr-0.5 h-8 w-8" />
+      </Loading>
+    );
+
+  return (
+    <>
+      <Pagination className="mx-0 w-auto justify-start">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              aria-disabled={
+                !searchParams.get("page") || searchParams.get("page") === "1"
+              }
+              className="cursor-pointer"
+              onClick={() => {
+                const page = !Number.isNaN(searchParams.get("page"))
+                  ? Number(searchParams.get("page"))
+                  : 1;
+                if (page <= 1) return;
+                const params = new URLSearchParams(searchParams);
+                params.set("page", `${page - 1}`);
+                router.push(`${pathname}?${params.toString()}`);
+              }}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              aria-disabled={!meta.hasMore}
+              className="cursor-pointer"
+              onClick={() => {
+                const page = Number.isInteger(searchParams.get("page"))
+                  ? Number(searchParams.get("page"))
+                  : 1;
+                const params = new URLSearchParams(searchParams);
+                if (!meta.hasMore) return;
+                params.set("page", `${page + 1}`);
+                router.push(`${pathname}?${params.toString()}`);
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </>
+  );
+};
+
+export { PaginationMore, PaginationParams };
 
 export default PaginationParams;
