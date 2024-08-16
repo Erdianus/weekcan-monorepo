@@ -35,7 +35,13 @@ dayjs.updateLocale("id", {
 function InitClient({
   user,
 }: {
-  user: { id: string; role: string; role_id: string; token: string };
+  user: {
+    id: string;
+    role: string;
+    role_id: string;
+    token: string;
+    friends_id?: number;
+  };
 }) {
   const userStore = useUserStore();
 

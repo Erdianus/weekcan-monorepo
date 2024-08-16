@@ -1,3 +1,4 @@
+import Absent from "./absent";
 import Chat from "./chat";
 import Client from "./client";
 import Company from "./company";
@@ -25,6 +26,7 @@ import Venue from "./venue";
 import Warehouse from "./warehouse";
 
 export {
+  Absent,
   Chat,
   Client,
   Company,

@@ -12,6 +12,7 @@ export type UserSession = {
   // company: Array<Company>;
   role_id: string;
   token: string;
+  friends_id?: number;
 };
 
 declare module "next-auth" {
@@ -43,7 +44,26 @@ export const authConfig = {
           );
           const { data: user } = res.data;
 
-          return user;
+          const { data: u } = await Axios<{
+            data: { company: { id: number; company_name: string }[] };
+          }>(`/user/${user.id}`, {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          });
+
+          let friends_id: undefined | number;
+          u.data.company.some((v) => {
+            const vv = v.company_name === "Friends Production";
+            if (vv) {
+              friends_id = v.id;
+            }
+            return vv;
+          });
+
+          return { ...user, friends_id };
         } catch (e: unknown) {
           if (e instanceof AxiosError) {
             throw new Error(e.message);

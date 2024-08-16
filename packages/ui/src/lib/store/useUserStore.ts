@@ -5,6 +5,7 @@ interface State {
   role: string;
   role_id: string | number;
   token: string;
+  friends_id?: number;
 }
 
 interface UserState extends State {

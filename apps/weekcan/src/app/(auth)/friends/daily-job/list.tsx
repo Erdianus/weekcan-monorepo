@@ -3,7 +3,7 @@
 import type { CellContext } from "@tanstack/react-table";
 import { useMemo } from "react";
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -163,7 +163,7 @@ const columns = [
 ];
 
 const ListDailyJobUser = () => {
-  const { company_id } = useParams<{ company_id: string }>();
+  const company_id = useUserStore((s) => `${s.friends_id}`);
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
 
