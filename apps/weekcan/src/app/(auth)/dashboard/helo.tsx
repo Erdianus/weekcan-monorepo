@@ -14,8 +14,6 @@ const HelloUser = ({ id }: { id: string }) => {
     variables: { id },
   });
 
-  const { data: dashboard } = k.dashboard.all.useQuery();
-
   const isload = !profile && isLoading;
 
   return (
