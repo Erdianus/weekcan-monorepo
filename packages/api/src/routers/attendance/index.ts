@@ -18,6 +18,9 @@ const attendance = router("attendance", {
       search?: string;
       page?: string | number;
       paginate?: string | number;
+      from?: string;
+      to?: string;
+      isHavePicture?: number;
     }) => {
       const res = await Axios("/attendance", {
         params: { ...variables, isHavePicture: 1 },

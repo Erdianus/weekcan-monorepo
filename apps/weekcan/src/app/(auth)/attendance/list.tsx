@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -11,11 +12,15 @@ import { atom, useAtom, useSetAtom } from "jotai";
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
+import { FilterContainer } from "@hktekno/ui/components/filter-container";
 import { LightBox } from "@hktekno/ui/components/lightbox";
+import Paginate from "@hktekno/ui/components/paginate";
+import { PaginationMore } from "@hktekno/ui/components/pagination-params";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
-import { Separator } from "@hktekno/ui/components/ui/separator";
 import { Muted } from "@hktekno/ui/components/ui/typograhpy";
+
+import FilterAttendance from "./filter";
 
 type Attendance = inferData<
   typeof k.attendance.all
@@ -66,7 +71,13 @@ const columns = [
   }),
 ];
 
-const TableAttendance = ({ data }: { data: Attendance[] }) => {
+const TableAttendance = ({
+  data,
+  isLoading,
+}: {
+  data: Attendance[];
+  isLoading: boolean;
+}) => {
   const table = useReactTable({
     data,
     columns,
@@ -74,13 +85,15 @@ const TableAttendance = ({ data }: { data: Attendance[] }) => {
   });
   return (
     <>
-      <DataTable table={table} columns={columns} isloading={false} />
+      <DataTable table={table} columns={columns} isloading={isLoading} />
     </>
   );
 };
 
 const ListAttendance = () => {
-  const { data } = k.attendance.all.useQuery();
+  const searchParams = useSearchParams();
+  const variables = Object.fromEntries(searchParams.entries());
+  const { data, isLoading } = k.attendance.all.useQuery({ variables });
   const [open, setOpen] = useAtom(openAtom);
 
   const slides = useMemo(() => {
@@ -100,15 +113,21 @@ const ListAttendance = () => {
   return (
     <>
       <LightBox slides={slides} open={open} close={() => setOpen(false)} />
+      <FilterContainer>
+        <FilterAttendance isLoading={isLoading} />
+      </FilterContainer>
       {data?.data.map((d) => (
         <div className="mb-8">
           <div className="mb-1 flex items-center gap-1">
             <Muted>{dayjs(d.tanggal).format("DD MMMM YYYY")}</Muted>
-            <Separator className="flex-1" />
           </div>
-          <TableAttendance data={d.attendances} />
+          <TableAttendance data={d.attendances} isLoading={isLoading} />
         </div>
       ))}
+      <div className="mt-4 flex w-full items-center justify-end gap-2">
+        <Paginate />
+        <PaginationMore meta={data?.meta} />
+      </div>
     </>
   );
 };
