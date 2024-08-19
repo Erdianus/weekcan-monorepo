@@ -29,7 +29,10 @@ const dashboard = router("dashboard", {
       const { data: projects } = await Axios<inferData<typeof p.all>>(
         "/project",
         {
-          params: { paginate: 100, from: `${year}-${month}-01` },
+          params: {
+            paginate: 200,
+            from: `${year}-${month}-01`,
+          },
         },
       );
 
@@ -56,7 +59,7 @@ const dashboard = router("dashboard", {
         {
           params: {
             paginate: 100,
-            from: `${year}-${month}-${day}`,
+            from: `${year}-${month}-01`,
           },
         },
       );
