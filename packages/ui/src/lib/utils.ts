@@ -62,3 +62,20 @@ export function isValidHttpUrl(text: string) {
 
   return undefined;
 }
+
+function convertToDMS(deg: number) {
+  const absolute = Math.abs(deg);
+  const degrees = Math.floor(absolute);
+  const minutesNotTruncated = (absolute - degrees) * 60;
+  const minutes = Math.floor(minutesNotTruncated);
+  const seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+
+  const direction =
+    deg >= 0 ? (deg === degrees ? "N" : "E") : deg === degrees ? "S" : "W";
+
+  return `${degrees}°${minutes}'${seconds}"${direction}`;
+}
+
+export function getDMS(lat: number, long: number) {
+  return [convertToDMS(lat), convertToDMS(long)];
+}
