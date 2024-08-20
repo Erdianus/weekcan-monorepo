@@ -43,6 +43,23 @@ export const authConfig = {
             },
           );
           const { data: user } = res.data;
+          let friends_id: undefined | number;
+
+          if (user.role === "Admin") {
+            const { data: c } = await Axios<{
+              data: { id: number; company_name: string }[];
+            }>("/company", {
+              params: { search: "Friends Production" },
+              headers: {
+                Authorization: `Bearer ${user.token}`,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            });
+            friends_id = c.data[0]?.id;
+
+            return { ...user, friends_id };
+          }
 
           const { data: u } = await Axios<{
             data: { company: { id: number; company_name: string }[] };
@@ -54,7 +71,6 @@ export const authConfig = {
             },
           });
 
-          let friends_id: undefined | number;
           u.data.company.some((v) => {
             const vv = v.company_name === "Friends Production";
             if (vv) {
