@@ -15,6 +15,7 @@ import MsWord from "./msword";
 import Pdf from "./pdf";
 import Progress from "./progress";
 import Project from "./project";
+import Report from "./report";
 import Status from "./status";
 import Task from "./task";
 import ThumbsUp from "./thumbsup";
@@ -43,6 +44,7 @@ export {
   Pdf,
   Progress,
   Project,
+  Report,
   Status,
   Task,
   ThumbsUp,

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { promises as fs } from "fs";
 import type { NextRequest } from "next/server";
 
@@ -5,30 +8,35 @@ export async function city_get(
   req: NextRequest,
   { params }: { params: { province_id: string } },
 ): Promise<Response> {
-  const searchParams = req.nextUrl.searchParams;
-  const search = searchParams.get("search");
-  const json = await fs.readFile(
-    process.cwd() + `/src/app/assets/json/regencies/${params.province_id}.json`,
-    "utf8",
-  );
+  try {
+    const searchParams = req.nextUrl.searchParams;
+    const search = searchParams.get("search");
+    const json = await fs.readFile(
+      process.cwd() +
+        `/src/app/assets/json/regencies/${params.province_id}.json`,
+      "utf8",
+    );
 
-  const parsedJson = JSON.parse(json) as { id: string; name: string }[];
-  const data = search
-    ? parsedJson.filter((d) =>
-        d.name.toLowerCase().includes(search.toLowerCase()),
-      )
-    : parsedJson;
+    const parsedJson = JSON.parse(json) as { id: string; name: string }[];
+    const data = search
+      ? parsedJson.filter((d) =>
+          d.name.toLowerCase().includes(search.toLowerCase()),
+        )
+      : parsedJson;
 
-  return Response.json(
-    { data },
-    {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+    return Response.json(
+      { data },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
 
-        "Access-Control-Allow-Headers":
-          "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+          "Access-Control-Allow-Headers":
+            "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+        },
       },
-    },
-  );
+    );
+  } catch (e: any) {
+    return new Response(e.message ?? "Error gan", { status: 500 });
+  }
 }
