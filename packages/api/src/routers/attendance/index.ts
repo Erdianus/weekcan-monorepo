@@ -56,6 +56,31 @@ const attendance = router("attendance", {
       return res.data as { message: string };
     },
   }),
+  report: router.query({
+    fetcher: async (variables: {
+      month: number;
+      params?: {
+        user_id?: number | string;
+        paginate?: number;
+        page?: number;
+        from?: string;
+        to?: string;
+      };
+    }) => {
+      const { month, params } = variables;
+      const res = await Axios(`/attendance/report/${month}`, {
+        params,
+      });
+
+      return res.data as {
+        data: {
+          attendances: z.infer<typeof attendanceSchema>[];
+          tanggal: string;
+          range: number;
+        }[];
+      };
+    },
+  }),
 });
 
 export default attendance;
