@@ -318,7 +318,8 @@ const loadProvinceOptions: LoadOptions<
   null
 > = async (search) => {
   const res = await axios<{ data: { id: string; name: string }[] }>(
-    "/api/province",
+    // "/api/province",
+    "https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json",
     {
       params: { search },
     },
@@ -341,7 +342,8 @@ const loadCityOptions: LoadOptions<
   { province_id: string }
 > = async (search, _, additional) => {
   const res = await axios<{ data: { id: string; name: string }[] }>(
-    `/api/city/${additional?.province_id}`,
+    // `/api/city/${additional?.province_id}`,
+    `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${additional?.province_id}.json`,
     {
       params: { search, province_id: additional?.province_id },
     },
