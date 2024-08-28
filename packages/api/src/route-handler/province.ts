@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { promises as fs } from "fs";
+import path from "path";
 import type { NextRequest } from "next/server";
 
 export async function province_get(req: NextRequest): Promise<Response> {
@@ -9,8 +10,9 @@ export async function province_get(req: NextRequest): Promise<Response> {
     const searchParams = req.nextUrl.searchParams;
     const search = searchParams.get("search");
     // return Response.json({ data: process.cwd() });
+    console.log(process.cwd());
     const json = await fs.readFile(
-      process.cwd() + "/src/app/assets/json/province.json",
+      path.join(process.cwd(), "src/app/assets/json/province.json"),
       "utf8",
     );
 

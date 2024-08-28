@@ -2,15 +2,10 @@ import { redirect } from "next/navigation";
 
 import { auth, signOut } from "@hktekno/auth";
 import ButtonSubmit from "@hktekno/ui/components/ui/button-submit";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@hktekno/ui/components/ui/card";
+import { H1 } from "@hktekno/ui/components/ui/typograhpy";
 
 import { env } from "~/env";
+import LogoutClient from "./logout-client";
 
 export default async function Page() {
   const sesh = await auth();
@@ -29,30 +24,33 @@ export default async function Page() {
   return (
     <>
       <div className="flex h-screen w-full flex-col items-center justify-center px-2 md:px-0">
-        <div>
-          <Card className="w-full max-w-sm">
-            <CardHeader>
-              <CardTitle className="text-2xl">Terjadi Kesalahan</CardTitle>
-              <CardDescription>
-                Coba untuk logout dulu dengan menekan tombol dibawah
-              </CardDescription>
-            </CardHeader>
-            <form
-              action={async () => {
-                "use server";
-                const res = await signOut();
-                console.log(res);
-                redirect("/login");
-              }}
-              className="space-y-4"
-              method="post"
+        <form
+          className="flex flex-col items-center justify-center"
+          method="post"
+          action={async () => {
+            "use server";
+            const res = await signOut();
+            console.log(res);
+            redirect("/login");
+          }}
+        >
+          <LogoutClient />
+          <H1>Bentar yaa</H1>
+          <div>
+            <span>Session kamu habis, jadi mau di</span>{" "}
+            <span className="italic">redirect.</span>{" "}
+            <span className="mx-1">Klik</span>
+            <ButtonSubmit
+              id="btnSubmit"
+              className="inline-flex w-min p-0 text-main-500"
+              variant={"link"}
             >
-              <CardFooter>
-                <ButtonSubmit>Logout</ButtonSubmit>
-              </CardFooter>
-            </form>
-          </Card>
-        </div>
+              disini
+            </ButtonSubmit>{" "}
+            kalau gak te-
+            <i>redirect.</i>
+          </div>
+        </form>
       </div>
     </>
   );

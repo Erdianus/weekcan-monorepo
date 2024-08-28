@@ -23,13 +23,13 @@ export default async function Page() {
               </span>
             </Link>
             <div className="flex items-center lg:order-2">
-              <a
+              <Link
                 href={sesh ? "/dashboard" : "/login"}
                 target="_blank"
                 className="rounded-lg bg-main-700 px-4 py-2 text-sm font-medium text-white hover:bg-main-800 focus:outline-none focus:ring-4 focus:ring-main-300 dark:bg-main-600 dark:hover:bg-main-700 dark:focus:ring-main-800 sm:mr-2 lg:mr-0 lg:px-5 lg:py-2.5"
               >
                 {sesh?.user.username ?? "Login"}
-              </a>
+              </Link>
               <button
                 data-collapse-toggle="mobile-menu-2"
                 type="button"
