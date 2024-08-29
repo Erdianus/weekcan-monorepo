@@ -35,7 +35,12 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
     if (e instanceof AxiosError && e.status === 401) {
       redirect("/logout");
     }
-    throw new Error("Terjadi Kesalahan. Coba Refresh");
+
+    if (e instanceof Error) {
+      throw Error(e.message);
+    }
+
+    throw Error("Opps... Coba Refresh");
   }
   return (
     <>
