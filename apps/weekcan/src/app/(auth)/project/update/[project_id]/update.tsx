@@ -347,6 +347,9 @@ const UpdateProject = ({ id }: { id: string | number }) => {
                       loadOptions={loadProvinceOptions}
                       selectRef={field.ref}
                       value={field.value}
+                      additional={{
+                        page: 1,
+                      }}
                       onChange={(e) => {
                         field.onChange(e);
                         // @ts-ignore
@@ -375,6 +378,7 @@ const UpdateProject = ({ id }: { id: string | number }) => {
                       onChange={field.onChange}
                       isDisabled={!form.watch("province")}
                       additional={{
+                        page: 1,
                         province_id: form.watch("province")?.value ?? "",
                       }}
                     />

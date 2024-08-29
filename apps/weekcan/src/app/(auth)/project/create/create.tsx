@@ -288,6 +288,9 @@ const CreateProject = () => {
                       loadOptions={loadProvinceOptions}
                       selectRef={field.ref}
                       value={field.value}
+                      additional={{
+                        page: 1,
+                      }}
                       onChange={(e) => {
                         field.onChange(e);
                         // @ts-expect-error sengaja biar error
@@ -318,6 +321,7 @@ const CreateProject = () => {
                       additional={{
                         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                         province_id: form.watch("province")?.value ?? "",
+                        page: 1,
                       }}
                     />
                   </FormControl>
