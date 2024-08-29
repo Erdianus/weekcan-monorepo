@@ -20,7 +20,7 @@ import { env } from "~/env";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.BASE_URL),
+  metadataBase: new URL(env.NEXT_PUBLIC_BASE_URL),
   title: {
     default: "weekcan",
     template: "%s - weekcan",
