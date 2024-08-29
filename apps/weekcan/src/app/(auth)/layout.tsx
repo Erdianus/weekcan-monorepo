@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { redirect } from "next/navigation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import { auth } from "@hktekno/auth";
 import AlertConfirm from "@hktekno/ui/components/alert-confirm";
@@ -31,8 +31,11 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
       await axios.post("/api/auth/signout");
       redirect("/login");
     }
-  } catch (e) {
-    redirect("/logout");
+  } catch (e: unknown) {
+    if (e instanceof AxiosError && e.status === 401) {
+      redirect("/logout");
+    }
+    throw new Error("Terjadi Kesalahan. Coba Refresh");
   }
   return (
     <>

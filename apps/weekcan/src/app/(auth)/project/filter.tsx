@@ -1,10 +1,14 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import dayjs from "dayjs";
 
-import { SelectAsync } from "@hktekno/ui/components/select";
+import { Select, SelectAsync } from "@hktekno/ui/components/select";
 import { DateRangePicker } from "@hktekno/ui/components/ui/date-picker";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
-import { loadCompanyOptions, loadUserOptions } from "@hktekno/ui/lib/select";
+import {
+  loadCompanyOptions,
+  loadUserOptions,
+  optionsProjectProgress,
+} from "@hktekno/ui/lib/select";
 
 const FilterProject = ({ isLoading }: { isLoading: boolean }) => {
   const searchParams = useSearchParams();
@@ -12,6 +16,36 @@ const FilterProject = ({ isLoading }: { isLoading: boolean }) => {
   const router = useRouter();
   return (
     <>
+      <Select
+        className="w-auto"
+        options={optionsProjectProgress()}
+        defaultValue={
+          searchParams.get("progress")
+            ? {
+                label: searchParams.get("progress"),
+                value: searchParams.get("progress"),
+              }
+            : null
+        }
+        isClearable
+        isDisabled={isLoading}
+        placeholder="Progres Proyek"
+        onChange={(e) => {
+          const hasPage = !!searchParams.get("page");
+          const params = new URLSearchParams(searchParams);
+
+          if (e) {
+            params.set("progress", `${e.value}`);
+          } else {
+            params.delete("progress");
+          }
+
+          if (hasPage) params.delete("page");
+
+          router.replace(`${pathname}?${params.toString()}`);
+        }}
+      />
+
       <SelectAsync
         className="w-auto"
         defaultValue={

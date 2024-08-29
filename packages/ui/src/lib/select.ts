@@ -1,6 +1,7 @@
 import type { LoadOptions } from "react-select-async-paginate";
 
 import type { inferVariables } from "@hktekno/api";
+import type { Meta } from "@hktekno/api/routers/meta";
 import { k } from "@hktekno/api";
 import { absentType } from "@hktekno/api/routers/absent/schema";
 import { eventStatus } from "@hktekno/api/routers/event/schema";
@@ -315,12 +316,13 @@ const loadJobTypeOptions: LoadOptions<
 const loadProvinceOptions: LoadOptions<
   OptionType,
   GroupBase<OptionType>,
-  null
-> = async (search) => {
-  const res = await axios<{ data: { id: string; name: string }[] }>(
-    "/api/province",
+  { page?: string | number }
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const res = await axios<{ data: { id: string; name: string }[]; meta: Meta }>(
+    "https://epiai.ankcode.com/api/province",
     {
-      params: { search },
+      params: { search, page },
     },
   );
 
@@ -331,19 +333,24 @@ const loadProvinceOptions: LoadOptions<
 
   return {
     options,
-    hasMore: false,
+    hasMore: res.data.meta.current_page !== res.data.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
   };
 };
 
 const loadCityOptions: LoadOptions<
   OptionType,
   GroupBase<OptionType>,
-  { province_id: string }
+  { province_id: string; page?: string | number }
 > = async (search, _, additional) => {
-  const res = await axios<{ data: { id: string; name: string }[] }>(
-    `/api/city/${additional?.province_id}`,
+  const page = additional?.page ?? 1;
+  const res = await axios<{ data: { id: string; name: string }[]; meta: Meta }>(
+    `https://epiai.ankcode.com/api/${additional?.province_id}/regency`,
     {
-      params: { search, province_id: additional?.province_id },
+      params: { search, page },
     },
   );
 
@@ -354,7 +361,11 @@ const loadCityOptions: LoadOptions<
 
   return {
     options,
-    hasMore: false,
+    hasMore: res.data.meta.current_page !== res.data.meta.last_page,
+    additional: {
+      province_id: additional?.province_id ?? "",
+      page: Number(page) + 1,
+    },
   };
 };
 
