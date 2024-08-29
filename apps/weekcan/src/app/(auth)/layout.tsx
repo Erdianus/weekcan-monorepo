@@ -32,9 +32,7 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
       redirect("/login");
     }
   } catch (e: unknown) {
-    if (e instanceof AxiosError && e.status === 401) {
-      redirect("/logout");
-    }
+    redirect("/logout");
 
     if (e instanceof Error) {
       throw Error(e.message);
