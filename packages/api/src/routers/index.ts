@@ -6,6 +6,7 @@ import type {
 } from "react-query-kit";
 
 import absent from "./absent";
+import archive from "./archive";
 import attendance from "./attendance";
 import client from "./client";
 import company from "./company";
@@ -21,6 +22,7 @@ import user from "./user";
 import venue from "./venue";
 
 const k = {
+  archive,
   dashboard,
   project,
   event,
