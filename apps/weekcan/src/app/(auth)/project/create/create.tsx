@@ -138,6 +138,7 @@ const CreateProject = () => {
 
   return (
     <>
+      {JSON.stringify(form.formState.errors)}
       <H3 className="mb-4">Buat Proyek Baru</H3>
       <Form {...form}>
         <form
@@ -292,7 +293,10 @@ const CreateProject = () => {
                         page: 1,
                       }}
                       onChange={(e) => {
-                        field.onChange(e);
+                        field.onChange({
+                          label: e?.label,
+                          value: `${e?.value ?? ""}`,
+                        });
                         // @ts-expect-error sengaja biar error
                         form.setValue("city", null);
                       }}
@@ -316,7 +320,12 @@ const CreateProject = () => {
                       placeholder="Pilih Kota"
                       selectRef={field.ref}
                       value={field.value}
-                      onChange={field.onChange}
+                      onChange={(e) => {
+                        field.onChange({
+                          label: e?.label,
+                          value: `${e?.value ?? ""}`,
+                        });
+                      }}
                       isDisabled={!form.watch("province")}
                       additional={{
                         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
