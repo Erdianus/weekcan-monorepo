@@ -23,6 +23,7 @@
     "@hktekno/eslint-config": "workspace:*",
     "@hktekno/prettier-config": "workspace:*",
     "@hktekno/tsconfig": "workspace:*",
+    "@tailwindcss/typography": "^0.5.15",
     "eslint": "^9.0.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"

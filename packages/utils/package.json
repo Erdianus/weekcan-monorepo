@@ -13,15 +13,15 @@
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "^0.10.0",
-    "zod": "^3.23.0",
     "axios": "^1.6.8",
-    "react": "^18.3.1"
+    "react": "^18.3.1",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
     "@hktekno/eslint-config": "workspace:*",
     "@hktekno/prettier-config": "workspace:*",
-    "@types/node": "^20.10.6",
     "@hktekno/tsconfig": "workspace:*",
+    "@types/node": "^20.10.6",
     "eslint": "^9.0.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"
