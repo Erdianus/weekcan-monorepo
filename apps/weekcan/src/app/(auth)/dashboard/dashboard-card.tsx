@@ -11,7 +11,6 @@ import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 
 export default function DashboardCard() {
   const { data: dashboard } = k.dashboard.all.useQuery();
-  console.log(dashboard);
   const month = dayjs().locale("id").format("MMMM");
   return (
     <>
