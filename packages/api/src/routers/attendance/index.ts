@@ -58,7 +58,6 @@ const attendance = router("attendance", {
   }),
   report: router.query({
     fetcher: async (variables: {
-      month: number;
       params?: {
         user_id?: number | string;
         paginate?: number;
@@ -67,8 +66,8 @@ const attendance = router("attendance", {
         to?: string;
       };
     }) => {
-      const { month, params } = variables;
-      const res = await Axios(`/attendance/report/${month}`, {
+      const { params } = variables;
+      const res = await Axios(`/attendance/report`, {
         params,
       });
 
