@@ -9,7 +9,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { CircleOff, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import type { User } from "@hktekno/api/routers/user/index";
@@ -50,17 +50,23 @@ const Actions = ({ row }: CellContext<User, unknown>) => {
     onError: ({ message }) => toast.error(message),
   });
 
+  const disable = k.user.toggleStatus.useMutation({
+    async onSuccess({ message }) {
+      toast.success(message);
+      await client.invalidateQueries({ queryKey: k.user.all.getKey() });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+
+  const isload = disable.isPending || del.isPending;
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
-            {del.isPending ? (
-              <Spinner />
-            ) : (
-              <MoreHorizontal className="h-4 w-4" />
-            )}
+            {isload ? <Spinner /> : <MoreHorizontal className="h-4 w-4" />}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -71,6 +77,20 @@ const Actions = ({ row }: CellContext<User, unknown>) => {
               <span>Edit</span>
             </DropdownMenuItem>
           </Link>
+          <DropdownMenuItem
+            onClick={() =>
+              alert.setData({
+                open: true,
+                confirmText: "Ya, Nonfaktikan User",
+                onConfirm: () => {
+                  disable.mutate({ id: data.id, params: { status: 0 } });
+                },
+              })
+            }
+            className="hover:bg-purple-500 dark:hover:bg-purple-900 dark:hover:text-purple-50"
+          >
+            <CircleOff className="mr-2 h-4 w-4" /> <span>Nonakftikan</span>
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
               alert.setData({

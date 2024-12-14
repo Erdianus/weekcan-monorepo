@@ -117,8 +117,15 @@ const user = router("user", {
     },
   }),
   toggleStatus: router.mutation({
-    mutationFn: async (variables: { id: string }) => {
-      const res = await Axios.put(`/user/change-status/${variables.id}`);
+    mutationFn: async (variables: {
+      id: string | number;
+      params?: { status?: number };
+    }) => {
+      const res = await Axios.put(
+        `/user/change-status/${variables.id}`,
+        undefined,
+        { params: variables.params },
+      );
 
       return res.data as { message: string };
     },
