@@ -18,8 +18,8 @@
     "@hktekno/tsconfig": "workspace:*",
     "@testing-library/react": "^15.0.3",
     "@types/node": "^20.10.6",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
     "jsdom": "^24.0.0",
@@ -63,18 +63,18 @@
     "lightgallery": "^2.7.2",
     "lodash.throttle": "^4.1.1",
     "lucide-react": "^0.314.0",
-    "next": "^14.2.0",
+    "next": "15.1.2",
     "next-themes": "^0.3.0",
-    "react": "^18.3.1",
+    "react": "19.0.0",
     "react-day-picker": "^8.10.1",
-    "react-dom": "^18.3.1",
+    "react-dom": "19.0.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.51.3",
     "react-image-crop": "^11.0.5",
     "react-images-uploading": "^3.1.7",
     "react-qr-code": "^2.0.13",
-    "react-select": "^5.8.0",
-    "react-select-async-paginate": "^0.7.4",
+    "react-select": "^5.9.0",
+    "react-select-async-paginate": "^0.7.7",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
@@ -89,5 +89,11 @@
     "./*": "./src/*.tsx",
     "./icon": "./src/components/icon/index.ts"
   },
-  "prettier": "@hktekno/prettier-config"
+  "prettier": "@hktekno/prettier-config",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.0.2",
+      "@types/react-dom": "19.0.2"
+    }
+  }
 }
