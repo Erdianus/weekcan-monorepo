@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import type {
   ClassNamesConfig,
   DropdownIndicatorProps,
@@ -10,7 +11,7 @@ import type {
   UseAsyncPaginateParams,
 } from "react-select-async-paginate";
 import type { CreatableProps } from "react-select/creatable";
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import ReactSelect, { components } from "react-select";
 import { AsyncPaginate, withAsyncPaginate } from "react-select-async-paginate";
 import Creatable from "react-select/creatable";
@@ -30,15 +31,13 @@ function classNames<
   return {
     control: ({ isFocused, isDisabled }) =>
       cn(
-        "h-10 w-full rounded border border-gray-200 bg-transparent text-sm hover:cursor-pointer hover:border-gray-400 dark:border-gray-800",
-        isFocused && "ring-2 ring-main-700",
-        isDisabled &&
-          "!cursor-not-allowed dark:bg-gray-900/40 dark:text-gray-300",
+        "flex !min-h-9 w-full gap-1 rounded-md border border-input bg-transparent py-1 pl-3 pr-1 text-sm shadow-sm transition-colors hover:cursor-pointer",
+        isFocused && "outline-none ring-1 ring-ring",
+        isDisabled && "cursor-not-allowed opacity-50",
       ),
-    placeholder: () => `text-gray-500 dark:text-gray-400 pl-1 py-0.5`,
-    input: () => `pl-1 py-0.5`,
-    valueContainer: () =>
-      `p-1 pb-1.5 gap-1 h-10 capitalize !overflow-x-auto scrollbar-thin scrollbar-track-gray-200 scrollbar-thumb-black dark:scrollbar-track-black dark:scrollbar-thumb-white !flex-nowrap`,
+    placeholder: () => `text-sm text-muted-foreground`,
+    // input: () => `pl-1 py-0.5`,
+    valueContainer: () => `gap-1`,
     singleValue: (props) => {
       const data = props.data as { label: string; value: string };
       const { name: status } = props.selectProps;
@@ -54,7 +53,7 @@ function classNames<
       );
     },
     multiValue: (props) => {
-      return `bg-gray-100 dark:bg-gray-700 rounded items-center py-0.5 pl-2 pr-1.5 gap-1.5 !min-w-max ${
+      return `inline-flex items-center gap-2 rounded-md border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-1.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
         props.selectProps.placeholder === "Pilih Perusahaan"
           ? "first:bg-main-500 first:text-white dark:first:bg-main-900 dark:first:text-main-400"
           : ""
@@ -63,26 +62,23 @@ function classNames<
     multiValueLabel: () => `leading-6 py-0.5 whitespace-nowrap text-sm`,
     multiValueRemove: () =>
       `border border-gray-200 bg-white hover:bg-red-50 hover:text-red-800 text-gray-500 rounded-md`,
-    indicatorsContainer: () => `p-1 gap-1 `,
-    clearIndicator: () =>
-      `text-gray-500 p-1 rounded-md hover:bg-red-50 hover:text-red-800`,
-    indicatorSeparator: () => `hidden bg-gray-300`,
-    dropdownIndicator: () =>
-      `p-1 hover:bg-gray-100 text-gray-500 rounded-md hover:text-black dark:hover:bg-gray-800 dark:hover:text-gray-400`,
+    indicatorsContainer: () => `gap-1`,
+    clearIndicator: () => `p-1 rounded-md`,
+    indicatorSeparator: () => `bg-border`,
+    dropdownIndicator: () => `p-1 rounded-md`,
     menu: () =>
-      `p-1 mt-0.5 border !z-[2] border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 rounded-lg text-sm ring-2 ring-main-700`,
+      `p-1 mt-1 border bg-popover shadow-md rounded-md text-popover-foreground`,
     menuList: () => `scrollbar-thin dark:scrollbar-track-dark-body`,
     groupHeading: () => `ml-3 mt-2 mb-1 text-gray-500 text-sm`,
     noOptionsMessage: () =>
       `text-gray-500 p-2 dark:bg-gray-900 bg-gray-50 border border-dashed dark:border-gray-500 border-gray-200 rounded-sm`,
-    option: ({ data, isFocused, isSelected }) => {
+    option: ({ data, isFocused, isSelected, isDisabled }) => {
       const d = data as { label: string; value: string };
       return cn(
-        "z-10 mb-0.5 rounded px-3 py-2 text-sm hover:cursor-pointer hover:bg-main-300 dark:hover:bg-main-600",
-        isFocused &&
-          "bg-gray-100 text-black active:bg-gray-200 dark:bg-gray-900 dark:text-white",
-        isSelected &&
-          "bg-main-500 text-white dark:bg-gray-200 dark:text-gray-900 ",
+        "!cursor-default !select-none rounded-sm px-2 py-1.5 font-sans !text-sm !outline-none hover:cursor-pointer hover:bg-accent hover:text-accent-foreground",
+        isFocused && "active:bg-accent/90 bg-accent text-accent-foreground",
+        isDisabled && "pointer-events-none opacity-50",
+        isSelected && "",
         d.value === "Done" && "hover:bg-green-300 dark:hover:bg-green-600",
         d.value === "On Going" &&
           "hover:bg-yellow-300 dark:hover:bg-yellow-600",
@@ -107,12 +103,27 @@ function styles<
     }),
     multiValueLabel: (base) => ({
       ...base,
-      whiteSpace: "nowrap",
-      overflow: "hidden",
+      whiteSpace: "normal",
+      overflow: "visible",
     }),
     control: (base) => ({
       ...base,
       transition: "none",
+    }),
+    menuList: (base) => ({
+      ...base,
+      "::-webkit-scrollbar": {
+        background: "transparent",
+      },
+      "::-webkit-scrollbar-track": {
+        background: "transparent",
+      },
+      "::-webkit-scrollbar-thumb": {
+        background: "hsl(var(--border))",
+      },
+      "::-webkit-scrollbar-thumb:hover": {
+        background: "transparent",
+      },
     }),
   };
 }
@@ -124,9 +135,9 @@ function DropdownIndicator<
 >(props: DropdownIndicatorProps<Option, IsMulti, Group>) {
   return (
     <components.DropdownIndicator {...props}>
-      <ChevronsUpDown
+      <ChevronDown
         size={16}
-        className={cn("transition", props.isFocused && "rotate-90")}
+        className={cn("transition", props.isFocused && "-rotate-90")}
       />
     </components.DropdownIndicator>
   );

@@ -92,11 +92,11 @@ export function DataTable<TData>({
                       <ContextMenu>
                         <ContextMenuTrigger asChild>
                           <TableRow
-                            key={row.id}
+                            key={`row-${row.id}`}
                             data-state={row.getIsSelected() && "selected"}
                           >
                             {row.getVisibleCells().map((cell) => (
-                              <TableCell key={cell.id}>
+                              <TableCell key={`cell-${cell.id}`}>
                                 {flexRender(
                                   cell.column.columnDef.cell,
                                   cell.getContext(),
@@ -118,7 +118,7 @@ export function DataTable<TData>({
                         data-state={row.getIsSelected() && "selected"}
                       >
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
+                          <TableCell key={`cell--${cell.id}`}>
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext(),
