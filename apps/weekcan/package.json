@@ -6,7 +6,7 @@
   "scripts": {
     "build": "pnpm with-env next build",
     "clean": "git clean -xdf .next .turbo node_modules",
-    "dev": "pnpm with-env next dev",
+    "dev": "pnpm with-env next dev --turbopack",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "start": "pnpm with-env next start",
@@ -35,10 +35,10 @@
     "dayjs": "^1.11.10",
     "jotai": "^2.8.1",
     "lucide-react": "^0.314.0",
-    "next": "^14.2.0",
+    "next": "15.1.2",
     "next-themes": "^0.3.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "react-geolocated": "^4.1.2",
     "react-hook-form": "^7.51.3",
     "react-image-crop": "^11.0.5",
@@ -52,12 +52,12 @@
     "@hktekno/prettier-config": "workspace:*",
     "@hktekno/tailwind-config": "workspace:*",
     "@hktekno/tsconfig": "workspace:*",
-    "@next/eslint-plugin-next": "^14.2.2",
+    "@next/eslint-plugin-next": "15.1.2",
     "@tailwindcss/typography": "^0.5.15",
     "@types/eslint": "^8.56.1",
     "@types/node": "^20.10.6",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "19.0.2",
+    "@types/react-dom": "19.0.2",
     "autoprefixer": "^10.4.17",
     "dotenv-cli": "^7.4.1",
     "eslint": "^9.0.0",
@@ -68,5 +68,11 @@
     "typescript": "^5.4.5",
     "webpack": "^5.91.0"
   },
-  "prettier": "@hktekno/prettier-config"
+  "prettier": "@hktekno/prettier-config",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.0.2",
+      "@types/react-dom": "19.0.2"
+    }
+  }
 }
