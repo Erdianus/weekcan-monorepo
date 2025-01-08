@@ -40,7 +40,7 @@ export default function ListUser() {
           fallback={<div className="text-center">Data Kosong</div>}
         >
           {users?.data.map((user) => (
-            <button className="flex w-full items-center gap-4 border-b p-4">
+            <button key={`report-${user.id}`} className="flex w-full items-center gap-4 border-b p-4">
               <Avatar>
                 <AvatarImage src={user.picture_link} />
                 <AvatarFallback>{shortName(user.name)}</AvatarFallback>

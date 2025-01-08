@@ -7,8 +7,10 @@ import "react-image-crop/dist/ReactCrop.css";
 import "~/app/globals.css";
 
 import type { Metadata, Viewport } from "next";
+import type { JSX } from "react";
 import { Inter } from "next/font/google";
 
+import { ProgressProviders } from "@hktekno/ui/components/progress-providers";
 import QueryProvider from "@hktekno/ui/components/providers";
 import { ThemeProvider } from "@hktekno/ui/components/theme-provider";
 import { Toaster } from "@hktekno/ui/components/ui/sonner";
@@ -62,9 +64,11 @@ export default function RootLayout({
       </head>
       <body className={cn("", inter.className)}>
         <ThemeProvider disableTransitionOnChange attribute="class">
-          <QueryProvider>
-            <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
-          </QueryProvider>
+          <ProgressProviders>
+            <QueryProvider>
+              <TooltipProvider delayDuration={300}>{children}</TooltipProvider>
+            </QueryProvider>
+          </ProgressProviders>
         </ThemeProvider>
         <Toaster richColors closeButton position="top-right" />
       </body>

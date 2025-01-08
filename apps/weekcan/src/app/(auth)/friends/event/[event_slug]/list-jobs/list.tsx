@@ -180,7 +180,7 @@ const columns = [
 ];
 
 const ListJobs = () => {
-  const params = useParams<{ event_id: string }>();
+  const params = useParams<{ event_slug: string }>();
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
   const {
@@ -189,7 +189,7 @@ const ListJobs = () => {
     isError,
     error,
   } = k.job.all.useQuery({
-    variables: { ...variables, event: params.event_id },
+    variables: { params: variables, slug: params.event_slug },
   });
 
   const table = useReactTable({
@@ -201,7 +201,7 @@ const ListJobs = () => {
   useEffect(() => {
     if (isError) {
       toast.error(error.message);
-      throw new Error("Error dari Backend 😱");
+      // throw new Error("Error dari Backend 😱");
     }
   }, [isError, error]);
 

@@ -21,8 +21,8 @@ const eventRouter = {
     },
   }),
   single: router.query({
-    fetcher: async (variables: { id: string }) => {
-      const res = await Axios.get(`/event/${variables.id}`);
+    fetcher: async (variables: { slug: string }) => {
+      const res = await Axios.get(`/event/${variables.slug}`);
 
       return res.data as { data: z.infer<typeof eventSchema> };
     },
