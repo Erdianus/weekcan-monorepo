@@ -47,6 +47,7 @@ const FilterProject = ({ isLoading }: { isLoading: boolean }) => {
       />
 
       <SelectAsync
+        instanceId={"Perusahaan"}
         className="w-auto"
         defaultValue={
           searchParams.get("company_id")

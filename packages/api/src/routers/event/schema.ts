@@ -13,6 +13,7 @@ const eventBaseSchema = z.object({
   city: z.string(),
   province: z.string(),
   client: z.string(),
+  slug: z.string(),
 });
 
 export { eventStatus };

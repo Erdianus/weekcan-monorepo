@@ -7,7 +7,11 @@ import AlertConfirm from "@hktekno/ui/components/alert-confirm";
 import InitClient from "@hktekno/ui/components/init-client";
 import Navbar from "@hktekno/ui/components/navbar";
 import { PWAConfirmInstall } from "@hktekno/ui/components/pwa-install";
-import Sidebar from "@hktekno/ui/components/sidebar";
+import { AppSidebar } from "@hktekno/ui/components/ui/app-sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@hktekno/ui/components/ui/sidebar";
 
 import { env } from "~/env";
 
@@ -19,25 +23,24 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
   }
 
   try {
-    const res = await axios(`${env.NEXT_PUBLIC_BASE_API}/api/checkLogin`, {
+    await axios(`${env.NEXT_PUBLIC_BASE_API}/api/checkLogin`, {
       headers: {
         Authorization: `Bearer ${sesh.user.token}`,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
     });
-
-    if (res.status !== 200) {
-      await axios.post("/api/auth/signout");
-      redirect("/login");
-    }
   } catch (e: unknown) {
-    redirect("/logout");
-
-    if (e instanceof Error) {
+    if (e instanceof AxiosError) {
+      if (e.status === 401) {
+        // session cookie ada tapi server habis, hapus manual ke logout
+        redirect("/logout");
+      }
+      // Kalau bukan lempar aja error, siapa tau 500
       throw Error(e.message);
     }
 
+    // Sisanya gak tau error apa
     throw Error("Opps... Coba Refresh");
   }
   return (
@@ -46,12 +49,18 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
       <AlertConfirm />
       <PWAConfirmInstall />
       <div className="antialiased">
-        <Navbar />
+        {/* <Navbar /> */}
         {/* <!-- Sidebar --> */}
-        <Sidebar />
-        <main className="relative h-full min-h-lvh p-4 pt-20 md:ml-64 ">
-          {children}
-        </main>
+        {/* <Sidebar /> */}
+        <SidebarProvider className="overflow-x-hidden">
+          <AppSidebar />
+          <SidebarInset className="flex h-full flex-col">
+            <Navbar />
+            <div className="relative flex-1 overflow-y-auto p-4">
+              {children}
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
       </div>
     </>
   );

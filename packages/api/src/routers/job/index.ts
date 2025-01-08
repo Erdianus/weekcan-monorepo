@@ -8,15 +8,20 @@ import type jobBaseSchema from "./schema";
 
 const job = router("job", {
   all: router.query({
-    fetcher: async (variables?: {
-      search?: string;
-      status?: string;
-      event?: string;
-      vendor?: string;
-      pic?: string;
-      pic_id?: string;
+    fetcher: async (variables: {
+      slug: string;
+      params?: {
+        search?: string;
+        status?: string;
+        event?: string;
+        vendor?: string;
+        pic?: string;
+        pic_id?: string;
+      };
     }) => {
-      const res = await Axios("/list-jobs", { params: variables });
+      const res = await Axios(`/${variables.slug}/list-jobs`, {
+        params: variables.params,
+      });
 
       return res.data as { data: z.infer<typeof jobBaseSchema>[]; meta: Meta };
     },
