@@ -14,7 +14,7 @@
     "@t3-oss/env-nextjs": "^0.10.0",
     "axios": "^1.6.8",
     "next": "15.1.2",
-    "next-auth": "5.0.0-beta.17",
+    "next-auth": "5.0.0-beta.25",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "zod": "^3.23.0"

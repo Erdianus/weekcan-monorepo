@@ -48,6 +48,16 @@
     --fc-button-border-color: var(--background);
     --fc-button-active-bg-color: var(--background);
     --fc-button-active-border-color: var(--border);
+
+    /* Sidebar */
+    --sidebar-background: var(--background);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
   }
 
   .dark {
@@ -93,6 +103,16 @@
     --fc-button-border-color: var(--background);
     --fc-button-active-bg-color: var(--background);
     --fc-button-active-border-color: var(--border);
+
+    /* Sidebar */
+    --sidebar-background: var(--background);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
   }
 }
 

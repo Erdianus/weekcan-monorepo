@@ -22,7 +22,6 @@ import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
-import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Select, SelectAsync } from "@hktekno/ui/components/select";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
@@ -36,8 +35,6 @@ import {
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import { Separator } from "@hktekno/ui/components/ui/separator";
-import { H3 } from "@hktekno/ui/components/ui/typograhpy";
-import { Task } from "@hktekno/ui/icon";
 import { date4Y2M2D, dateRange } from "@hktekno/ui/lib/date";
 import { loadUserOptions, optionsEventStatus } from "@hktekno/ui/lib/select";
 
@@ -58,18 +55,18 @@ const Actions = ({ row }: CellContext<Event, unknown>) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <Link href={`/friends/event/${data.id}/list-jobs`}>
+          <Link href={`/friends/event/${data.slug}/list-jobs`}>
             <DropdownMenuItem>
               <Eye className="mr-2 h-4 w-4" />
               <span>Rincian</span>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/friends/event/${data.id}/checklist`}>
+          {/* <Link href={`/friends/event/${data.slug}/checklist`}>
             <DropdownMenuItem>
               <Task className="mr-2 h-4 w-4" />
               <span>Checklist</span>
             </DropdownMenuItem>
-          </Link>
+          </Link> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
@@ -171,6 +168,7 @@ const Filter = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <>
       <SelectAsync
+
         className="w-auto"
         value={
           searchParams.get("pic_id")

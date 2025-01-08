@@ -3,6 +3,7 @@
 "use client";
 
 import type { ColumnDef, Table as Tabel } from "@tanstack/react-table";
+import { Fragment } from "react";
 import { flexRender } from "@tanstack/react-table";
 
 import Flashlist from "../flashlist";
@@ -87,7 +88,7 @@ export function DataTable<TData>({
                 const cells = row.getVisibleCells?.() ?? [];
                 const lastCells = cells[cells.length - 1];
                 return (
-                  <>
+                  <Fragment key={`roww-context-${row.id}`}>
                     {contextMenu && lastCells?.id.includes("action") ? (
                       <ContextMenu>
                         <ContextMenuTrigger asChild>
@@ -114,7 +115,7 @@ export function DataTable<TData>({
                       </ContextMenu>
                     ) : (
                       <TableRow
-                        key={row.id}
+                        key={`roww-${row.id}`}
                         data-state={row.getIsSelected() && "selected"}
                       >
                         {row.getVisibleCells().map((cell) => (
@@ -127,7 +128,7 @@ export function DataTable<TData>({
                         ))}
                       </TableRow>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
           </Flashlist>

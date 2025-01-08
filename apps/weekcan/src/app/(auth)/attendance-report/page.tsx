@@ -1,6 +1,6 @@
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 
-import ListReport from "./list";
+import ListUser from "./list";
 
 export default function Page() {
   return (
@@ -8,7 +8,7 @@ export default function Page() {
       <div className="mb-4 flex w-full items-center justify-between">
         <H3 className="">Laporan Absen</H3>
       </div>
-      <ListReport />
+      <ListUser />
     </>
   );
 }

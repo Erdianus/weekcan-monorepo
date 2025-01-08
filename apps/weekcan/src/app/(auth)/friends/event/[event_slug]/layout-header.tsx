@@ -12,20 +12,20 @@ import { dateRange } from "@hktekno/ui/lib/date";
 
 const LayoutEvent = () => {
   const pathname = usePathname();
-  const params = useParams<{ company_id: string; event_id: string }>();
+  const params = useParams<{ company_id: string; event_slug: string }>();
   const { data: event, isLoading } = k.event.single.useQuery({
-    variables: { id: params.event_id },
+    variables: { slug: params.event_slug },
   });
   const links = useMemo(() => {
     return [
       {
         label: "Rincian",
-        href: `/friends/event/${params.event_id}/list-jobs`,
+        href: `/friends/event/${params.event_slug}/list-jobs`,
       },
-      {
+      /* {
         label: "Checklist",
-        href: `/friends/event/${params.event_id}/checklist`,
-      },
+        href: `/friends/event/${params.event_slug}/checklist`,
+      }, */
     ];
   }, [params]);
   return (

@@ -7,6 +7,10 @@ import type { Config } from "tailwindcss";
 import baseConfig from "@hktekno/tailwind-config/web";
 
 export default {
+  darkMode: ["class"],
   content: ["./src/**/*.tsx"],
   presets: [baseConfig],
+  theme: {
+    extend: {},
+  },
 } satisfies Config;

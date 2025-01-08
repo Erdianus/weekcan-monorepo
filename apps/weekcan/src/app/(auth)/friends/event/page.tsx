@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
+
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 
 import ListEvent from "./list";
+
+export const metadata: Metadata = {
+  title: "List Event",
+};
 
 export default function Page() {
   return (
