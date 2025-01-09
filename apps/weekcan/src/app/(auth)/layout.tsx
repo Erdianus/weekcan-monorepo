@@ -52,9 +52,9 @@ export default async function AuthLayout({ children }: PropsWithChildren) {
         {/* <Navbar /> */}
         {/* <!-- Sidebar --> */}
         {/* <Sidebar /> */}
-        <SidebarProvider className="overflow-x-hidden">
+        <SidebarProvider className="">
           <AppSidebar />
-          <SidebarInset className="flex h-full flex-col">
+          <SidebarInset className="flex h-full flex-col overflow-x-auto">
             <Navbar />
             <div className="relative flex-1 overflow-y-auto p-4">
               {children}
