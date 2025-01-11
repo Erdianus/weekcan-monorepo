@@ -4,12 +4,15 @@ import type { CellContext } from "@tanstack/react-table";
 import { useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   createColumnHelper,
+  flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
+import { atom, useAtom } from "jotai";
 import {
   CloudSun,
   Moon,
@@ -18,9 +21,12 @@ import {
   Plus,
   Sun,
 } from "lucide-react";
+import { toast } from "sonner";
 
-import type { inferData } from "@hktekno/api";
+import type { inferData, inferVariables } from "@hktekno/api";
 import { k } from "@hktekno/api";
+import Flashlist from "@hktekno/ui/components/flashlist";
+import Loading from "@hktekno/ui/components/loading";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
@@ -31,20 +37,33 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@hktekno/ui/components/ui/carousel";
-import { DataTable } from "@hktekno/ui/components/ui/data-table";
+import { DrawerDialog } from "@hktekno/ui/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
+import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import Spinner from "@hktekno/ui/components/ui/spinner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@hktekno/ui/components/ui/table";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
+import { cn } from "@hktekno/ui/lib/utils";
 
 import Filter from "./filter";
+import { FormDailyJob } from "./form";
 
 type DailyJobUser = inferData<typeof k.company.daily_job.users>["data"][number];
 const colHelper = createColumnHelper<DailyJobUser>();
+
+const stateAtom = atom<{ user?: DailyJobUser }>({ user: undefined });
 
 const Action = ({ row }: CellContext<DailyJobUser, unknown>) => {
   const user_id = useUserStore((s) => s.id);
@@ -162,7 +181,10 @@ const columns = [
   }),
 ];
 
-const ListDailyJobUser = () => {
+const ListDailyJobUser = ({ role }: { role?: string }) => {
+  const isRoled = ["Admin", "Owner", "HRD", "Manager"].includes(role ?? "");
+
+  const [state, setState] = useAtom(stateAtom);
   const company_id = useUserStore((s) => `${s.friends_id}`);
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
@@ -171,6 +193,28 @@ const ListDailyJobUser = () => {
     k.company.daily_job.userInfinity.useInfiniteQuery({
       variables: { ...variables, company_id },
     });
+
+  const client = useQueryClient();
+  const create = k.company.daily_job.create.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.userInfinity.getKey(),
+      });
+      setState({ user: undefined });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+
+  const update = k.company.daily_job.update.attendance.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.userInfinity.getKey(),
+      });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
 
   const dailies = useMemo(() => {
     let d: DailyJobUser[] = [];
@@ -182,10 +226,6 @@ const ListDailyJobUser = () => {
     return d;
   }, [data]);
 
-  /*   const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
-    variables: { ...variables, company_id },
-  }); */
-
   const table = useReactTable({
     data: dailies,
     columns,
@@ -194,11 +234,139 @@ const ListDailyJobUser = () => {
 
   return (
     <>
+      {isRoled && (
+        <DrawerDialog
+          title={state.user?.name}
+          description={state.user?.jobType?.job_name}
+          open={!!state.user}
+          onOpenChange={(open) => {
+            if (!open) {
+              setState({ user: undefined });
+            }
+          }}
+        >
+          {state.user && (
+            <FormDailyJob
+              user_id={state.user.id}
+              defaultValues={state.user}
+              onFormSubmit={(v) => {
+                const isUpdate =
+                  state.user?.status.toLowerCase() !== "belum hadir";
+                const data: inferVariables<
+                  typeof k.company.daily_job.create
+                >["data"] = {
+                  status: v.status?.value ?? "In",
+                  user_id: `${state.user?.id}`,
+                  latitude: 0,
+                  longitude: 0,
+                  daily_jobs: v.daily_jobs.map((dj) => ({
+                    ...dj,
+                    date: dayjs().format("YYYY-MM-DD"),
+                  })),
+                  ket: v.ket ? v.ket : "-",
+                  location_text: v.location_text ? v.location_text : "-",
+                  date: dayjs().format("YYYY-MM-DD"),
+                  time: dayjs().format("HH:mm:ss"),
+                };
+
+                if (isUpdate) {
+                  update.mutate({
+                    id: `${state.user?.id}`,
+                    data,
+                  });
+                  return;
+                }
+
+                create.mutate({
+                  data,
+                });
+              }}
+              isPending={create.isPending || update.isPending}
+            />
+          )}
+        </DrawerDialog>
+      )}
       <PortalSearch placeholder="Cari Tugas Harian..." />
       <div className="mb-4 flex flex-wrap items-center gap-4">
         <Filter isLoading={isLoading} />
       </div>
-      <DataTable table={table} columns={columns} isloading={isLoading} />
+      {/* <DataTable table={table} columns={columns} isloading={isLoading} /> */}
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            <Flashlist
+              isloading={isLoading}
+              loading={
+                <Loading keyname="loadingtable">
+                  <TableRow>
+                    {columns.map((_, i) => (
+                      <TableCell key={`cellloading-${i}`}>
+                        <Skeleton className="h-5 w-full" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </Loading>
+              }
+              isfallback={table.getRowModel().rows.length === 0}
+              fallback={
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              }
+            >
+              {table.getRowModel().rows.map((row) => {
+                return (
+                  <TableRow
+                    key={`roww-${row.id}`}
+                    data-state={row.getIsSelected() && "selected"}
+                    className={cn(
+                      "hover:bg-accent",
+                      row.original.id === state.user?.id && "bg-main-500",
+                    )}
+                    onDoubleClick={() => {
+                      if (!isRoled) return;
+                      setState({ user: row.original });
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={`cell--${cell.id}`}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
+            </Flashlist>
+          </TableBody>
+        </Table>
+      </div>
+
       <div className="mt-4 w-full items-center justify-center">
         {hasNextPage && (
           <Button

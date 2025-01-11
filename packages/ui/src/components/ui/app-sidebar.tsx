@@ -172,25 +172,27 @@ export async function AppSidebar({
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup className="space-y-1">
-          <SidebarGroupLabel>{data.friends.title}</SidebarGroupLabel>
-          {data.friends.menus.map((menu) => (
-            <SidebarMenu key={menu.link}>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip={menu.title}
-                  link={menu.link}
-                >
-                  <Link href={menu.link}>
-                    <menu.icon />
-                    <span>{menu.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          ))}
-        </SidebarGroup>
+        {sesh?.user.friends_id && (
+          <SidebarGroup className="space-y-1">
+            <SidebarGroupLabel>{data.friends.title}</SidebarGroupLabel>
+            {data.friends.menus.map((menu) => (
+              <SidebarMenu key={menu.link}>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={menu.title}
+                    link={menu.link}
+                  >
+                    <Link href={menu.link}>
+                      <menu.icon />
+                      <span>{menu.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            ))}
+          </SidebarGroup>
+        )}
 
         <SidebarGroup className="space-y-1">
           <SidebarGroupLabel>{data.company.title}</SidebarGroupLabel>

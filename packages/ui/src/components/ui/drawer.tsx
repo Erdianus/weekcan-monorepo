@@ -3,7 +3,16 @@
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
+import useMediaQuery from "@hktekno/ui/lib/hooks/useMediaQuery";
 import { cn } from "@hktekno/ui/lib/utils";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./dialog";
 
 const Drawer = ({
   shouldScaleBackground = true,
@@ -104,6 +113,60 @@ const DrawerDescription = React.forwardRef<
 ));
 DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
 
+const DrawerDialog = ({
+  open,
+  onOpenChange,
+  title,
+  description,
+  children,
+}: React.PropsWithChildren & {
+  open: boolean;
+  title?: string | React.ReactNode;
+  description?: string | React.ReactNode;
+  onOpenChange: (open: boolean) => void;
+}) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[425px]">
+          {(title ?? description) && (
+            <DialogHeader>
+              {title && <DialogTitle>{title}</DialogTitle>}
+              {description && (
+                <DialogDescription>{description}</DialogDescription>
+              )}
+            </DialogHeader>
+          )}
+          {children}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        {(title ?? description) && (
+          <DrawerHeader className="text-left">
+            {title && <DrawerTitle>{title}</DrawerTitle>}
+            {description && (
+              <DrawerDescription>{description}</DrawerDescription>
+            )}
+          </DrawerHeader>
+        )}
+        <div className="p-4">{children}</div>
+
+        {/* <DrawerFooter className="pt-2">
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter> */}
+      </DrawerContent>
+    </Drawer>
+  );
+};
+
 export {
   Drawer,
   DrawerPortal,
@@ -115,4 +178,5 @@ export {
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,
+  DrawerDialog,
 };
