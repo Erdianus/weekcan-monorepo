@@ -31,7 +31,7 @@ function classNames<
   return {
     control: ({ isFocused, isDisabled }) =>
       cn(
-        "flex !min-h-9 w-full gap-1 rounded-md border border-input bg-transparent py-1 pl-3 pr-1 text-sm shadow-sm transition-colors hover:cursor-pointer",
+        "z-[60] flex !min-h-9 w-full gap-1 rounded-md border border-input bg-transparent py-1 pl-3 pr-1 text-sm shadow-sm transition-colors hover:cursor-pointer",
         isFocused && "outline-none ring-1 ring-ring",
         isDisabled && "cursor-not-allowed opacity-50",
       ),
@@ -67,15 +67,15 @@ function classNames<
     indicatorSeparator: () => `bg-border`,
     dropdownIndicator: () => `p-1 rounded-md`,
     menu: () =>
-      `p-1 mt-1 border bg-popover shadow-md rounded-md text-popover-foreground`,
-    menuList: () => `scrollbar-thin dark:scrollbar-track-dark-body`,
+      `p-1 mt-1 border bg-popover shadow-md rounded-md text-popover-foreground z-[60]`,
+    menuList: () => `scrollbar-thin dark:scrollbar-track-dark-body z-[60]`,
     groupHeading: () => `ml-3 mt-2 mb-1 text-gray-500 text-sm`,
     noOptionsMessage: () =>
       `text-gray-500 p-2 dark:bg-gray-900 bg-gray-50 border border-dashed dark:border-gray-500 border-gray-200 rounded-sm`,
     option: ({ data, isFocused, isSelected, isDisabled }) => {
       const d = data as { label: string; value: string };
       return cn(
-        "!cursor-default !select-none rounded-sm px-2 py-1.5 font-sans !text-sm !outline-none hover:cursor-pointer hover:bg-accent hover:text-accent-foreground",
+        "z-[60] !cursor-default !select-none rounded-sm px-2 py-1.5 font-sans !text-sm !outline-none hover:cursor-pointer hover:bg-accent hover:text-accent-foreground",
         isFocused && "active:bg-accent/90 bg-accent text-accent-foreground",
         isDisabled && "pointer-events-none opacity-50",
         isSelected && "",
@@ -152,14 +152,14 @@ function Select<
     <ReactSelect
       {...props}
       className={cn("w-full", props.className)}
-      menuPortalTarget={typeof window !== "undefined" ? document.body : null}
+      // menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       classNames={classNames<Option, IsMulti, Group>()}
       components={{ DropdownIndicator }}
       styles={{
         ...styles<Option, IsMulti, Group>(),
         menuPortal: (base) => ({ ...base, zIndex: 9999 }),
       }}
-      menuPosition="fixed"
+      // menuPosition="fixed"
       unstyled
       hideSelectedOptions={true}
     />

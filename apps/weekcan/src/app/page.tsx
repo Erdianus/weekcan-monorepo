@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 
+import { auth } from "@hktekno/auth";
 import Logo from "@hktekno/ui/components/logo";
 import { ModeToggle } from "@hktekno/ui/components/theme-toggle";
 import { Button } from "@hktekno/ui/components/ui/button";
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
   title: "weekcan",
 };
 
-export default function Page() {
+export default async function Page() {
+  const sesh = await auth();
   return (
     <div className="flex min-h-screen w-full flex-col overflow-hidden">
       <nav className="fade-bottom bg-background/5 fixed top-0 z-50 h-16 w-full backdrop-blur-lg">
@@ -53,7 +55,9 @@ export default function Page() {
                   <div className="animate-appear relative z-10 flex flex-col items-center justify-center gap-4 self-stretch delay-300">
                     <div className="flex w-full max-w-[420px] items-center justify-center gap-2">
                       <Button asChild variant={"primary"}>
-                        <Link href="/login">Get Started</Link>
+                        <Link href={sesh ? "/dashboard" : "/login"}>
+                          Get Started
+                        </Link>
                       </Button>
                     </div>
                   </div>

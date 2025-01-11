@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 
+import { auth } from "@hktekno/auth";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
   title: "Tugas Harian",
 };
 
-export default function Page() {
+export default async function Page() {
+  const sesh = await auth();
   return (
     <>
       <div className="mb-4 flex w-full items-center justify-between">
@@ -22,7 +24,7 @@ export default function Page() {
           </Link>
         </Button>
       </div>
-      <ListDailyJobUser />
+      <ListDailyJobUser role={sesh?.user.role} />
     </>
   );
 }

@@ -30,7 +30,7 @@ const dailyJobSchema = z.object({
   dailyJob: z
     .object({
       id: z.number(),
-      user_id: z.string(),
+      user_id: z.union([z.string(), z.number()]),
       text: z.string(),
       date: z.string(),
       status: z.string(),
@@ -41,7 +41,7 @@ const dailyJobSchema = z.object({
 
 // NOTE: Form
 type Form = {
-  user_id: string;
+  user_id: string | number;
   latitude: number;
   longitude: number;
   ket: string;
@@ -50,7 +50,7 @@ type Form = {
   date: string;
   location_text: string;
   daily_jobs: {
-    user_id: number;
+    user_id: string | number;
     text: string;
     date: string;
     status: string;
