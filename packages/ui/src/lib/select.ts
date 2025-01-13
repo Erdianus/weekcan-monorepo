@@ -369,6 +369,78 @@ const loadCityOptions: LoadOptions<
   };
 };
 
+// HKDB = Archive
+const loadDBCategoryOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.hkdb.category.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const datas = await k.hkdb.category.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
+const loadDBSkillOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.hkdb.skill.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const datas = await k.hkdb.skill.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
+const loadDBTalentOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.hkdb.talent.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const datas = await k.hkdb.talent.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
+// end of HKDB
+
 // --NOTE: Static Option
 //
 const optionsProjectType = () =>
@@ -422,6 +494,9 @@ export {
   loadJobTypeOptions,
   loadProvinceOptions,
   loadCityOptions,
+  loadDBCategoryOptions,
+  loadDBSkillOptions,
+  loadDBTalentOptions,
 
   // Static
   optionsProjectType,
