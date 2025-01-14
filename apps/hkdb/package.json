@@ -1,20 +1,19 @@
 {
   "name": "@hktekno/hkdb",
   "version": "1.0.0",
-  "private": true,
-  "sideEffects": false,
   "type": "module",
+  "private": true,
   "scripts": {
-    "build": "remix vite:build",
-    "dev": "remix vite:dev",
+    "build": "pnpm with-env remix vite:build",
+    "dev": "pnpm with-env remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "remix-serve ./build/server/index.js",
+    "start": "pnpm with-env remix-serve ./build/server/index.js",
     "typecheck": "tsc",
-    "test:integration": "playwright test"
+    "test:integration": "playwright test",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@hktekno/api": "workspace:*",
-    "@hktekno/auth": "workspace:*",
     "@hktekno/ui": "workspace:*",
     "@hktekno/utils": "workspace:*",
     "@hookform/resolvers": "^3.3.4",

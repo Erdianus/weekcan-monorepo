@@ -471,6 +471,26 @@ const optionsEventStatus = () =>
   eventStatus.map((v) => ({ label: v, value: v }));
 const optionsJobStatus = () => jobStatus.map((v) => ({ label: v, value: v }));
 
+function optionsYears(props?: { filterYear?: string }) {
+  const oldest = 1970;
+  const date = new Date();
+  const recent = date.getFullYear();
+
+  const arrItemYears: { label: string; value: string }[] = [];
+
+  for (let i = recent; i >= oldest; i--) {
+    arrItemYears.push({
+      label: `${i}`,
+      value: `${i}`,
+    });
+  }
+  if (props?.filterYear) {
+    return arrItemYears.filter((v) => v.value !== props.filterYear);
+  }
+
+  return arrItemYears;
+}
+
 //
 
 const loadOptions = Object.freeze({
@@ -507,4 +527,5 @@ export {
   optionsJobStatus,
   optionsEventStatus,
   optionsAbsentType,
+  optionsYears
 };

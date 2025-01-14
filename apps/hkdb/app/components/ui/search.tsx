@@ -30,6 +30,9 @@ const SearchInput = ({
       onChange={(e) => {
         handleSearch(e.target.value);
       }}
+      onClear={() => {
+        handleSearch(undefined);
+      }}
       startContent={<Search />}
       placeholder={placeholder}
       isClearable

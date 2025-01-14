@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { parseDate } from '@internationalized/date';
+import { useMemo, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -16,51 +15,52 @@ import {
   SelectItem,
   Skeleton,
   Textarea,
-} from '@nextui-org/react';
-import { useNavigate } from '@remix-run/react';
-import { Plus, Search, X } from 'lucide-react';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { useDebounce } from 'use-debounce';
-import { z } from 'zod';
+} from "@nextui-org/react";
+import { useNavigate } from "@remix-run/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Plus, Search, X } from "lucide-react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
+import { z } from "zod";
 
-import { k } from '~/api';
-import { contactItems } from '~/api/archive/talent/schema';
-import { AsyncSelectCategory } from '~/components/ui/async-select';
-import { Flashlist } from '~/components/ui/flashlist';
-import { Form, FormControl, FormField, FormItem } from '~/components/ui/form';
-import { Loading } from '~/components/ui/loading';
-import { ContactIcon } from '~/components/ui/sosmed-icon';
-import { cn, yearItems } from '~/lib/utils';
+import { k } from "~/api";
+import { contactItems } from "~/api/archive/talent/schema";
+import { AsyncSelectCategory } from "~/components/ui/async-select";
+import { Flashlist } from "~/components/ui/flashlist";
+import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
+import { Loading } from "~/components/ui/loading";
+import { ContactIcon } from "~/components/ui/sosmed-icon";
+import { cn, yearItems } from "~/lib/utils";
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Tolong Isi Nama'),
-  about: z.string().min(1, 'Tolong Isi Tentang'),
-  category_id: z.string({ invalid_type_error: 'Tolong Pilih Kategori' }),
+  name: z.string().min(1, "Tolong Isi Nama"),
+  about: z.string().min(1, "Tolong Isi Tentang"),
+  category_id: z.string({ invalid_type_error: "Tolong Pilih Kategori" }),
   contact: z
     .object({
       key: z.string(),
       type: z.string(),
-      contact: z.string().min(1, 'Tolong Isi yaa'),
+      contact: z.string().min(1, "Tolong Isi yaa"),
     })
     .array(),
   skill: z.string().array(),
   experience: z
     .object({
       key: z.string(),
-      title: z.string().min(1, 'Tolong Isi Judul Pengalaman'),
-      from: z.string().min(1, 'Tolong Pilih Tahun Mulai Pengalaman'),
-      to: z.string().min(1, 'Tolong Pilih Tahun Berakhir Pengalaman'),
-      detail: z.string().min(1, 'Tolong Isi Detail Pengalaman'),
+      title: z.string().min(1, "Tolong Isi Judul Pengalaman"),
+      from: z.string().min(1, "Tolong Pilih Tahun Mulai Pengalaman"),
+      to: z.string().min(1, "Tolong Pilih Tahun Berakhir Pengalaman"),
+      detail: z.string().min(1, "Tolong Isi Detail Pengalaman"),
     })
     .array(),
   education: z
     .object({
       key: z.string(),
-      title: z.string().min(1, 'Tolong Isi Judul Pengalaman'),
-      from: z.string().min(1, 'Tolong Pilih Tahun Mulai Pengalaman'),
-      to: z.string().min(1, 'Tolong Pilih Tahun Berakhir Pengalaman'),
-      detail: z.string().min(1, 'Tolong Isi Detail Pengalaman'),
+      title: z.string().min(1, "Tolong Isi Judul Pengalaman"),
+      from: z.string().min(1, "Tolong Pilih Tahun Mulai Pengalaman"),
+      to: z.string().min(1, "Tolong Pilih Tahun Berakhir Pengalaman"),
+      detail: z.string().min(1, "Tolong Isi Detail Pengalaman"),
     })
     .array(),
   birth_date: z.any(),
@@ -68,17 +68,21 @@ const formSchema = z.object({
 
 export default function Page() {
   const navigate = useNavigate();
-  const [searchSkill, setSearchSkill] = useState('');
+  const [searchSkill, setSearchSkill] = useState("");
   const [debounceSearchSkill] = useDebounce(searchSkill, 600);
   const { data: skills, isLoading: loadSkills } =
     k.archive.skill.infinite.useInfiniteQuery({
       variables: { searchSkill: debounceSearchSkill },
     });
 
+  const client = useQueryClient();
   const create = k.archive.talent.create.useMutation({
     onSuccess: async ({ message }) => {
+      await client.invalidateQueries({
+        queryKey: k.archive.talent.all.getKey(),
+      });
       toast.success(message);
-      navigate('/db');
+      navigate("/db");
     },
     onError: ({ message }) => toast.error(message),
   });
@@ -86,7 +90,7 @@ export default function Page() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      name: '',
+      name: "",
       // @ts-expect-error gapapa gan
       category_id: null,
       contact: [],
@@ -102,7 +106,7 @@ export default function Page() {
     remove: delContact,
   } = useFieldArray({
     control: form.control,
-    name: 'contact',
+    name: "contact",
   });
 
   const {
@@ -111,7 +115,7 @@ export default function Page() {
     remove: delExperience,
   } = useFieldArray({
     control: form.control,
-    name: 'experience',
+    name: "experience",
   });
 
   const {
@@ -120,7 +124,7 @@ export default function Page() {
     remove: delEducation,
   } = useFieldArray({
     control: form.control,
-    name: 'education',
+    name: "education",
   });
 
   const skillsFlat = useMemo(
@@ -128,20 +132,19 @@ export default function Page() {
     [skills?.pages],
   );
 
-  console.log('rerender');
+  console.log("rerender");
 
   return (
     <>
-      <h2 className="mb-4 text-3xl font-bold">
-        Tambah Data {JSON.stringify(form.formState.errors)}
-      </h2>
+      <h2 className="mb-4 text-3xl font-bold">Tambah Data</h2>
       <Form {...form}>
         <form
           className="space-y-6"
           onSubmit={form.handleSubmit((v) => {
             console.log(v);
-            let birth_date = '';
-            if (v.birth_date) birth_date = parseDate(v.birth_date).toString();
+            let birth_date = "";
+            if (v.birth_date)
+              birth_date = `${v.birth_date.year}-${v.birth_date.month}-${v.birth_date.day}`;
 
             create.mutate({
               data: {
@@ -225,12 +228,13 @@ export default function Page() {
               </FormItem>
             )}
           />
+
           <div className="mt-4">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <h3 className="text-xl font-semibold">Keahlian</h3>
-                {form.watch('skill').length > 0 && (
-                  <Chip size="sm">{form.watch('skill').length}</Chip>
+                {form.watch("skill").length > 0 && (
+                  <Chip size="sm">{form.watch("skill").length}</Chip>
                 )}
               </div>
               <Divider className="flex-1" />
@@ -254,14 +258,14 @@ export default function Page() {
                       isInvalid={!!errMsg}
                       errorMessage={errMsg}
                       classNames={{
-                        wrapper: 'grid grid-cols-4 gap-2',
+                        wrapper: "grid grid-cols-4 gap-2",
                       }}
                     >
                       <Flashlist
                         isloading={loadSkills}
                         loading={
                           <Loading keyname={`cbg-load`}>
-                            <Skeleton className={'h-16 w-64 rounded-lg'} />
+                            <Skeleton className={"h-16 w-64 rounded-lg"} />
                           </Loading>
                         }
                       >
@@ -271,12 +275,12 @@ export default function Page() {
                             value={`${skill.id}`}
                             classNames={{
                               base: cn(
-                                'inline-flex max-w-md w-full bg-content1 m-0',
-                                'hover:bg-content2 items-center justify-start',
-                                'cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent',
-                                'data-[selected=true]:border-primary',
+                                "bg-content1 m-0 inline-flex w-full max-w-md",
+                                "hover:bg-content2 items-center justify-start",
+                                "cursor-pointer gap-2 rounded-lg border-2 border-transparent p-4",
+                                "data-[selected=true]:border-primary",
                               ),
-                              label: 'w-full',
+                              label: "w-full",
                             }}
                           >
                             {skill.name}
@@ -289,12 +293,13 @@ export default function Page() {
               />
             </ScrollShadow>
           </div>
+
           <div className="mt-4">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <h3 className="text-xl font-semibold">Kontak</h3>
-                {form.watch('contact').length > 0 && (
-                  <Chip size="sm">{form.watch('contact').length}</Chip>
+                {form.watch("contact").length > 0 && (
+                  <Chip size="sm">{form.watch("contact").length}</Chip>
                 )}
               </div>
               <Divider className="flex-1" />
@@ -302,8 +307,8 @@ export default function Page() {
                 onClick={() => {
                   addContact({
                     key: crypto.randomUUID(),
-                    type: '',
-                    contact: '',
+                    type: "",
+                    contact: "",
                   });
                 }}
                 type="button"
@@ -325,7 +330,7 @@ export default function Page() {
                         const errMsg = fieldState.error?.message;
                         return (
                           <Select
-                            variant={'underlined'}
+                            variant={"underlined"}
                             selectedKeys={[field.value]}
                             onChange={(e) => field.onChange(e.target.value)}
                             items={contactItems}
@@ -353,7 +358,7 @@ export default function Page() {
                         return (
                           <Input
                             {...field}
-                            variant={'underlined'}
+                            variant={"underlined"}
                             label="Nomor/Akun/Link"
                             isInvalid={!!errMsg}
                             errorMessage={errMsg}
@@ -379,12 +384,13 @@ export default function Page() {
               })}
             </div>
           </div>
+
           <div className="mt-4">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <h3 className="text-xl font-semibold">Pengalaman</h3>
-                {form.watch('experience').length > 0 && (
-                  <Chip size="sm">{form.watch('experience').length}</Chip>
+                {form.watch("experience").length > 0 && (
+                  <Chip size="sm">{form.watch("experience").length}</Chip>
                 )}
               </div>
               <Divider className="flex-1" />
@@ -392,10 +398,10 @@ export default function Page() {
                 onClick={() => {
                   addExperience({
                     key: crypto.randomUUID(),
-                    title: '',
-                    detail: '',
-                    from: '',
-                    to: '',
+                    title: "",
+                    detail: "",
+                    from: "",
+                    to: "",
                   });
                 }}
                 type="button"
@@ -410,7 +416,7 @@ export default function Page() {
               {fieldsExperience.map((experience, i) => (
                 <div
                   key={`exp-${experience.key}`}
-                  className="border-border relative space-y-4 rounded-lg border p-2"
+                  className="relative space-y-4 rounded-lg border border-border p-2"
                 >
                   <Button
                     type="button"
@@ -422,7 +428,7 @@ export default function Page() {
                     size="sm"
                     className="group absolute -right-3 -top-3"
                     variant="ghost"
-                    color={'danger'}
+                    color={"danger"}
                   >
                     <X className="text-danger group-hover:text-white" />
                   </Button>
@@ -515,6 +521,7 @@ export default function Page() {
               ))}
             </div>
           </div>
+
           <div className="mt-4">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
@@ -528,10 +535,10 @@ export default function Page() {
                 onClick={() => {
                   addEducation({
                     key: crypto.randomUUID(),
-                    title: '',
-                    detail: '',
-                    from: '',
-                    to: '',
+                    title: "",
+                    detail: "",
+                    from: "",
+                    to: "",
                   });
                 }}
                 type="button"
@@ -546,7 +553,7 @@ export default function Page() {
               {fieldsEducation.map((education, i) => (
                 <div
                   key={`exp-${education.key}`}
-                  className="border-border relative space-y-4 rounded-lg border p-2"
+                  className="relative space-y-4 rounded-lg border border-border p-2"
                 >
                   <Button
                     type="button"
@@ -558,7 +565,7 @@ export default function Page() {
                     size="sm"
                     className="group absolute -right-3 -top-3"
                     variant="ghost"
-                    color={'danger'}
+                    color={"danger"}
                   >
                     <X className="text-danger group-hover:text-white" />
                   </Button>

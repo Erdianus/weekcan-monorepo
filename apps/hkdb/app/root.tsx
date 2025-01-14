@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
 import {
   json,
   Links,
@@ -6,40 +6,43 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useHref,
   useLoaderData,
   useNavigate,
-} from "@remix-run/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+} from '@remix-run/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import "./tailwind.css";
+import './tailwind.css';
 
-import { Toaster } from "sonner";
+import { NextUIProvider } from '@nextui-org/react';
+import { Toaster } from 'sonner';
 
-import { commitSession, getSession } from "./session";
+import { cn } from './lib/utils';
+import { commitSession, getSession } from './session';
 
 export const links: LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
+    rel: 'preconnect',
+    href: 'https://fonts.gstatic.com',
+    crossOrigin: 'anonymous',
   },
   {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    rel: 'stylesheet',
+    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
   },
 ];
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const session = await getSession(request.headers.get("cookie"));
+  const session = await getSession(request.headers.get('cookie'));
 
   return json(
     {
-      className: session.get("isDark") ? `dark html` : "html",
+      className: session.get('isDark') ? `dark html` : 'html',
     },
     {
       headers: {
-        "Set-Cookie": await commitSession(session),
+        'Set-Cookie': await commitSession(session),
       },
     },
   );
@@ -58,14 +61,16 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <main className="bg-background text-foreground">
-            <Outlet />
-          </main>
-        </QueryClientProvider>
-        <ScrollRestoration />
-        <Scripts />
-        <Toaster richColors position="bottom-right" closeButton />
+        <NextUIProvider navigate={navigate} useHref={useHref}>
+          <QueryClientProvider client={queryClient}>
+            <main className={cn('bg-background text-foreground')}>
+              <Outlet />
+            </main>
+          </QueryClientProvider>
+          <ScrollRestoration />
+          <Scripts />
+          <Toaster richColors position="bottom-right" closeButton />
+        </NextUIProvider>
       </body>
     </html>
   );

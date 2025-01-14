@@ -44,21 +44,21 @@ const talent = {
       return res.data as { data: Talent[]; meta: Meta };
     },
   }),
+
   infinite: router.infiniteQuery({
     fetcher: async (
-      variables: { skill_id?: string; category_id?: string; search?: string },
-      { pageParam },
+      variables: { skill_id?: string; category_id?: string; search?: string, page?: number},
     ) => {
       const res = await Axios('/archive/talent', {
         params: {
           ...variables,
-          page: pageParam,
         },
       });
 
       return res.data as { data: Talent[]; meta: Meta };
     },
     getNextPageParam: (lastPage) => {
+      
       if (lastPage.meta.current_page === lastPage.meta.current_page)
         return null;
 
@@ -67,6 +67,12 @@ const talent = {
     initialPageParam: 1,
   }),
 
+  show: router.query({
+    fetcher: async (variables: { slug: string }) => {
+      const res = await Axios(`/archive/talent/${variables.slug}`);
+      return res.data as { data: Talent; message: string };
+    },
+  }),
   create: router.mutation({
     mutationFn: async (variables: { data: TalentForm }) => {
       const res = await Axios.post(`/archive/talent`, variables.data);
@@ -74,22 +80,24 @@ const talent = {
       return res.data as { message: string };
     },
   }),
+
   update: router.mutation({
     mutationFn: async (variables: {
-      id: string | number;
+      slug: string;
       data: { name: string };
     }) => {
       const res = await Axios.put(
-        `/archive/skill/${variables.id}`,
+        `/archive/talent/${variables.slug}`,
         variables.data,
       );
 
       return res.data as { message: string };
     },
   }),
+
   delete: router.mutation({
-    mutationFn: async (variables: { id: string | number }) => {
-      const res = await Axios.delete(`/archive/skill/${variables.id}`);
+    mutationFn: async (variables: { slug: string }) => {
+      const res = await Axios.delete(`/archive/talent/${variables.slug}`);
 
       return res.data as { message: string };
     },

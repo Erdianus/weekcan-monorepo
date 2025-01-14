@@ -138,7 +138,6 @@ const CreateProject = () => {
 
   return (
     <>
-      {JSON.stringify(form.formState.errors)}
       <H3 className="mb-4">Buat Proyek Baru</H3>
       <Form {...form}>
         <form

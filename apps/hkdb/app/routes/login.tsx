@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useState } from 'react';
+import {
+  Button,
+  Card,
+  Checkbox,
+  Input,
+  Spacer,
+  Spinner,
+} from '@nextui-org/react';
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
   MetaFunction,
-} from "@remix-run/node";
+} from '@remix-run/node';
 import {
   Form,
   json,
@@ -11,31 +19,17 @@ import {
   useActionData,
   useLoaderData,
   useNavigation,
-} from "@remix-run/react";
-import axios, { AxiosError } from "axios";
-import { z, ZodError } from "zod";
-import { zx } from "zodix";
+} from '@remix-run/react';
+import axios, { AxiosError } from 'axios';
+import { z, ZodError } from 'zod';
+import { zx } from 'zodix';
 
-import { Button } from "@hktekno/ui/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@hktekno/ui/components/ui/card";
-import { Checkbox } from "@hktekno/ui/components/ui/checkbox";
-import { Input } from "@hktekno/ui/components/ui/input";
-import { Label } from "@hktekno/ui/components/ui/label";
-import Spinner from "@hktekno/ui/components/ui/spinner";
-
-import { commitSession, getSession } from "~/session";
+import { commitSession, getSession } from '~/session';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Login" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: 'Login' },
+    { name: 'description', content: 'Welcome to Remix!' },
   ];
 };
 
@@ -45,35 +39,35 @@ function errorAtPath(error: ZodError, path: string) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const session = await getSession(request.headers.get("cookie"));
+  const session = await getSession(request.headers.get('cookie'));
 
-  if (session.has("id")) {
+  if (session.has('id')) {
     // Redirect to the home page if they are already signed in.
-    return redirect("/db");
+    return redirect('/db');
   }
 
-  const data = { error: session.get("error") };
+  const data = { error: session.get('error') };
 
   return json(data, {
     headers: {
-      "Set-Cookie": await commitSession(session),
+      'Set-Cookie': await commitSession(session),
     },
   });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const session = await getSession(request.headers.get("cookie"));
+  const session = await getSession(request.headers.get('cookie'));
   const { error, data } = await zx.parseFormSafe(request, {
-    username: z.string().min(1, "Minimal 1"),
-    password: z.string().min(1, "Tolong Isi Password"),
+    username: z.string().min(1, 'Minimal 1'),
+    password: z.string().min(1, 'Tolong Isi Password'),
   });
 
   if (error) {
     return json(
       {
-        username: errorAtPath(error, "username"),
-        password: errorAtPath(error, "password"),
-        message: "",
+        username: errorAtPath(error, 'username'),
+        password: errorAtPath(error, 'password'),
+        message: '',
       },
       {
         status: 400,
@@ -90,37 +84,37 @@ export async function action({ request }: ActionFunctionArgs) {
       },
       {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
       },
     );
 
     const user = res.data as { data: { id: string; token: string } };
 
-    session.set("id", user.data.id);
-    session.set("token", user.data.token);
+    session.set('id', user.data.id);
+    session.set('token', user.data.token);
 
-    return redirect("/db", {
+    return redirect('/db', {
       headers: {
-        "Set-Cookie": await commitSession(session),
+        'Set-Cookie': await commitSession(session),
       },
     });
   } catch (e) {
     if (e instanceof AxiosError) {
-      session.flash("error", e.message);
+      session.flash('error', e.message);
       // Redirect back to the login page with errors.
       return json(
         {
           success: false,
           message: e.message,
-          username: "",
-          password: "",
+          username: '',
+          password: '',
         },
         {
           status: e.status,
           headers: {
-            "Set-Cookie": await commitSession(session),
+            'Set-Cookie': await commitSession(session),
           },
         },
       );
@@ -129,7 +123,6 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Page() {
-  const [viewPassword, setViewPassword] = useState(false);
   const navigation = useNavigation();
   const { error } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
@@ -160,58 +153,46 @@ export default function Page() {
             </svg>
             <span className="sr-only">Info</span>
             <div>
-              <span className="font-medium">{errBackend}</span>{" "}
+              <span className="font-medium">{errBackend}</span>{' '}
             </div>
           </div>
         )}
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
-            <CardDescription>
-              Enter your username below to login to your account.
-            </CardDescription>
-          </CardHeader>
+        <Card className="min-w-80 p-5">
           <Form method="POST">
-            <CardContent className="grid gap-4">
-              <div className="grid gap-2">
-                <Label>Username</Label>
-                <Input name="username" placeholder="Username" required />
-              </div>
-              <div className="grid gap-2">
-                <Label>Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  placeholder="Masukkan Password"
-                  type={viewPassword ? "text" : "password"}
-                  required
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  checked={viewPassword}
-                  onClick={() => {
-                    setViewPassword((o) => !o);
-                  }}
-                  id="terms"
-                />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Lihat Password
-                </label>
-              </div>
-            </CardContent>
-
-            <CardFooter>
-              <Button className="w-full">
-                {navigation.state === "submitting" && (
-                  <Spinner className="mr-2" />
-                )}
-                <span>Sign In</span>
-              </Button>
-            </CardFooter>
+            <h2 className="mb-5 text-center text-2xl font-bold">Login</h2>
+            <Input
+              variant="underlined"
+              name="username"
+              label="Username"
+              isInvalid={!!errUsername}
+              errorMessage={errUsername}
+            />
+            <Spacer y={1} />
+            <Input
+              type={!show ? 'password' : 'text'}
+              name="password"
+              variant="underlined"
+              label="Password"
+              isInvalid={!!errPass}
+              errorMessage={errPass}
+            />
+            <Spacer y={4} />
+            <Checkbox id="show-pass" isSelected={show} onValueChange={setShow}>
+              Lihat Password
+            </Checkbox>
+            <Spacer y={4} />
+            <Button
+              disabled={navigation.state === 'submitting'}
+              fullWidth
+              type="submit"
+              color="primary"
+            >
+              {navigation.state === 'submitting' ? (
+                <Spinner color="default" />
+              ) : (
+                'Login'
+              )}
+            </Button>
           </Form>
         </Card>
       </div>

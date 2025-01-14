@@ -23,8 +23,8 @@ function Calendar({
     <DayPicker
       locale={id}
       captionLayout="dropdown-buttons"
-      fromYear={dayjs().subtract(10, "year").get("year")}
-      toYear={dayjs().add(3, "year").get("year")}
+      fromYear={props.fromYear ?? dayjs().subtract(10, "year").get("year")}
+      toYear={props.toYear ?? dayjs().add(3, "year").get("year")}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{

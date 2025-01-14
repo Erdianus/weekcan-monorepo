@@ -55,6 +55,7 @@ const talent = {
           page: pageParam,
         },
       });
+      console.log(res);
 
       return res.data as { data: Talent[]; meta: Meta };
     },
@@ -66,7 +67,12 @@ const talent = {
     },
     initialPageParam: 1,
   }),
-
+  single: router.query({
+    fetcher: async (variables: { slug: string }) => {
+      const res = await Axios(`/archive/talent/${variables.slug}`);
+      return res.data as { data: Talent; message: string };
+    },
+  }),
   create: router.mutation({
     mutationFn: async (variables: { data: TalentForm }) => {
       const res = await Axios.post(`/archive/talent`, variables.data);
@@ -75,21 +81,19 @@ const talent = {
     },
   }),
   update: router.mutation({
-    mutationFn: async (variables: {
-      id: string | number;
-      data: { name: string };
-    }) => {
+    mutationFn: async (variables: { slug: string; data: { name: string } }) => {
       const res = await Axios.put(
-        `/archive/skill/${variables.id}`,
+        `/archive/talent/${variables.slug}`,
         variables.data,
       );
 
       return res.data as { message: string };
     },
   }),
+
   delete: router.mutation({
-    mutationFn: async (variables: { id: string | number }) => {
-      const res = await Axios.delete(`/archive/skill/${variables.id}`);
+    mutationFn: async (variables: { slug: string }) => {
+      const res = await Axios.delete(`/archive/talent/${variables.slug}`);
 
       return res.data as { message: string };
     },

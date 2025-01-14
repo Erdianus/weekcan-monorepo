@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Input, Kbd, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
+import { useEffect } from "react";
+import { ScrollShadow, Tab, Tabs } from "@nextui-org/react";
 import { json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import {
   Link,
@@ -10,9 +10,6 @@ import {
 } from "@remix-run/react";
 import axios from "axios";
 
-import { ScrollArea } from "@hktekno/ui/components/ui/scroll-area";
-import { cn } from "@hktekno/ui/lib/utils";
-
 import DataCat from "~/assets/cat-data.png";
 import CopyToken from "~/components/ui/clipboard";
 import { Axios } from "~/lib/axios";
@@ -22,11 +19,6 @@ import { useSessionStore } from "~/store/useSessionStore";
 export const meta: MetaFunction = () => {
   return [{ title: "Selamat Datang" }];
 };
-
-const tabData = [
-  { label: "Overview", href: "/db" },
-  { label: "Kategory & Keahlian", href: "/db/category-skill" },
-];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request.headers.get("cookie"));
@@ -60,10 +52,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 }
 
-export default function Page() {
-  const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
-  const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
-  const tabsRef = useRef<Record<string, HTMLAnchorElement | null>>({});
+interface props {
+  includeOutlet: boolean;
+}
+
+export default function NavbarData({ includeOutlet = true }: props) {
   const data = useLoaderData<typeof loader>();
   const setSession = useSessionStore((s) => s.setData);
   const { pathname } = useLocation();
@@ -82,16 +75,10 @@ export default function Page() {
     });
   }, [data.session.token, data.env.BASE_API]);
 
-  useEffect(() => {
-    const currentTab = tabsRef.current[pathname] as HTMLAnchorElement;
-    setTabUnderlineLeft(currentTab?.offsetLeft ?? 0);
-    setTabUnderlineWidth(currentTab?.clientWidth ?? 0);
-  }, [pathname]);
-
   return (
     <>
-      <div className="dark:bg-default-50 bg-white antialiased">
-        <nav className="dark:bg-default-50 fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white px-4 pt-2.5 dark:border-gray-700">
+      <div className="bg-background antialiased">
+        <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-background px-4 pt-2.5 dark:border-gray-700">
           <div className="mb-2 flex flex-wrap items-center justify-between">
             <div className="flex items-center justify-start">
               <a
@@ -108,28 +95,7 @@ export default function Page() {
               <CopyToken />
             </div>
           </div>
-          <ScrollArea className="relative whitespace-nowrap">
-            <div className="flex space-x-3 border-b">
-              {tabData.map((tab, i) => {
-                return (
-                  <Link
-                    ref={(el) => {
-                      tabsRef.current[tab.href] = el;
-                    }}
-                    to={tab.href}
-                    className={cn("py-2 text-sm text-muted-foreground", pathname === tab.href && 'text-foreground')}
-                  >
-                    {tab.label}
-                  </Link>
-                );
-              })}
-            </div>
-            <span
-              style={{ left: tabUnderlineLeft, width: tabUnderlineWidth }}
-              className="absolute bottom-0 block h-0.5 bg-main-500 transition-all duration-300"
-            />
-          </ScrollArea>
-          {/* <ScrollShadow orientation="horizontal">
+          <ScrollShadow orientation="horizontal">
             <Tabs
               selectedKey={pathname}
               aria-label="Pilihan Menu"
@@ -140,6 +106,7 @@ export default function Page() {
               <Tab
                 as={Link}
                 key="/db"
+                /*@ts-expect-error gapapa */
                 to="/db"
                 title="Overview"
                 replace
@@ -148,45 +115,31 @@ export default function Page() {
               <Tab
                 as={Link}
                 key="/db/category-skill"
+                //@ts-expect-error gapapa gan
                 to="/db/category-skill"
                 replace
                 title="Kategori & Keahlian"
               />
               <Tab
                 as={Link}
-                key="/db/experience"
-                to="/db/experience"
-                replace
-                title="Pengalaman"
-              />
-              <Tab
-                as={Link}
-                key="/db/education"
-                to="/db/education"
-                replace
-                title="Pendidikan"
-              />
-              <Tab
-                as={Link}
-                key="/db/contact"
-                to="/db/contact"
-                replace
-                title="Kontak"
-              />
-              <Tab
-                as={Link}
                 key="/db/setting"
+                //@ts-expect-error gapapa gan
                 to="/db/setting"
                 replace
                 title="Pengaturan"
               />
             </Tabs>
-          </ScrollShadow> */}
+          </ScrollShadow>
         </nav>
       </div>
-      <div className="container mx-auto h-auto pb-36 pt-40 lg:pt-32">
-        <Outlet />
-      </div>
+
+      {includeOutlet ? (
+        <div className={`container mx-auto h-auto pb-36 pt-40 lg:pt-32`}>
+          <Outlet />
+        </div>
+      ) : (
+        ""
+      )}
     </>
   );
 }

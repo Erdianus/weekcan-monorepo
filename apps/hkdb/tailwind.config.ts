@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 import colors from 'tailwindcss/colors';
+import { nextui } from '@nextui-org/react';
 
 import baseConfig from "@hktekno/tailwind-config/web";
 
@@ -10,6 +11,7 @@ export default {
   content: [
     "../../packages/ui/src/**/*.{ts,tsx}",
     "./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}",
+    '../../node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
 
   presets: [baseConfig],
@@ -35,5 +37,20 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [nextui({
+      addCommonColors: true,
+      themes: {
+        light: {
+          colors: {
+            background: '#ffffff',
+          },
+        },
+        dark: {
+          colors: {
+            background: '#09090b',
+          },
+        },
+      },
+    }),
+],
 } satisfies Config;

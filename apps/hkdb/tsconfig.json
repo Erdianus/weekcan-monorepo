@@ -9,6 +9,7 @@
     "**/.client/**/*.tsx"
   ],
   "compilerOptions": {
+    "jsx": "react-jsx",
     "lib": [
       "es2022",
       "dom",
@@ -18,26 +19,12 @@
       "@remix-run/node",
       "vite/client"
     ],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "target": "ES2022",
-    "strict": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "baseUrl": ".",
-    "noEmit": true,
     "paths": {
       "~/*": [
         "./app/*"
       ]
-    },
-    "exclude": [
-      "node_modules"
-    ]
+    }
   }
 }
