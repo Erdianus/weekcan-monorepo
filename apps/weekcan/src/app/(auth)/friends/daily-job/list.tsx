@@ -1,7 +1,6 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
-import { useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,6 +26,8 @@ import type { inferData, inferVariables } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import Flashlist from "@hktekno/ui/components/flashlist";
 import Loading from "@hktekno/ui/components/loading";
+import Paginate from "@hktekno/ui/components/paginate";
+import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
@@ -45,7 +46,6 @@ import {
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
-import Spinner from "@hktekno/ui/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -122,7 +122,7 @@ const columns = [
     header: "Jabatan",
     cell: ({ getValue }) => (getValue() ? getValue() : "-"),
   }),
-  colHelper.accessor("status", {
+  /* colHelper.accessor("status", {
     header: "Status",
     cell: ({ getValue, row }) => {
       if (getValue() === "Hadir" && row.original.time)
@@ -131,7 +131,7 @@ const columns = [
         );
       return <Badge variant={getValue()}>{getValue()}</Badge>;
     },
-  }),
+  }), */
   colHelper.accessor("dailyJob", {
     header: "Kerjaan",
     cell: ({ getValue }) => {
@@ -167,14 +167,14 @@ const columns = [
       );
     },
   }),
-  colHelper.accessor("location_text", {
+  /* colHelper.accessor("location_text", {
     header: "Lokasi",
     cell: ({ getValue }) => (getValue() ? getValue() : "-"),
-  }),
-  colHelper.accessor("ket", {
+  }), */
+  /* colHelper.accessor("ket", {
     header: "Keterangan",
     cell: ({ getValue }) => (getValue() ? getValue() : "-"),
-  }),
+  }), */
   colHelper.display({
     id: "actions",
     cell: Action,
@@ -189,17 +189,16 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
 
-  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    k.company.daily_job.userInfinity.useInfiniteQuery({
-      variables: { ...variables, company_id },
-    });
+  const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
+    variables: { ...variables, company_id },
+  });
 
   const client = useQueryClient();
   const create = k.company.daily_job.create.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
       await client.invalidateQueries({
-        queryKey: k.company.daily_job.userInfinity.getKey(),
+        queryKey: k.company.daily_job.users.getKey(),
       });
       setState({ user: undefined });
     },
@@ -216,18 +215,8 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
     onError: ({ message }) => toast.error(message),
   });
 
-  const dailies = useMemo(() => {
-    let d: DailyJobUser[] = [];
-
-    data?.pages.forEach((page) => {
-      d = [...page.data, ...d];
-    });
-
-    return d;
-  }, [data]);
-
   const table = useReactTable({
-    data: dailies,
+    data: dailies?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -255,18 +244,9 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
                 const data: inferVariables<
                   typeof k.company.daily_job.create
                 >["data"] = {
-                  status: v.status?.value ?? "In",
                   user_id: `${state.user?.id}`,
-                  latitude: 0,
-                  longitude: 0,
-                  daily_jobs: v.daily_jobs.map((dj) => ({
-                    ...dj,
-                    date: dayjs().format("YYYY-MM-DD"),
-                  })),
-                  ket: v.ket ? v.ket : "-",
-                  location_text: v.location_text ? v.location_text : "-",
                   date: dayjs().format("YYYY-MM-DD"),
-                  time: dayjs().format("HH:mm:ss"),
+                  daily_jobs: v.daily_jobs,
                 };
 
                 if (isUpdate) {
@@ -366,23 +346,10 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
           </TableBody>
         </Table>
       </div>
-
-      <div className="mt-4 w-full items-center justify-center">
-        {hasNextPage && (
-          <Button
-            type="button"
-            disabled={isFetchingNextPage}
-            onClick={() => fetchNextPage()}
-          >
-            {isFetchingNextPage && <Spinner />}
-            <span>Tampilkan Lebih</span>
-          </Button>
-        )}
-      </div>
-      {/* <div className="mt-4 flex w-full items-center justify-end gap-2">
+      <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />
         <PaginationParams meta={dailies?.meta} />
-      </div> */}
+      </div>
     </>
   );
 };

@@ -81,7 +81,7 @@ const talent = {
     },
   }),
   update: router.mutation({
-    mutationFn: async (variables: { slug: string; data: { name: string } }) => {
+    mutationFn: async (variables: { slug: string; data: TalentForm }) => {
       const res = await Axios.put(
         `/archive/talent/${variables.slug}`,
         variables.data,

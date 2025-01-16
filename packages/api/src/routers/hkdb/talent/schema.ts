@@ -1,17 +1,17 @@
-import { Category } from '../category/schema';
-import { Skill } from '../skill/schema';
+import { Category } from "../category/schema";
+import { Skill } from "../skill/schema";
 
 const contactItems = [
-  { label: 'Phone', value: 'phone' },
-  { label: 'Instagram', value: 'instagram' },
-  { label: 'X', value: 'x' },
-  { label: 'Facebook', value: 'facebook' },
-  { label: 'Tiktok', value: 'tiktok' },
-  { label: 'Website', value: 'web' },
+  { label: "Phone", value: "phone" },
+  { label: "Instagram", value: "instagram" },
+  { label: "X", value: "x" },
+  { label: "Facebook", value: "facebook" },
+  { label: "Tiktok", value: "tiktok" },
+  { label: "Website", value: "web" },
 ];
 
 type Talent = {
-  id: number;
+  id: number | string;
   name: string;
   birth_date?: string | null;
   about: string;
@@ -21,7 +21,7 @@ type Talent = {
   skill: Skill[];
   category: Category;
   experience: {
-    id: number;
+    id: number | string;
     talent_id: string;
     title: string;
     from: string;
@@ -29,7 +29,7 @@ type Talent = {
     detail: string;
   }[];
   education: {
-    id: number;
+    id: number | string;
     talent_id: string;
     title: string;
     from: string;
@@ -37,7 +37,7 @@ type Talent = {
     detail: string;
   }[];
   contact: {
-    id: number;
+    id: number | string;
     talent_id: string;
     type: string;
     contacts: string;

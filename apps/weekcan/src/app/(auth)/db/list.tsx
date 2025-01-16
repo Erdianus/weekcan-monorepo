@@ -70,7 +70,7 @@ const Actions = ({ row }: CellContext<Talent, unknown>) => {
             </DropdownMenuItem>
           </Link>
           <RoleAuth roles={["Admin", "Owner", "Manager"]} role={user.role}>
-            <Link href={`/db/update/${data.slug}`}>
+            <Link href={`/db/talent/${data.slug}/update`}>
               <DropdownMenuItem>
                 <Pencil className="mr-2 h-4 w-4" />
                 <span>Edit</span>

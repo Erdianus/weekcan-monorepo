@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { Plus, XCircle } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import { contactItems } from "@hktekno/api/routers/hkdb/talent/schema";
 import { Select, SelectAsync } from "@hktekno/ui/components/select";
@@ -17,6 +20,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@hktekno/ui/components/ui/accordion";
+import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DatePicker } from "@hktekno/ui/components/ui/date-picker";
 import {
@@ -30,7 +34,6 @@ import {
 import { Input } from "@hktekno/ui/components/ui/input";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { Textarea } from "@hktekno/ui/components/ui/textarea";
-import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import {
   loadDBCategoryOptions,
@@ -50,7 +53,7 @@ const formSchema = z.object({
   ),
   contact: z
     .object({
-      key: z.string(),
+      id: z.union([z.string(), z.number()]),
       type: z.string().min(1, "Tolong Pilih Tipe Kontak"),
       /* type: z.object(
         {
@@ -65,7 +68,7 @@ const formSchema = z.object({
   skill: z.string().array(),
   experience: z
     .object({
-      key: z.string(),
+      id: z.union([z.string(), z.number()]),
       title: z.string().min(1, "Tolong Isi Judul Pengalaman"),
       from: z.string().min(1, "Tolong Pilih Tahun Mulai Pengalaman"),
       to: z.string().min(1, "Tolong Pilih Tahun Berakhir Pengalaman"),
@@ -74,7 +77,7 @@ const formSchema = z.object({
     .array(),
   education: z
     .object({
-      key: z.string(),
+      id: z.union([z.string(), z.number()]),
       title: z.string().min(1, "Tolong Isi Judul Pengalaman"),
       from: z.string().min(1, "Tolong Pilih Tahun Mulai Pengalaman"),
       to: z.string().min(1, "Tolong Pilih Tahun Berakhir Pengalaman"),
@@ -85,11 +88,19 @@ const formSchema = z.object({
   birth_date: z.date().optional(),
 });
 
-export function CreateTalent() {
+export function UpdateTalent({
+  slug,
+  defaultValue,
+}: {
+  slug: string;
+  defaultValue: inferData<typeof k.hkdb.talent.single>["data"] & {
+    skills: { label: string; value: string }[];
+  };
+}) {
   const router = useRouter();
 
   const client = useQueryClient();
-  const create = k.hkdb.talent.create.useMutation({
+  const update = k.hkdb.talent.update.useMutation({
     onSuccess: async ({ message }) => {
       await client.invalidateQueries({ queryKey: k.hkdb.talent.all.getKey() });
       toast.success(message);
@@ -100,13 +111,17 @@ export function CreateTalent() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      name: "",
-      // @ts-expect-error gapapa gan
-      category: null,
-      contact: [],
-      skill: [],
-      experience: [],
-      education: [],
+      name: defaultValue.name,
+      category: {
+        label: defaultValue.category.name,
+        value: `${defaultValue.category.id}`,
+      },
+      about: defaultValue.about,
+      birth_date: dayjs(defaultValue.birth_date).toDate(),
+      skill: defaultValue.skill.map((skill) => `${skill.id}`),
+      contact: defaultValue.contact.map((v) => ({ ...v, contact: v.contacts })),
+      experience: defaultValue.experience,
+      education: defaultValue.education,
     },
   });
 
@@ -139,14 +154,13 @@ export function CreateTalent() {
 
   return (
     <>
-      {/* {JSON.stringify(form.formState.errors)} */}
-      <H3 className="mb-4">Buat Data Baru</H3>
       <Form {...form}>
         <form
           className="mb-10 space-y-4"
           onSubmit={form.handleSubmit((data) => {
             console.log(data);
-            create.mutate({
+            update.mutate({
+              slug,
               data: {
                 ...data,
                 category_id: data.category.value,
@@ -235,6 +249,7 @@ export function CreateTalent() {
                     <SelectAsync
                       isMulti
                       loadOptions={loadDBSkillOptions}
+                      defaultValue={defaultValue.skills}
                       selectRef={field.ref}
                       // value={field.value}
                       onChange={(v) => {
@@ -255,7 +270,14 @@ export function CreateTalent() {
           <div>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1">
-                <AccordionTrigger>Kontak</AccordionTrigger>
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2">
+                    Kontak
+                    {fieldsContact.length && (
+                      <Badge>{fieldsContact.length}</Badge>
+                    )}
+                  </div>
+                </AccordionTrigger>
                 <AccordionContent className="px-4">
                   <Button
                     type="button"
@@ -263,7 +285,7 @@ export function CreateTalent() {
                     className="mb-2"
                     onClick={() => {
                       addContact({
-                        key: crypto.randomUUID(),
+                        id: crypto.randomUUID(),
                         // @ts-expect-error gapapa gan error
                         type: null,
                         contact: "",
@@ -276,7 +298,7 @@ export function CreateTalent() {
                   {fieldsContact.map((contact, i) => {
                     return (
                       <div
-                        key={contact.key}
+                        key={contact.id}
                         className="relative mb-4 grid grid-cols-1 gap-4 rounded-lg border p-2 px-2 sm:grid-cols-2"
                       >
                         <Button
@@ -303,6 +325,10 @@ export function CreateTalent() {
                                 <FormControl>
                                   <Select
                                     options={contactItems}
+                                    defaultValue={{
+                                      value: field.value,
+                                      label: field.value,
+                                    }}
                                     // value={field.value}
                                     onChange={(e) => {
                                       field.onChange(e?.value);
@@ -336,7 +362,14 @@ export function CreateTalent() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
-                <AccordionTrigger>Pengalaman</AccordionTrigger>
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2">
+                    Pengalaman
+                    {fieldsExperience.length && (
+                      <Badge>{fieldsExperience.length}</Badge>
+                    )}
+                  </div>{" "}
+                </AccordionTrigger>
                 <AccordionContent>
                   <Button
                     type="button"
@@ -344,7 +377,7 @@ export function CreateTalent() {
                     className="mb-2"
                     onClick={() => {
                       addExperience({
-                        key: crypto.randomUUID(),
+                        id: crypto.randomUUID(),
                         from: "",
                         to: "",
                         title: "",
@@ -358,7 +391,7 @@ export function CreateTalent() {
                   {fieldsExperience.map((exp, i) => {
                     return (
                       <div
-                        key={exp.key}
+                        key={exp.id}
                         className="relative mb-4 space-y-4 rounded-lg border p-2 px-2"
                       >
                         <Button
@@ -407,6 +440,10 @@ export function CreateTalent() {
                                   <FormControl>
                                     <Select
                                       options={optionsYears()}
+                                      defaultValue={{
+                                        label: field.value,
+                                        value: field.value,
+                                      }}
                                       // value={field.value}
                                       onChange={(e) => {
                                         field.onChange(e?.value);
@@ -431,6 +468,10 @@ export function CreateTalent() {
                                     <Select
                                       className="w-full"
                                       options={optionsYears()}
+                                      defaultValue={{
+                                        label: field.value,
+                                        value: field.value,
+                                      }}
                                       // value={field.value}
                                       onChange={(e) => {
                                         field.onChange(e?.value);
@@ -470,7 +511,14 @@ export function CreateTalent() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">
-                <AccordionTrigger>Pendidikan</AccordionTrigger>
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2">
+                    Pendidikan
+                    {fieldsEducation.length && (
+                      <Badge>{fieldsEducation.length}</Badge>
+                    )}
+                  </div>
+                </AccordionTrigger>
                 <AccordionContent>
                   <Button
                     type="button"
@@ -478,7 +526,7 @@ export function CreateTalent() {
                     className="mb-2"
                     onClick={() => {
                       addEducation({
-                        key: crypto.randomUUID(),
+                        id: crypto.randomUUID(),
                         from: "",
                         to: "",
                         title: "",
@@ -492,7 +540,7 @@ export function CreateTalent() {
                   {fieldsEducation.map((edu, i) => {
                     return (
                       <div
-                        key={edu.key}
+                        key={edu.id}
                         className="relative mb-4 space-y-4 rounded-lg border p-2 px-2"
                       >
                         <Button
@@ -541,6 +589,10 @@ export function CreateTalent() {
                                   <FormControl>
                                     <Select
                                       options={optionsYears()}
+                                      defaultValue={{
+                                        label: field.value,
+                                        value: field.value,
+                                      }}
                                       // value={field.value}
                                       onChange={(e) => {
                                         field.onChange(e?.value);
@@ -565,6 +617,10 @@ export function CreateTalent() {
                                     <Select
                                       className="w-full"
                                       options={optionsYears()}
+                                      defaultValue={{
+                                        label: field.value,
+                                        value: field.value,
+                                      }}
                                       // value={field.value}
                                       onChange={(e) => {
                                         field.onChange(e?.value);
@@ -605,8 +661,8 @@ export function CreateTalent() {
               </AccordionItem>
             </Accordion>
           </div>
-          <Button type="submit" disabled={create.isPending}>
-            <span>Submit</span> {create.isPending && <Spinner />}
+          <Button type="submit" disabled={update.isPending}>
+            <span>Submit</span> {update.isPending && <Spinner />}
           </Button>
         </form>
       </Form>

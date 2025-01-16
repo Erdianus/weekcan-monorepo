@@ -159,7 +159,7 @@ function Select<
         ...styles<Option, IsMulti, Group>(),
         menuPortal: (base) => ({ ...base, zIndex: 9999 }),
       }}
-      menuPosition="fixed"
+      menuPosition={props.menuPosition ?? 'fixed'}
       unstyled
       hideSelectedOptions={true}
     />

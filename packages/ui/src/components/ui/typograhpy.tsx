@@ -47,6 +47,18 @@ function H3(props: HeadingProps) {
   );
 }
 
+function H4(props: HeadingProps) {
+  return (
+    <h4
+      {...props}
+      className={cn(
+        "scroll-m-20 text-xl font-semibold tracking-tight",
+        props.className,
+      )}
+    />
+  );
+}
+
 function Paragraph(props: ParagraphProps) {
   return (
     <p
@@ -65,4 +77,4 @@ function Muted(props: ParagraphProps) {
   );
 }
 
-export { H1, H2, H3, Paragraph, Muted };
+export { H1, H2, H3, H4, Paragraph, Muted };

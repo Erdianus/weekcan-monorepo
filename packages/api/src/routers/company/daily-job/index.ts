@@ -29,8 +29,9 @@ const dailyJobSchema = z.object({
   time: z.string().nullish(),
   dailyJob: z
     .object({
-      id: z.number(),
+      id: z.union([z.number(), z.string()]),
       user_id: z.union([z.string(), z.number()]),
+      time: z.string(),
       text: z.string(),
       date: z.string(),
       status: z.string(),
@@ -42,17 +43,12 @@ const dailyJobSchema = z.object({
 // NOTE: Form
 type Form = {
   user_id: string | number;
-  latitude: number;
-  longitude: number;
-  ket: string;
-  status: string;
-  time: string;
+  // ket: string;
   date: string;
-  location_text: string;
+  // location_text: string;
   daily_jobs: {
-    user_id: string | number;
     text: string;
-    date: string;
+    time: string;
     status: string;
   }[];
 };
@@ -106,10 +102,7 @@ const daily_job = {
   },
   create: router.mutation({
     mutationFn: async (variables: { data: Form }) => {
-      const res = await Axios.post(
-        "/daily-jobs/attendance-daily-job",
-        variables.data,
-      );
+      const res = await Axios.post("/daily-jobs", variables.data);
 
       return res.data as { message: string };
     },

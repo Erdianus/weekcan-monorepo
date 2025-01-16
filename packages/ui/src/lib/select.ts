@@ -491,6 +491,16 @@ function optionsYears(props?: { filterYear?: string }) {
   return arrItemYears;
 }
 
+function optionsTime2() {
+  const data: {label: string; value: string}[] = [];
+  for (let i = 0; i <= 24; i++) {
+    const format = i >= 10 ? `${i}:00:00` : `0${i}:00:00`;
+    data.push({label: format, value: format});
+  }
+
+  return data;
+}
+
 //
 
 const loadOptions = Object.freeze({
@@ -524,6 +534,7 @@ export {
   optionsProjectProgress,
   optionsTaskProjectStatus,
   optionsTime,
+  optionsTime2,
   optionsJobStatus,
   optionsEventStatus,
   optionsAbsentType,
