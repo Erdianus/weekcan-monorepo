@@ -97,7 +97,10 @@ const columns = [
     cell: ({ row }) => row.index + 1,
   }),
   colHelper.accessor("name", {
-    header: "Nama Proyek",
+    header: "Nama Event",
+  }),
+  colHelper.accessor("event_type", {
+    header: "Tipe Event",
   }),
   colHelper.display({
     header: "Tanggal",
