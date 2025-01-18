@@ -1,7 +1,7 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   useParams,
@@ -11,21 +11,25 @@ import {
 } from "next/navigation";
 import {
   createColumnHelper,
+  flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Eye, MoreHorizontal } from "lucide-react";
+import { atom, useAtom } from "jotai";
+import { Eye, MoreHorizontal, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
+import Flashlist from "@hktekno/ui/components/flashlist";
+import Loading from "@hktekno/ui/components/loading";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
+import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Select, SelectAsync } from "@hktekno/ui/components/select";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
-import { DataTable } from "@hktekno/ui/components/ui/data-table";
 import { DateRangePicker } from "@hktekno/ui/components/ui/date-picker";
 import {
   DropdownMenu,
@@ -35,8 +39,21 @@ import {
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import { Separator } from "@hktekno/ui/components/ui/separator";
+import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@hktekno/ui/components/ui/table";
+import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { date4Y2M2D, dateRange } from "@hktekno/ui/lib/date";
 import { loadUserOptions, optionsEventStatus } from "@hktekno/ui/lib/select";
+import { cn } from "@hktekno/ui/lib/utils";
+
+import { FormEvent } from "./form";
 
 type Event = inferData<typeof k.company.event.all>["data"][number];
 
@@ -106,7 +123,12 @@ const columns = [
   }),
 ];
 
-export default function ListEvent() {
+const stateAtom = atom<{ event?: Event }>({ event: undefined });
+
+export default function ListEvent({ role }: { role?: string }) {
+  const isRoled = ["Admin", "Owner", "HRD", "Manager"].includes(role ?? "");
+  const [state, setState] = useAtom(stateAtom);
+  const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
   const {
@@ -118,6 +140,8 @@ export default function ListEvent() {
     variables: {
       ...variables,
     },
+    retryOnMount: false,
+    // enabled: false,
   });
 
   const table = useReactTable({
@@ -126,22 +150,38 @@ export default function ListEvent() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  // const isLoading = false;
   const isload = !events && isLoading;
 
   useEffect(() => {
     if (isError) {
       toast.error(error.message);
-      throw new Error("Error dari Backend 😱");
+      throw new Error(`Error dari Backend 😱`);
     }
   }, [isError, error]);
 
   return (
     <>
-      {/* <PortalSearch placeholder="Cari Event..." />
+      <FormEvent
+        title="Buat Event Baru"
+        open={open}
+        onOpenChange={(e) => {
+          setOpen(e);
+        }}
+      />
+      <PortalSearch placeholder="Cari Event..." />
       <div className="mb-4 flex w-full items-center justify-between">
         <H3 className="">Event</H3>
-      </div> */}
-
+        <Button
+          onClick={() => {
+            setOpen(true);
+          }}
+          size={"icon"}
+          type="button"
+        >
+          <Plus />
+        </Button>
+      </div>
       <div className="mb-4">
         <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
           Filter
@@ -151,7 +191,79 @@ export default function ListEvent() {
           <Filter isLoading={isLoading} />
         </div>
       </div>
-      <DataTable table={table} columns={columns} isloading={isload} />
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          <Flashlist
+            isloading={isLoading}
+            loading={
+              <Loading keyname="loadingtable">
+                <TableRow>
+                  {columns.map((_, i) => (
+                    <TableCell key={`cellloading-${i}`}>
+                      <Skeleton className="h-5 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </Loading>
+            }
+            isfallback={table.getRowModel().rows.length === 0}
+            fallback={
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            }
+          >
+            {table.getRowModel().rows.map((row) => {
+              return (
+                <TableRow
+                  key={`roww-${row.id}`}
+                  data-state={row.getIsSelected() && "selected"}
+                  className={cn(
+                    "hover:bg-accent",
+                    row.original.id === state.event?.id && "bg-main-500",
+                  )}
+                  onDoubleClick={() => {
+                    if (!isRoled) return;
+                    setState({ event: row.original });
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={`cell--${cell.id}`}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })}
+          </Flashlist>
+        </TableBody>
+      </Table>
       <div className="mt-4 flex w-full items-center justify-end gap-2">
         <Paginate />
         <PaginationParams meta={events?.meta} />
@@ -168,7 +280,6 @@ const Filter = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <>
       <SelectAsync
-
         className="w-auto"
         value={
           searchParams.get("pic_id")

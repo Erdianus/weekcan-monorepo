@@ -159,7 +159,7 @@ function Select<
         ...styles<Option, IsMulti, Group>(),
         menuPortal: (base) => ({ ...base, zIndex: 9999 }),
       }}
-      menuPosition={props.menuPosition ?? 'fixed'}
+      menuPosition={props.menuPosition ?? "fixed"}
       unstyled
       hideSelectedOptions={true}
     />
@@ -201,12 +201,16 @@ function SelectAsync<
       debounceTimeout={600}
       // menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       className={cn("w-full", props.className)}
-      menuPosition="fixed"
+      menuPosition={props.menuPosition ?? "fixed"}
       components={{ DropdownIndicator }}
       classNames={classNames<OptionType, IsMulti, Group>()}
       styles={{
         ...styles<OptionType, IsMulti, Group>(),
-        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+        menuPortal: (base) => ({
+          ...base,
+          zIndex: 9999,
+          pointerEvents: "visible",
+        }),
       }}
       unstyled
       closeMenuOnSelect
