@@ -530,6 +530,25 @@ export function FormEvent() {
           value: `${currEvent.tax_type}`,
         },
       });
+    } else {
+      form.reset({
+        name: "",
+        event_type: "",
+        pic: [],
+        pic_design: [],
+        // @ts-expect-error sengaja biar error
+        date: undefined,
+        venue: "",
+        client: "",
+        // @ts-expect-error sengaja biar error
+        province: null,
+        // @ts-expect-error sengaja biar error
+        city: null,
+        // @ts-expect-error sengaja biar error
+        status: null,
+        // @ts-expect-error sengaja biar error
+        tax_type: null,
+      });
     }
   }, [currEvent]);
 

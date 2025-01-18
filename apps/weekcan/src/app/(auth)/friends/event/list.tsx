@@ -177,6 +177,7 @@ export default function ListEvent({ role }: { role?: string }) {
         <Button
           onClick={() => {
             setOpen(true);
+            setCurrEvent(undefined);
           }}
           size={"icon"}
           type="button"
