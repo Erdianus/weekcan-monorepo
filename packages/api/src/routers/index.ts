@@ -13,6 +13,7 @@ import company from "./company";
 import dailyJob from "./daily-jobs";
 import { dashboard } from "./dashboard";
 import event from "./event";
+import { hkdb } from "./hkdb";
 import inventory from "./inventory";
 import job from "./job";
 import jobType from "./job-type";
@@ -26,6 +27,7 @@ const k = {
   dashboard,
   project,
   event,
+  hkdb,
   job,
   dailyJob,
   attendance,

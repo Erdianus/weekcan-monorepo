@@ -60,6 +60,7 @@ function DatePicker(props: DatePickerProps) {
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
+          fromYear={1970}
           disabled={props.disabled}
           defaultMonth={props?.defaultMonth}
           fromDate={props?.fromDate}

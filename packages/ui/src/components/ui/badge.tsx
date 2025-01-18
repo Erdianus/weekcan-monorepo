@@ -9,6 +9,7 @@ const badgeVariants = cva<{ variant: Record<string, string> }>(
   {
     variants: {
       variant: {
+        main: "border-transparent bg-main-500 text-white dark:bg-main-300 dark:text-main-700",
         default:
           "hover:bg-primary/80 border-transparent bg-primary text-primary-foreground",
         secondary:

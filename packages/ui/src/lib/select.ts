@@ -369,6 +369,78 @@ const loadCityOptions: LoadOptions<
   };
 };
 
+// HKDB = Archive
+const loadDBCategoryOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.hkdb.category.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const datas = await k.hkdb.category.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
+const loadDBSkillOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.hkdb.skill.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const datas = await k.hkdb.skill.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
+const loadDBTalentOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.hkdb.talent.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const datas = await k.hkdb.talent.all.fetcher({ ...params, search });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
+// end of HKDB
+
 // --NOTE: Static Option
 //
 const optionsProjectType = () =>
@@ -399,6 +471,36 @@ const optionsEventStatus = () =>
   eventStatus.map((v) => ({ label: v, value: v }));
 const optionsJobStatus = () => jobStatus.map((v) => ({ label: v, value: v }));
 
+function optionsYears(props?: { filterYear?: string }) {
+  const oldest = 1970;
+  const date = new Date();
+  const recent = date.getFullYear();
+
+  const arrItemYears: { label: string; value: string }[] = [];
+
+  for (let i = recent; i >= oldest; i--) {
+    arrItemYears.push({
+      label: `${i}`,
+      value: `${i}`,
+    });
+  }
+  if (props?.filterYear) {
+    return arrItemYears.filter((v) => v.value !== props.filterYear);
+  }
+
+  return arrItemYears;
+}
+
+function optionsTime2() {
+  const data: {label: string; value: string}[] = [];
+  for (let i = 0; i <= 24; i++) {
+    const format = i >= 10 ? `${i}:00:00` : `0${i}:00:00`;
+    data.push({label: format, value: format});
+  }
+
+  return data;
+}
+
 //
 
 const loadOptions = Object.freeze({
@@ -422,6 +524,9 @@ export {
   loadJobTypeOptions,
   loadProvinceOptions,
   loadCityOptions,
+  loadDBCategoryOptions,
+  loadDBSkillOptions,
+  loadDBTalentOptions,
 
   // Static
   optionsProjectType,
@@ -429,7 +534,9 @@ export {
   optionsProjectProgress,
   optionsTaskProjectStatus,
   optionsTime,
+  optionsTime2,
   optionsJobStatus,
   optionsEventStatus,
   optionsAbsentType,
+  optionsYears
 };

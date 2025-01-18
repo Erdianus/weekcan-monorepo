@@ -129,7 +129,7 @@ const DrawerDialog = ({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[75%]">
           {(title ?? description) && (
             <DialogHeader>
               {title && <DialogTitle>{title}</DialogTitle>}
