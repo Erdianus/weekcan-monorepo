@@ -1,6 +1,13 @@
 import { z } from "zod";
 
-const eventStatus = ["On Going", "Done", "Cancel"];
+const eventStatus = [
+  "Pitching Concept",
+  "On Going",
+  "In Preparation",
+  "Done",
+  "Pending",
+  "Cancel",
+];
 
 const eventBaseSchema = z.object({
   id: z.number(),
