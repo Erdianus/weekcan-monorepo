@@ -157,7 +157,11 @@ function Select<
       components={{ DropdownIndicator }}
       styles={{
         ...styles<Option, IsMulti, Group>(),
-        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+        menuPortal: (base) => ({
+          ...base,
+          zIndex: 9999,
+          pointerEvents: "visible",
+        }),
       }}
       menuPosition={props.menuPosition ?? "fixed"}
       unstyled

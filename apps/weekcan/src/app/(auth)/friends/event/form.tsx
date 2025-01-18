@@ -2,10 +2,15 @@
 
 import type { PropsWithChildren, ReactNode } from "react";
 import type { UseFormReturn } from "react-hook-form";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAtom, useAtomValue } from "jotai";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
+import { k } from "@hktekno/api";
 import { Select, SelectAsync } from "@hktekno/ui/components/select";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DateRangePicker } from "@hktekno/ui/components/ui/date-picker";
@@ -31,6 +36,8 @@ import {
   FormMessage,
 } from "@hktekno/ui/components/ui/form";
 import { Input } from "@hktekno/ui/components/ui/input";
+import Spinner from "@hktekno/ui/components/ui/spinner";
+import { date4Y2M2D, dayjs } from "@hktekno/ui/lib/date";
 import useMediaQuery from "@hktekno/ui/lib/hooks/useMediaQuery";
 import {
   loadCityOptions,
@@ -38,6 +45,8 @@ import {
   loadUserOptions,
 } from "@hktekno/ui/lib/select";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
+
+import { currEventAtom, openAtom } from "./state";
 
 const formSchema = z.object({
   name: z.string().min(1, "Tolong Isi Nama Event"),
@@ -103,7 +112,7 @@ const status = [
   "In Preparation",
   "Done",
   "Pending",
-  "Cance",
+  "Cancel",
 ].map((v) => ({ label: v, value: v }));
 
 const taxes = [
@@ -123,12 +132,73 @@ const taxes = [
 
 const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
   const friends_id = useUserStore((s) => s.friends_id);
+  const [open, setOpen] = useAtom(openAtom);
+  const [currEvent, setCurrEvent] = useAtom(currEventAtom);
+  const client = useQueryClient();
+  const create = k.event.create.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      form.reset();
+      setOpen(false);
+      setCurrEvent(undefined);
+      await client.invalidateQueries({ queryKey: k.event.all.getKey() });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+
+  const update = k.event.update.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      form.reset();
+      setOpen(false);
+      setCurrEvent(undefined);
+      await client.invalidateQueries({ queryKey: k.event.all.getKey() });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+
+  const isload = create.isPending || update.isPending;
   return (
     <>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit((v) => {
-            console.log(v);
+          onSubmit={form.handleSubmit((data) => {
+            console.log(data);
+            if (currEvent) {
+              update.mutate({
+                slug: currEvent.slug,
+                data: {
+                  ...data,
+                  status: data.status.value,
+                  province: data.province.label,
+                  city: data.city.label,
+                  start_date: date4Y2M2D(data.date.from),
+                  end_date: data.date.to
+                    ? date4Y2M2D(data.date.to)
+                    : date4Y2M2D(data.date.from),
+                  pic: data.pic.map((c) => c.value),
+                  pic_design: data.pic_design.map((c) => c.value),
+                  tax_type: data.tax_type.value,
+                },
+              });
+
+              return;
+            }
+            create.mutate({
+              data: {
+                ...data,
+                status: data.status.value,
+                province: data.province.label,
+                city: data.city.label,
+                start_date: date4Y2M2D(data.date.from),
+                end_date: data.date.to
+                  ? date4Y2M2D(data.date.to)
+                  : date4Y2M2D(data.date.from),
+                pic: data.pic.map((c) => c.value),
+                pic_design: data.pic_design.map((c) => c.value),
+                tax_type: data.tax_type.value,
+              },
+            });
           })}
         >
           <div className="mb-3 max-h-96 space-y-4 overflow-y-auto p-2">
@@ -380,37 +450,34 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
               />
             </div>
           </div>
-          <Button type="submit">Submit</Button>
+          <Button disabled={isload} type="submit">
+            <span>Submit</span> {isload && <Spinner />}
+          </Button>
         </form>
       </Form>
     </>
   );
 };
 
-type FormEventProps = PropsWithChildren & {
-  open: boolean;
-  title?: string | ReactNode;
-  description?: string | ReactNode;
-  onOpenChange: (open: boolean) => void;
-};
-
-export function FormEvent(props: FormEventProps) {
+export function FormEvent() {
   console.log("formevent");
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [open, onOpenChange] = useAtom(openAtom);
+  const [currEvent, setCurrEvent] = useAtom(currEventAtom);
+
+  const title = currEvent ? "Update Event" : "Buat Event";
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    value: {
+    values: {
       name: "",
       event_type: "",
       pic: [],
       pic_design: [],
       // @ts-expect-error sengaja biar error
       date: undefined,
-      // @ts-expect-error sengaja biar error
-      venue: null,
-      // @ts-expect-error sengaja biar error
-      client: null,
+      venue: "",
+      client: "",
       // @ts-expect-error sengaja biar error
       province: null,
       // @ts-expect-error sengaja biar error
@@ -422,12 +489,84 @@ export function FormEvent(props: FormEventProps) {
     },
   });
 
+  useEffect(() => {
+    if (currEvent) {
+      /* form.setValue("name", currEvent.name);
+      form.setValue("event_type", currEvent.event_type); */
+      form.reset({
+        name: currEvent.name,
+        event_type: currEvent.event_type,
+        pic: currEvent.all_data_pic.map((c) => ({
+          label: c.name,
+          value: `${c.id}`,
+        })),
+        pic_design: currEvent.all_data_pic_design.map((c) => ({
+          label: c.name,
+          value: `${c.id}`,
+        })),
+        date: {
+          from: dayjs(currEvent.start_date).toDate(),
+          to: currEvent.end_date
+            ? dayjs(currEvent.end_date).toDate()
+            : undefined,
+        },
+        venue: currEvent.venue,
+        client: currEvent.client,
+        province: {
+          value: `${currEvent.province}`,
+          label: `${currEvent.province}`,
+        },
+        city: {
+          value: `${currEvent.city}`,
+          label: `${currEvent.city}`,
+        },
+        status: {
+          value: currEvent.status,
+          label: currEvent.status,
+        },
+        tax_type: {
+          // @ts-expect-error gapapa gan
+          label: taxes[currEvent?.tax_type - 1].label,
+          value: `${currEvent.tax_type}`,
+        },
+      });
+    } else {
+      form.reset({
+        name: "",
+        event_type: "",
+        pic: [],
+        pic_design: [],
+        // @ts-expect-error sengaja biar error
+        date: undefined,
+        venue: "",
+        client: "",
+        // @ts-expect-error sengaja biar error
+        province: null,
+        // @ts-expect-error sengaja biar error
+        city: null,
+        // @ts-expect-error sengaja biar error
+        status: null,
+        // @ts-expect-error sengaja biar error
+        tax_type: null,
+      });
+    }
+  }, [currEvent]);
+
   if (isDesktop) {
     return (
-      <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      <Dialog
+        open={open}
+        onOpenChange={(o) => {
+          if (!o) {
+            onOpenChange(o);
+            form.reset();
+            setCurrEvent(undefined);
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[75%]">
-          <DialogTitle>{props.title}</DialogTitle>
-          <DialogDescription>{props.description}</DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          {/* <DialogDescription>{props.description}</DialogDescription> */}
           <FormChild form={form} />
         </DialogContent>
       </Dialog>
@@ -435,11 +574,20 @@ export function FormEvent(props: FormEventProps) {
   }
 
   return (
-    <Drawer open={props.open} onOpenChange={props.onOpenChange}>
+    <Drawer
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) {
+          onOpenChange(o);
+          form.reset();
+          setCurrEvent(undefined);
+        }
+      }}
+    >
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>{props.title}</DrawerTitle>
-          <DrawerDescription>{props.description}</DrawerDescription>
+          <DrawerTitle>{title}</DrawerTitle>
+          {/* <DrawerDescription>{props.description}</DrawerDescription> */}
         </DrawerHeader>
         <div className="p-4">
           <FormChild form={form} />

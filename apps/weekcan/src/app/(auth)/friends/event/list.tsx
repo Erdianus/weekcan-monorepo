@@ -1,7 +1,7 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import {
   useParams,
@@ -16,7 +16,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
 import { Eye, MoreHorizontal, Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -54,6 +54,7 @@ import { loadUserOptions, optionsEventStatus } from "@hktekno/ui/lib/select";
 import { cn } from "@hktekno/ui/lib/utils";
 
 import { FormEvent } from "./form";
+import { currEventAtom, openAtom } from "./state";
 
 type Event = inferData<typeof k.company.event.all>["data"][number];
 
@@ -110,8 +111,11 @@ const columns = [
   colHelper.accessor("client", {
     header: "Client",
   }),
-  colHelper.accessor("pic", {
+  colHelper.accessor("all_pic", {
     header: "Koor.",
+  }),
+  colHelper.accessor("all_pic_design", {
+    header: "Design",
   }),
   colHelper.accessor("status", {
     header: "Status",
@@ -123,12 +127,10 @@ const columns = [
   }),
 ];
 
-const stateAtom = atom<{ event?: Event }>({ event: undefined });
-
 export default function ListEvent({ role }: { role?: string }) {
   const isRoled = ["Admin", "Owner", "HRD", "Manager"].includes(role ?? "");
-  const [state, setState] = useAtom(stateAtom);
-  const [open, setOpen] = useState(false);
+  const [currEvent, setCurrEvent] = useAtom(currEventAtom);
+  const [, setOpen] = useAtom(openAtom);
   const searchParams = useSearchParams();
   const variables = Object.fromEntries(searchParams.entries());
   const {
@@ -136,7 +138,7 @@ export default function ListEvent({ role }: { role?: string }) {
     isLoading,
     isError,
     error,
-  } = k.company.event.all.useQuery({
+  } = k.event.all.useQuery({
     variables: {
       ...variables,
     },
@@ -151,7 +153,7 @@ export default function ListEvent({ role }: { role?: string }) {
   });
 
   // const isLoading = false;
-  const isload = !events && isLoading;
+  // const isload = !events && isLoading;
 
   useEffect(() => {
     if (isError) {
@@ -163,11 +165,11 @@ export default function ListEvent({ role }: { role?: string }) {
   return (
     <>
       <FormEvent
-        title="Buat Event Baru"
-        open={open}
+      // title="Buat Event Baru"
+      /* open={open}
         onOpenChange={(e) => {
           setOpen(e);
-        }}
+        }} */
       />
       <PortalSearch placeholder="Cari Event..." />
       <div className="mb-4 flex w-full items-center justify-between">
@@ -175,6 +177,7 @@ export default function ListEvent({ role }: { role?: string }) {
         <Button
           onClick={() => {
             setOpen(true);
+            setCurrEvent(undefined);
           }}
           size={"icon"}
           type="button"
@@ -243,11 +246,12 @@ export default function ListEvent({ role }: { role?: string }) {
                   data-state={row.getIsSelected() && "selected"}
                   className={cn(
                     "hover:bg-accent",
-                    row.original.id === state.event?.id && "bg-main-500",
+                    row.original.id === currEvent?.id && "bg-main-500",
                   )}
                   onDoubleClick={() => {
                     if (!isRoled) return;
-                    setState({ event: row.original });
+                    setOpen(true);
+                    setCurrEvent(row.original);
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -280,6 +284,7 @@ const Filter = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <>
       <SelectAsync
+        instanceId={"pic_filter"}
         className="w-auto"
         value={
           searchParams.get("pic_id")
@@ -315,6 +320,7 @@ const Filter = ({ isLoading }: { isLoading: boolean }) => {
       />
 
       <Select
+        instanceId={"event_status_filter"}
         className="w-auto"
         options={optionsEventStatus()}
         defaultValue={

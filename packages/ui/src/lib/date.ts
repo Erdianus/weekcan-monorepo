@@ -48,4 +48,4 @@ const relativeDate = (date?: string | Date, dateEnd?: string | Date) => {
   return dayjs(dateEnd).fromNow();
 };
 
-export { dateRange, date4Y2M2D, relativeDate };
+export { dayjs, dateRange, date4Y2M2D, relativeDate };

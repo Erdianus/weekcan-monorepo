@@ -4,9 +4,18 @@ import { router } from "react-query-kit";
 import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../meta";
-import eventBaseSchema from "./schema";
+import type eventBaseSchema from "./schema";
 
-const eventSchema = eventBaseSchema;
+type Event = z.infer<typeof eventBaseSchema> & {
+  all_pic: string;
+  all_pic_design: string;
+  all_data_pic: {id: number; name: string}[];
+  all_data_pic_design: {id: number; name: string}[];
+  all_pic_id: number[];
+  all_pic_design_id: number[];
+  event_type: string;
+  tax_type: number;
+};
 
 const eventRouter = {
   all: router.query({
@@ -17,14 +26,14 @@ const eventRouter = {
     }) => {
       const res = await Axios.get("/events", { params: variables });
 
-      return res.data as { data: z.infer<typeof eventSchema>[]; meta: Meta };
+      return res.data as { data: Event[]; meta: Meta };
     },
   }),
   single: router.query({
     fetcher: async (variables: { slug: string }) => {
       const res = await Axios.get(`/event/${variables.slug}`);
 
-      return res.data as { data: z.infer<typeof eventSchema> };
+      return res.data as { data: Event };
     },
   }),
   list_job: router.infiniteQuery({
@@ -65,6 +74,51 @@ const eventRouter = {
       return lastPage.meta.current_page + 1;
     },
     initialPageParam: 1,
+  }),
+  create: router.mutation({
+    mutationFn: async (variables: {
+      data: {
+        name: string;
+        event_type: string;
+        pic: (number | string)[];
+        pic_design: (number | string)[];
+        start_date: string;
+        end_date: string;
+        venue: string;
+        client: string;
+        city: string;
+        province: string;
+        status: string;
+        tax_type: string | number;
+      };
+    }) => {
+      const res = await Axios.post(`/event`, variables.data);
+
+      return res.data as { message: string };
+    },
+  }),
+  update: router.mutation({
+    mutationFn: async (variables: {
+      slug: string;
+      data: {
+        name: string;
+        event_type: string;
+        pic: (number | string)[];
+        pic_design: (number | string)[];
+        start_date: string;
+        end_date: string;
+        venue: string;
+        client: string;
+        city: string;
+        province: string;
+        status: string;
+        tax_type: string | number;
+      };
+    }) => {
+      const res = await Axios.put(`/event/${variables.slug}`, variables.data);
+
+      return res.data as { message: string };
+    },
   }),
 };
 
