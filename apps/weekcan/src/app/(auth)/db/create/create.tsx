@@ -17,6 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@hktekno/ui/components/ui/accordion";
+import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DatePicker } from "@hktekno/ui/components/ui/date-picker";
 import {
@@ -101,6 +102,7 @@ export function CreateTalent() {
     resolver: zodResolver(formSchema),
     values: {
       name: "",
+      about: "",
       // @ts-expect-error gapapa gan
       category: null,
       contact: [],
@@ -255,7 +257,14 @@ export function CreateTalent() {
           <div>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1">
-                <AccordionTrigger>Kontak</AccordionTrigger>
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2">
+                    Kontak
+                    {fieldsContact.length > 0 && (
+                      <Badge>{fieldsContact.length}</Badge>
+                    )}
+                  </div>
+                </AccordionTrigger>
                 <AccordionContent className="px-4">
                   <Button
                     type="button"
@@ -336,7 +345,14 @@ export function CreateTalent() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
-                <AccordionTrigger>Pengalaman</AccordionTrigger>
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2">
+                    Pengalaman
+                    {fieldsExperience.length > 0 && (
+                      <Badge>{fieldsExperience.length}</Badge>
+                    )}
+                  </div>{" "}
+                </AccordionTrigger>
                 <AccordionContent>
                   <Button
                     type="button"
@@ -470,7 +486,14 @@ export function CreateTalent() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">
-                <AccordionTrigger>Pendidikan</AccordionTrigger>
+                <AccordionTrigger>
+                  <div className="flex items-center gap-2">
+                    Pendidikan
+                    {fieldsEducation.length > 0 && (
+                      <Badge>{fieldsEducation.length}</Badge>
+                    )}
+                  </div>
+                </AccordionTrigger>
                 <AccordionContent>
                   <Button
                     type="button"

@@ -204,7 +204,7 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
     onError: ({ message }) => toast.error(message),
   });
 
-  const update = k.company.daily_job.update.attendance.useMutation({
+  const update = k.company.daily_job.update.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
       await client.invalidateQueries({

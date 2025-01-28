@@ -1,10 +1,10 @@
 "use client";
 
+import type { CellContext } from "@tanstack/react-table";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  CellContext,
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
@@ -12,9 +12,11 @@ import {
 import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { inferData, k } from "@hktekno/api";
+import type { inferData } from "@hktekno/api";
+import { k } from "@hktekno/api";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { RoleAuth } from "@hktekno/ui/components/role";
+import { SelectAsync } from "@hktekno/ui/components/select";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DataTable } from "@hktekno/ui/components/ui/data-table";
@@ -27,6 +29,10 @@ import {
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
+import {
+  loadDBCategoryOptions,
+  loadDBSkillOptions,
+} from "@hktekno/ui/lib/select";
 import { useAlertStore } from "@hktekno/ui/lib/store/useAlertStore";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 
@@ -152,7 +158,7 @@ export function ListTalent() {
           <Separator className="flex-1" />
         </div>
         <div className="flex flex-wrap gap-4">
-          {/* <FilterProject isLoading={isload} /> */}
+          <Filter isLoading={isLoading} />
         </div>
       </div>
       <DataTable table={table} columns={columns} isloading={isLoading} />
@@ -160,6 +166,80 @@ export function ListTalent() {
   );
 }
 
-/* export default function Lisst() {
-  return <>hehehehe</>;
-} */
+const Filter = ({ isLoading }: { isLoading: boolean }) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  return (
+    <>
+      <SelectAsync
+        instanceId={"Kategori"}
+        className="w-auto"
+        defaultValue={
+          searchParams.get("category_id")
+            ? {
+                label: searchParams.get("company_name")?.toString(),
+                value: searchParams.get("company_id")?.toString(),
+              }
+            : null
+        }
+        isClearable
+        placeholder="Kategori"
+        loadOptions={loadDBCategoryOptions}
+        additional={{
+          page: 1,
+        }}
+        onChange={(e) => {
+          const hasPage = !!searchParams.get("page");
+          const params = new URLSearchParams(searchParams);
+
+          if (e) {
+            params.set("category_id", `${e.value}`);
+            params.set("category_name", `${e.label}`);
+          } else {
+            params.delete("category_id");
+            params.delete("category_name");
+          }
+
+          if (hasPage) params.delete("page");
+
+          router.replace(`${pathname}?${params.toString()}`);
+        }}
+      />
+      <SelectAsync
+        instanceId={"Keahlian"}
+        className="w-auto"
+        defaultValue={
+          searchParams.get("skill_id")
+            ? {
+                label: searchParams.get("skill_name")?.toString(),
+                value: searchParams.get("skill_id")?.toString(),
+              }
+            : null
+        }
+        isClearable
+        placeholder="Keahlian"
+        loadOptions={loadDBSkillOptions}
+        additional={{
+          page: 1,
+        }}
+        onChange={(e) => {
+          const hasPage = !!searchParams.get("page");
+          const params = new URLSearchParams(searchParams);
+
+          if (e) {
+            params.set("skill_id", `${e.value}`);
+            params.set("skill_name", `${e.label}`);
+          } else {
+            params.delete("skill_id");
+            params.delete("skill_name");
+          }
+
+          if (hasPage) params.delete("page");
+
+          router.replace(`${pathname}?${params.toString()}`);
+        }}
+      />
+    </>
+  );
+};

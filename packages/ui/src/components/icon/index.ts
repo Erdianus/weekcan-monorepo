@@ -1,3 +1,6 @@
+import { JSX, SVGProps } from "react";
+import { Globe, LucideIcon, Smartphone } from "lucide-react";
+
 import Absent from "./absent";
 import Chat from "./chat";
 import Client from "./client";
@@ -25,6 +28,18 @@ import Twitter from "./twitter";
 import User from "./user";
 import Venue from "./venue";
 import Warehouse from "./warehouse";
+
+const contactIcons: Record<
+  string,
+  LucideIcon | ((props: SVGProps<SVGSVGElement>) => JSX.Element)
+> = {
+  phone: Smartphone,
+  instagram: Instagram,
+  x: Twitter,
+  facebook: Facebook,
+  tiktok: Tiktok,
+  web: Globe,
+};
 
 export {
   Absent,
@@ -54,4 +69,5 @@ export {
   User,
   Venue,
   Warehouse,
+  contactIcons,
 };

@@ -107,18 +107,13 @@ const daily_job = {
       return res.data as { message: string };
     },
   }),
-  update: {
-    attendance: router.mutation({
-      mutationFn: async (variable: { id: string; data: Form }) => {
-        const res = await Axios.put(
-          `/daily-jobs/attendance-daily-job/${variable.id}`,
-          variable.data,
-        );
+  update: router.mutation({
+    mutationFn: async (variable: { id: string | number; data: Form }) => {
+      const res = await Axios.put(`/daily-jobs/${variable.id}`, variable.data);
 
-        return res.data as { message: string };
-      },
-    }),
-  },
+      return res.data as { message: string };
+    },
+  }),
 };
 
 export default daily_job;
