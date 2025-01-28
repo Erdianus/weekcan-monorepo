@@ -31,7 +31,7 @@ function classNames<
   return {
     control: ({ isFocused, isDisabled }) =>
       cn(
-        "z-50 flex !min-h-9 w-full gap-1 rounded-md border border-input bg-transparent py-1 pl-3 pr-1 text-sm shadow-sm transition-colors hover:cursor-pointer",
+        "z-50 flex !min-h-9 w-full gap-2 rounded-md border border-input bg-transparent py-1 pl-3 pr-1 text-sm shadow-sm transition-colors hover:cursor-pointer",
         isFocused && "outline-none ring-1 ring-ring",
         isDisabled && "cursor-not-allowed opacity-50",
       ),

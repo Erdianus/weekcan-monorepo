@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -273,7 +272,7 @@ export function UpdateTalent({
                 <AccordionTrigger>
                   <div className="flex items-center gap-2">
                     Kontak
-                    {fieldsContact.length && (
+                    {fieldsContact.length > 0 && (
                       <Badge>{fieldsContact.length}</Badge>
                     )}
                   </div>
@@ -365,7 +364,7 @@ export function UpdateTalent({
                 <AccordionTrigger>
                   <div className="flex items-center gap-2">
                     Pengalaman
-                    {fieldsExperience.length && (
+                    {fieldsExperience.length > 0 && (
                       <Badge>{fieldsExperience.length}</Badge>
                     )}
                   </div>{" "}
@@ -514,7 +513,7 @@ export function UpdateTalent({
                 <AccordionTrigger>
                   <div className="flex items-center gap-2">
                     Pendidikan
-                    {fieldsEducation.length && (
+                    {fieldsEducation.length > 0 && (
                       <Badge>{fieldsEducation.length}</Badge>
                     )}
                   </div>

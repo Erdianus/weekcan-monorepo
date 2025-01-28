@@ -1,13 +1,34 @@
+import type { Metadata } from "next";
 import axios from "axios";
 import dayjs from "dayjs";
-import { Briefcase, Cake, MessageCircleWarning } from "lucide-react";
+import {
+  Briefcase,
+  Cake,
+  Contact,
+  FlaskConical,
+  GraduationCap,
+  MessageCircleWarning,
+} from "lucide-react";
 
 import type { inferData, k } from "@hktekno/api";
 import { auth } from "@hktekno/auth";
 import { Badge } from "@hktekno/ui/components/ui/badge";
+import {
+  Timeline,
+  TimelineDescription,
+  TimelineHeader,
+  TimelineItem,
+  TimelineTime,
+  TimelineTitle,
+} from "@hktekno/ui/components/ui/timeline";
 import { H3, H4 } from "@hktekno/ui/components/ui/typograhpy";
+import { contactIcons } from "@hktekno/ui/icon";
 
 import { env } from "~/env";
+
+export const metadata: Metadata = {
+  title: "Detail Talent",
+};
 
 export default async function Page({
   params,
@@ -50,9 +71,76 @@ export default async function Page({
           </div>
           <div className="flex flex-wrap items-center gap-4">
             {data.skill.map((skill) => (
-              <Badge variant={"outline"}>{skill.name}</Badge>
+              <Badge key={`skill-${skill.id}`} variant={"outline"}>
+                {skill.name}
+              </Badge>
             ))}
           </div>
+        </div>
+      )}
+
+      {data.contact.length && (
+        <div className="mt-8 rounded border p-4">
+          <div className="mb-3 flex items-center gap-4">
+            <Contact size={26} /> <H4>Kontak</H4>
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            {data.contact.map((contact) => {
+              const Icon = contactIcons[contact.type];
+              return (
+                <Badge
+                  className="flex items-center gap-1"
+                  key={`contact-${contact.id}`}
+                  variant={"outline"}
+                >
+                  {Icon && <Icon />}
+                  {contact.contacts}
+                </Badge>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {data.experience.length && (
+        <div className="mt-8 rounded border p-4">
+          <div className="mb-3 flex items-center gap-4">
+            <FlaskConical size={26} /> <H4>Pengalaman</H4>
+          </div>
+          <Timeline>
+            {data.experience.map((exp) => (
+              <TimelineItem key={`exp-${exp.id}`}>
+                <TimelineHeader>
+                  <TimelineTime>
+                    {exp.from}-{exp.to}
+                  </TimelineTime>
+                  <TimelineTitle>{exp.title}</TimelineTitle>
+                </TimelineHeader>
+                <TimelineDescription>{exp.detail}</TimelineDescription>
+              </TimelineItem>
+            ))}
+          </Timeline>
+        </div>
+      )}
+
+      {data.education.length && (
+        <div className="mt-8 rounded border p-4">
+          <div className="mb-3 flex items-center gap-4">
+            <GraduationCap size={26} /> <H4>Pendidikan</H4>
+          </div>
+          <Timeline>
+            {data.education.map((edu) => (
+              <TimelineItem key={`edu-${edu.id}`}>
+                <TimelineHeader>
+                  <TimelineTime>
+                    {edu.from}-{edu.to}
+                  </TimelineTime>
+                  <TimelineTitle>{edu.title}</TimelineTitle>
+                </TimelineHeader>
+                <TimelineDescription>{edu.detail}</TimelineDescription>
+              </TimelineItem>
+            ))}
+          </Timeline>
         </div>
       )}
     </>
