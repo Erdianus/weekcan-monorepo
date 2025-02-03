@@ -1,72 +1,41 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { CloudSun, Moon, Plus, Sun, X } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Plus } from "lucide-react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { k } from "@hktekno/api";
-import { Select } from "@hktekno/ui/components/select";
+import { dailyicon } from "@hktekno/ui/components/icon/daily-status-time";
 import { Button } from "@hktekno/ui/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@hktekno/ui/components/ui/form";
-import { Input } from "@hktekno/ui/components/ui/input";
+import { Form } from "@hktekno/ui/components/ui/form";
 import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 
-const formSchema = z
-  .object({
-    latitude: z.number().default(0),
-    longitude: z.number().default(0),
-    ket: z.string().optional(),
-    status: z
-      .object({
-        label: z.string(),
-        value: z.string(),
-      })
-      .nullish(),
-    location_text: z.string().optional(),
-    daily_jobs: z
-      .object({
-        id: z.number(),
-        user_id: z.number(),
-        text: z.string().min(1, "Tolong Isi Tugas Harian"),
-        status: z.string(),
-      })
-      .array()
-      .min(0),
-  })
-  .superRefine((val, ctx) => {
-    if (val.status && !val.ket) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["ket"],
-        message: "Tolong Isi Keterangan",
-      });
-    }
+import { DailyItem } from "../form";
 
-    if (!val.status && val.daily_jobs.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["daily_jobs"],
-        message: "Tolong Isi Tugas Minimal 1",
-      });
-    }
-  });
+const formSchema = z.object({
+  daily_jobs: z
+    .object({
+      id: z.union([z.string(), z.number()]),
+      time: z.string(),
+      text: z.string().min(1, "Tolong Isi Tugas Harian"),
+      status: z.string(),
+    })
+    .array()
+    .min(1, "Tolong Isi Kerjaan Harian"),
+});
+
+const Sunrise = dailyicon["Pagi"];
+const Noon = dailyicon["Siang"];
+const Sunset = dailyicon["Sore"];
+const Night = dailyicon["Malam"];
 
 const CreateDailyJob = () => {
   const user_id = useUserStore((s) => s.id);
@@ -88,23 +57,13 @@ const CreateDailyJob = () => {
     <>
       <H3 className="mb-4">Buat Tugas</H3>
       <FormCreateDailyJob
-        user_id={user_id}
         isPending={create.isPending}
-        onFormSubmit={(v) => {
+        submit={(v) => {
           create.mutate({
             data: {
-              status: v.status?.value ?? "In",
               user_id: `${user_id}`,
-              latitude: 0,
-              longitude: 0,
-              daily_jobs: v.daily_jobs.map((dj) => ({
-                ...dj,
-                date: dayjs().format("YYYY-MM-DD"),
-              })),
-              ket: v.ket ? v.ket : "-",
-              location_text: v.location_text ? v.location_text : "-",
               date: dayjs().format("YYYY-MM-DD"),
-              time: dayjs().format("HH:mm:ss"),
+              daily_jobs: v.daily_jobs,
             },
           });
         }}
@@ -114,309 +73,186 @@ const CreateDailyJob = () => {
 };
 
 const FormCreateDailyJob = ({
-  onFormSubmit,
-  user_id,
+  submit,
   isPending,
 }: {
-  onFormSubmit: (value: z.infer<typeof formSchema>) => void;
-  user_id: string | number;
+  submit: (value: z.infer<typeof formSchema>) => void;
   isPending: boolean;
 }) => {
-  const [id, setID] = useState(1);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      latitude: 0,
-      longitude: 0,
-      ket: "",
-      status: null,
-      location_text: "",
       daily_jobs: [],
     },
   });
+
+  const {
+    fields: fieldDailyJobs,
+    append: addDailyJobs,
+    remove: delDailyJobs,
+  } = useFieldArray({
+    control: form.control,
+    name: "daily_jobs",
+  });
+
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onFormSubmit)}>
-          <div className="mb-4 grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="location_text"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Lokasi</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Masukkan Lokasi" />
-                  </FormControl>
-                  <FormDescription>Kosongkan jika dikantor</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <FormControl>
-                    <Select
-                      options={["Izin", "Sakit"].map((v) => ({
-                        label: v,
-                        value: v,
-                      }))}
-                      isClearable
-                      value={field.value}
-                      onChange={(e) => {
-                        if (!e) {
-                          form.setValue("daily_jobs", []);
-                          form.setValue("ket", "");
-                        }
-                        field.onChange(e);
-                      }}
-                      placeholder="Pilih Status"
-                    />
-                  </FormControl>
-                  <FormDescription>Kosongkan jika hadir</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          {!!form.watch("status") && (
-            <div className="mb-4">
-              <FormField
-                control={form.control}
-                name="ket"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Keterangan {form.watch("status")?.value}
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Masukkan Keterangan" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
+        <form onSubmit={form.handleSubmit(submit)}>
           <div className="">
-            <div className={form.watch("status") ? "hidden" : ""}>
-              <div className="mb-4 flex items-center gap-1 font-bold">
-                <CloudSun />
-                Pagi
-                <Button
-                  variant={"outline"}
-                  size={"icon"}
-                  type="button"
-                  className="h-8 w-8"
-                  onClick={() => {
-                    const value: z.infer<
-                      typeof formSchema
-                    >["daily_jobs"][number] = {
-                      id,
-                      text: "",
-                      status: "Pagi",
-                      user_id: +user_id,
-                    };
-                    form.setValue("daily_jobs", [
-                      ...form.watch("daily_jobs"),
-                      value,
-                    ]);
-                    setID((o) => o + 1);
-                  }}
-                >
-                  <Plus size={16} />
-                </Button>
-                <Separator className="flex-1" />
-              </div>
-              <div className="max-h-24 overflow-y-auto">
-                {form.watch("daily_jobs").map((daily, i) => {
-                  if (daily.status !== "Pagi") return null;
-                  return (
-                    <div className="mb-2" key={`pagi-${daily.id}`}>
-                      <FormField
-                        control={form.control}
-                        name={`daily_jobs.${i}.text`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <div className="flex">
-                              <Input
-                                {...field}
-                                placeholder="Isi Kerjaan Pagi"
-                                className="rounded-r-none"
-                              />
-                              <Button
-                                type="button"
-                                variant={"ghost"}
-                                size={"icon"}
-                                className="rounded-l-none"
-                                onClick={() => {
-                                  form.setValue(
-                                    "daily_jobs",
-                                    form
-                                      .watch("daily_jobs")
-                                      .filter((v) => v.id !== daily.id),
-                                  );
-                                }}
-                              >
-                                <X />
-                              </Button>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="mb-4 flex items-center gap-1 font-bold">
-                <Sun />
-                Siang
-                <Button
-                  variant={"outline"}
-                  size={"icon"}
-                  type="button"
-                  className="h-8 w-8"
-                  onClick={() => {
-                    const value: z.infer<
-                      typeof formSchema
-                    >["daily_jobs"][number] = {
-                      id,
-                      text: "",
-                      status: "Siang",
-                      user_id: +user_id,
-                    };
-                    form.setValue("daily_jobs", [
-                      ...form.watch("daily_jobs"),
-                      value,
-                    ]);
-                    setID((o) => o + 1);
-                  }}
-                >
-                  <Plus size={16} />
-                </Button>
-                <Separator className="flex-1" />
-              </div>
-              <div className="max-h-24 overflow-y-auto">
-                {form.watch("daily_jobs").map((daily, i) => {
-                  if (daily.status !== "Siang") return null;
-                  return (
-                    <div className="mb-2" key={`siang-${daily.id}`}>
-                      <FormField
-                        control={form.control}
-                        name={`daily_jobs.${i}.text`}
-                        render={({ field }) => (
-                          <FormItem className="">
-                            <div className="flex">
-                              <Input
-                                {...field}
-                                placeholder="Isi Kerjaan Siang"
-                                className="rounded-r-none"
-                              />
-                              <Button
-                                type="button"
-                                variant={"ghost"}
-                                size={"icon"}
-                                className="rounded-l-none"
-                                onClick={() => {
-                                  form.setValue(
-                                    "daily_jobs",
-                                    form
-                                      .watch("daily_jobs")
-                                      .filter((v) => v.id !== daily.id),
-                                  );
-                                }}
-                              >
-                                <X />
-                              </Button>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  );
-                })}
-              </div>{" "}
-              <div className="mb-4 flex items-center gap-1 font-bold">
-                <Moon />
-                Malam
-                <Button
-                  variant={"outline"}
-                  size={"icon"}
-                  type="button"
-                  className="h-8 w-8"
-                  onClick={() => {
-                    const value: z.infer<
-                      typeof formSchema
-                    >["daily_jobs"][number] = {
-                      id,
-                      text: "",
-                      status: "Malam",
-                      user_id: +user_id,
-                    };
-                    form.setValue("daily_jobs", [
-                      ...form.watch("daily_jobs"),
-                      value,
-                    ]);
-                    setID((o) => o + 1);
-                  }}
-                >
-                  <Plus size={16} />
-                </Button>
-                <Separator className="flex-1" />
-              </div>
-              <div className="max-h-24 overflow-y-auto">
-                {form.watch("daily_jobs").map((daily, i) => {
-                  if (daily.status !== "Malam") return null;
-                  return (
-                    <div className="mb-2" key={`malam-${daily.id}`}>
-                      <FormField
-                        control={form.control}
-                        name={`daily_jobs.${i}.text`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <div className="flex">
-                              <Input
-                                {...field}
-                                placeholder="Isi Kerjaan Malam"
-                                className="rounded-r-none"
-                              />
-                              <Button
-                                type="button"
-                                variant={"ghost"}
-                                size={"icon"}
-                                className="rounded-l-none"
-                                onClick={() => {
-                                  form.setValue(
-                                    "daily_jobs",
-                                    form
-                                      .watch("daily_jobs")
-                                      .filter((v) => v.id !== daily.id),
-                                  );
-                                }}
-                              >
-                                <X />
-                              </Button>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  );
-                })}
-              </div>{" "}
+            <div className="mb-4 flex items-center gap-1 font-bold">
+              {Sunrise && <Sunrise />}
+              Pagi
+              <Button
+                variant={"outline"}
+                size={"icon"}
+                type="button"
+                className="h-8 w-8"
+                onClick={() => {
+                  addDailyJobs({
+                    id: crypto.randomUUID(),
+                    text: "",
+                    status: "Pagi",
+                    time: "08:00:00",
+                  });
+                }}
+              >
+                <Plus size={16} />
+              </Button>
+              <Separator className="flex-1" />
             </div>
-            <p className="mb-4 text-sm text-destructive">
-              {form.formState.errors.daily_jobs?.message ??
-                form.formState.errors.daily_jobs?.root?.message}
-            </p>
+            <div className="">
+              {fieldDailyJobs.map((daily, i) => {
+                if (daily.status !== "Pagi") return null;
+                return (
+                  <DailyItem
+                    key={`pagi-${daily.id}`}
+                    onDelete={() => {
+                      delDailyJobs(i);
+                    }}
+                    form={form}
+                    i={i}
+                    taskPlaceholder="Isi Kerjaan Pagi"
+                  />
+                );
+              })}
+            </div>
+            <div className="mb-4 flex items-center gap-1 font-bold">
+              {Noon && <Noon />}
+              Siang
+              <Button
+                variant={"outline"}
+                size={"icon"}
+                type="button"
+                className="h-8 w-8"
+                onClick={() => {
+                  addDailyJobs({
+                    id: crypto.randomUUID(),
+                    text: "",
+                    status: "Siang",
+                    time: "13:00:00",
+                  });
+                }}
+              >
+                <Plus size={16} />
+              </Button>
+              <Separator className="flex-1" />
+            </div>
+            <div className="">
+              {fieldDailyJobs.map((daily, i) => {
+                if (daily.status !== "Siang") return null;
+                return (
+                  <DailyItem
+                    key={`siang-${daily.id}`}
+                    onDelete={() => {
+                      delDailyJobs(i);
+                    }}
+                    form={form}
+                    i={i}
+                    taskPlaceholder="Isi Kerjaan Siang"
+                  />
+                );
+              })}
+            </div>{" "}
+            <div className="mb-4 flex items-center gap-1 font-bold">
+              {Sunset && <Sunset />}
+              Sore
+              <Button
+                variant={"outline"}
+                size={"icon"}
+                type="button"
+                className="h-8 w-8"
+                onClick={() => {
+                  addDailyJobs({
+                    id: crypto.randomUUID(),
+                    text: "",
+                    status: "Sore",
+                    time: "16:00:00",
+                  });
+                }}
+              >
+                <Plus size={16} />
+              </Button>
+              <Separator className="flex-1" />
+            </div>
+            <div className="">
+              {fieldDailyJobs.map((daily, i) => {
+                if (daily.status !== "Sore") return null;
+                return (
+                  <DailyItem
+                    key={`sore-${daily.id}`}
+                    onDelete={() => {
+                      delDailyJobs(i);
+                    }}
+                    form={form}
+                    i={i}
+                    taskPlaceholder="Isi Kerjaan Sore"
+                  />
+                );
+              })}
+            </div>{" "}
+            <div className="mb-4 flex items-center gap-1 font-bold">
+              {Night && <Night />}
+              Malam
+              <Button
+                variant={"outline"}
+                size={"icon"}
+                type="button"
+                className="h-8 w-8"
+                onClick={() => {
+                  addDailyJobs({
+                    id: crypto.randomUUID(),
+                    text: "",
+                    status: "Malam",
+                    time: "19:00:00",
+                  });
+                }}
+              >
+                <Plus size={16} />
+              </Button>
+              <Separator className="flex-1" />
+            </div>
+            <div className="">
+              {fieldDailyJobs.map((daily, i) => {
+                if (daily.status !== "Malam") return null;
+                return (
+                  <DailyItem
+                    key={`malam-${daily.id}`}
+                    onDelete={() => {
+                      delDailyJobs(i);
+                    }}
+                    form={form}
+                    i={i}
+                    taskPlaceholder="Isi Kerjaan Malam"
+                  />
+                );
+              })}
+            </div>{" "}
           </div>
+          <p className="my-4 text-sm text-destructive">
+            {form.formState.errors.daily_jobs?.message ??
+              form.formState.errors.daily_jobs?.root?.message}
+          </p>
           <Button disabled={isPending}>
             {isPending ? <Spinner /> : "Submit"}
           </Button>

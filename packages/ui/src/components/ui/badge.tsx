@@ -22,6 +22,8 @@ const badgeVariants = cva<{ variant: Record<string, string> }>(
         "On Going":
           "border-transparent bg-yellow-500 text-white dark:bg-yellow-300 dark:text-yellow-700",
         Done: "border-transparent bg-green-500 text-white dark:bg-green-300 dark:text-green-700",
+        "Pitching Concept":
+          "border-transparent bg-gray-500 text-white dark:bg-gray-300 dark:text-gray-700",
         "In Preparation":
           "border-transparent bg-blue-500 text-white dark:bg-blue-300 dark:text-blue-700",
         Cancel:

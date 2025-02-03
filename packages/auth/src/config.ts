@@ -29,7 +29,11 @@ export const authConfig = {
         credentials: Partial<Record<"username" | "password", unknown>>,
       ) => {
         try {
-          const res = await Axios.post<{ data: UserSession }>(
+          const res = await Axios.post<{
+            data: UserSession & {
+              companies: { id: number; company_name: string }[];
+            };
+          }>(
             `/login`,
             {
               username: credentials.username,
@@ -61,17 +65,7 @@ export const authConfig = {
             return { ...user, friends_id };
           }
 
-          const { data: u } = await Axios<{
-            data: { company: { id: number; company_name: string }[] };
-          }>(`/user/${user.id}`, {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-          });
-
-          u.data.company.some((v) => {
+          user.companies.some((v) => {
             const vv = v.company_name === "Friends Production";
             if (vv) {
               friends_id = v.id;

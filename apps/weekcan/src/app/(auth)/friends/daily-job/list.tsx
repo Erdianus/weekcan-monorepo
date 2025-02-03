@@ -12,31 +12,18 @@ import {
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { atom, useAtom } from "jotai";
-import {
-  CloudSun,
-  Moon,
-  MoreHorizontal,
-  Pencil,
-  Plus,
-  Sun,
-} from "lucide-react";
+import { MoreHorizontal, Pencil, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import type { inferData, inferVariables } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import Flashlist from "@hktekno/ui/components/flashlist";
+import { dailyicon } from "@hktekno/ui/components/icon/daily-status-time";
 import Loading from "@hktekno/ui/components/loading";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Button } from "@hktekno/ui/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@hktekno/ui/components/ui/carousel";
 import { DrawerDialog } from "@hktekno/ui/components/ui/drawer";
 import {
   DropdownMenu,
@@ -53,6 +40,7 @@ import {
   TableHeader,
   TableRow,
 } from "@hktekno/ui/components/ui/table";
+import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 import { cn } from "@hktekno/ui/lib/utils";
 
@@ -137,31 +125,18 @@ const columns = [
       if (!getValue()?.length) return "-";
       return (
         <>
-          <Carousel
-            opts={{ loop: true, align: "center" }}
-            className="relative pr-6 md:pr-0"
-            orientation="vertical"
-          >
-            <CarouselContent className="h-14 py-1">
-              {getValue()?.map((v) => (
-                <CarouselItem key={`status-${v.id}`} className="">
-                  <div className="flex h-10 items-center gap-2 whitespace-nowrap rounded border px-2">
-                    {v.status === "Pagi" && <CloudSun />}
-                    {v.status === "Siang" && <Sun />}
-                    {v.status === "Malam" && <Moon />}
-                    {v.text}
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            {/*@ts-expect-error gapapan gan error*/}
-            {getValue()?.length > 1 && (
-              <div className="absolute -right-2 top-0 flex flex-col items-center justify-center">
-                <CarouselPrevious className="static h-6 w-6" />
-                <CarouselNext className="static h-6 w-6" />
+          {getValue()?.map((v) => {
+            const Icon = dailyicon[v.status];
+            return (
+              <div className="mb-0.5 flex items-center gap-1">
+                {Icon && <Icon width={18} height={18} />}
+                <p className="">{v.text}</p>
+                <p className="text-xs text-muted-foreground">
+                  {v.time.slice(0, 5)}
+                </p>
               </div>
-            )}
-          </Carousel>
+            );
+          })}
         </>
       );
     },
@@ -181,6 +156,7 @@ const columns = [
 ];
 
 const ListDailyJobUser = ({ role }: { role?: string }) => {
+  const user_id = useUserStore((s) => s.id);
   const isRoled = ["Admin", "Owner", "HRD", "Manager"].includes(role ?? "");
 
   const [state, setState] = useAtom(stateAtom);
@@ -190,6 +166,10 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
 
   const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
     variables: { ...variables, company_id },
+  });
+
+  const { data: daily } = k.company.daily_job.single.useQuery({
+    variables: { user_id },
   });
 
   const client = useQueryClient();
@@ -208,7 +188,7 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
     onSuccess: async ({ message }) => {
       toast.success(message);
       await client.invalidateQueries({
-        queryKey: k.company.daily_job.userInfinity.getKey(),
+        queryKey: k.company.daily_job.users.getKey(),
       });
     },
     onError: ({ message }) => toast.error(message),
@@ -237,9 +217,10 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
             <FormDailyJob
               user_id={state.user.id}
               defaultValues={state.user}
-              onFormSubmit={(v) => {
+              onSubmitAction={(v) => {
                 const isUpdate =
-                  state.user?.status.toLowerCase() !== "belum hadir";
+                  state.user?.dailyJob && state.user?.dailyJob?.length > 0;
+
                 const data: inferVariables<
                   typeof k.company.daily_job.create
                 >["data"] = {
@@ -265,6 +246,18 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
           )}
         </DrawerDialog>
       )}
+      <div className="mb-4 flex w-full items-center justify-between">
+        <H3 className="">Tugas Harian</H3>
+        <Button
+          type="button"
+          size={"icon"}
+          onClick={() => {
+            setState({ user: daily });
+          }}
+        >
+          <Plus />
+        </Button>
+      </div>
       <PortalSearch placeholder="Cari Tugas Harian..." />
       <div className="mb-4 flex flex-wrap items-center gap-4">
         <Filter isLoading={isLoading} />
@@ -322,12 +315,13 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
                     key={`roww-${row.id}`}
                     data-state={row.getIsSelected() && "selected"}
                     className={cn(
-                      "hover:bg-accent",
+                      "cursor-pointer hover:bg-accent",
                       row.original.id === state.user?.id && "bg-main-500",
                     )}
                     onDoubleClick={() => {
-                      if (!isRoled) return;
-                      setState({ user: row.original });
+                      if (`${row.original.id}` === `${user_id}` || isRoled) {
+                        setState({ user: row.original });
+                      }
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (

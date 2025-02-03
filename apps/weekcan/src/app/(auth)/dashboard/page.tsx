@@ -43,9 +43,9 @@ export default async function DashboardPage() {
           </Link>
         </div>
       )}
-      {(sesh?.user.role !== "Employee" || !sesh.user.friends_id) && (
+      {/* {(sesh?.user.role !== "Employee" || !sesh.user.friends_id) && (
         <DashboardCard />
-      )}
+      )} */}
     </>
   );
 }

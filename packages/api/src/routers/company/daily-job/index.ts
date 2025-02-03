@@ -91,15 +91,13 @@ const daily_job = {
     },
     initialPageParam: 1,
   }),
-  single: {
-    attendance: router.query({
-      fetcher: async (variables: { user_id: string }) => {
-        const res = await Axios.get(`/daily-jobs/user/${variables.user_id}`);
+  single: router.query({
+    fetcher: async (variables: { user_id: string | number }) => {
+      const res = await Axios.get(`/daily-jobs/user/${variables.user_id}`);
 
-        return res.data as z.infer<typeof dailyJobSchema>;
-      },
-    }),
-  },
+      return res.data as z.infer<typeof dailyJobSchema>;
+    },
+  }),
   create: router.mutation({
     mutationFn: async (variables: { data: Form }) => {
       const res = await Axios.post("/daily-jobs", variables.data);

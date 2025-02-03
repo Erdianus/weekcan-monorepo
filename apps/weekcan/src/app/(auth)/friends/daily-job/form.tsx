@@ -1,12 +1,14 @@
 "use client";
 
+import type { MouseEventHandler } from "react";
+import type { UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import dayjs from "dayjs";
-import { CloudSun, Moon, Plus, Sun, XCircle } from "lucide-react";
+import { Plus, XCircle } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { inferData, k } from "@hktekno/api";
+import { dailyicon } from "@hktekno/ui/components/icon/daily-status-time";
 import { Button } from "@hktekno/ui/components/ui/button";
 import {
   Form,
@@ -40,13 +42,18 @@ const formSchema = z.object({
 });
 
 type DailyJobUser = inferData<typeof k.company.daily_job.users>["data"][number];
+
+const Sunrise = dailyicon["Pagi"];
+const Noon = dailyicon["Siang"];
+const Sunset = dailyicon["Sore"];
+const Night = dailyicon["Malam"];
+
 export const FormDailyJob = ({
-  onFormSubmit,
-  user_id,
+  onSubmitAction,
   isPending,
   defaultValues,
 }: {
-  onFormSubmit: (value: z.infer<typeof formSchema>) => void;
+  onSubmitAction: (value: z.infer<typeof formSchema>) => void;
   user_id: string | number;
   isPending: boolean;
   defaultValues?: DailyJobUser;
@@ -70,10 +77,10 @@ export const FormDailyJob = ({
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onFormSubmit)} className="">
+        <form onSubmit={form.handleSubmit(onSubmitAction)} className="">
           <div className="max-h-96 overflow-y-auto">
             <div className="mb-4 flex items-center gap-1 font-bold">
-              <CloudSun />
+              {Sunrise && <Sunrise />}
               Pagi
               <Button
                 variant={"outline"}
@@ -85,7 +92,7 @@ export const FormDailyJob = ({
                     id: crypto.randomUUID(),
                     text: "",
                     status: "Pagi",
-                    time: dayjs().format("HH:00:00"),
+                    time: "08:00:00",
                   });
                 }}
               >
@@ -97,76 +104,20 @@ export const FormDailyJob = ({
               {fieldDailyJobs.map((daily, i) => {
                 if (daily.status !== "Pagi") return null;
                 return (
-                  <div
-                    className="relative mb-4 grid grid-cols-1 gap-4 rounded-lg border px-3 py-4 sm:grid-cols-2"
+                  <DailyItem
                     key={`pagi-${daily.id}`}
-                  >
-                    <Button
-                      size={"icon"}
-                      variant={"ghost"}
-                      type="button"
-                      className="absolute -top-4 right-2 rounded-full"
-                      onClick={() => {
-                        delDailyJobs(i);
-                      }}
-                    >
-                      <XCircle
-                        size={18}
-                        className="text-destructive-foreground"
-                      />
-                    </Button>
-                    <FormField
-                      control={form.control}
-                      name={`daily_jobs.${i}.text`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="Isi Kerjaan Pagi"
-                              className="rounded-r-none"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`daily_jobs.${i}.time`}
-                      render={({ field }) => {
-                        return (
-                          <FormItem>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Pilih Waktu" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {optionsTime2().map((v) => {
-                                  return (
-                                    <SelectItem value={v.value}>
-                                      {v.label}
-                                    </SelectItem>
-                                  );
-                                })}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        );
-                      }}
-                    />
-                  </div>
+                    onDelete={() => {
+                      delDailyJobs(i);
+                    }}
+                    form={form}
+                    i={i}
+                    taskPlaceholder="Isi Kerjaan Pagi"
+                  />
                 );
               })}
             </div>
             <div className="mb-4 flex items-center gap-1 font-bold">
-              <Sun />
+              {Noon && <Noon />}
               Siang
               <Button
                 variant={"outline"}
@@ -178,7 +129,7 @@ export const FormDailyJob = ({
                     id: crypto.randomUUID(),
                     text: "",
                     status: "Siang",
-                    time: dayjs().format("HH:00:00"),
+                    time: "13:00:00",
                   });
                 }}
               >
@@ -190,76 +141,57 @@ export const FormDailyJob = ({
               {fieldDailyJobs.map((daily, i) => {
                 if (daily.status !== "Siang") return null;
                 return (
-                  <div
-                    className="relative mb-4 grid grid-cols-1 gap-4 rounded-lg border px-3 py-4 sm:grid-cols-2"
-                    key={`pagi-${daily.id}`}
-                  >
-                    <Button
-                      size={"icon"}
-                      variant={"ghost"}
-                      type="button"
-                      className="absolute -top-4 right-2 rounded-full"
-                      onClick={() => {
-                        delDailyJobs(i);
-                      }}
-                    >
-                      <XCircle
-                        size={18}
-                        className="text-destructive-foreground"
-                      />
-                    </Button>
-                    <FormField
-                      control={form.control}
-                      name={`daily_jobs.${i}.text`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="Isi Kerjaan Siang"
-                              className="rounded-r-none"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`daily_jobs.${i}.time`}
-                      render={({ field }) => {
-                        return (
-                          <FormItem>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Pilih Waktu" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {optionsTime2().map((v) => {
-                                  return (
-                                    <SelectItem value={v.value}>
-                                      {v.label}
-                                    </SelectItem>
-                                  );
-                                })}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        );
-                      }}
-                    />
-                  </div>
+                  <DailyItem
+                    key={`siang-${daily.id}`}
+                    onDelete={() => {
+                      delDailyJobs(i);
+                    }}
+                    form={form}
+                    i={i}
+                    taskPlaceholder="Isi Kerjaan Siang"
+                  />
                 );
               })}
             </div>{" "}
             <div className="mb-4 flex items-center gap-1 font-bold">
-              <Moon />
+              {Sunset && <Sunset />}
+              Sore
+              <Button
+                variant={"outline"}
+                size={"icon"}
+                type="button"
+                className="h-8 w-8"
+                onClick={() => {
+                  addDailyJobs({
+                    id: crypto.randomUUID(),
+                    text: "",
+                    status: "Sore",
+                    time: "16:00:00",
+                  });
+                }}
+              >
+                <Plus size={16} />
+              </Button>
+              <Separator className="flex-1" />
+            </div>
+            <div className="">
+              {fieldDailyJobs.map((daily, i) => {
+                if (daily.status !== "Sore") return null;
+                return (
+                  <DailyItem
+                    key={`sore-${daily.id}`}
+                    onDelete={() => {
+                      delDailyJobs(i);
+                    }}
+                    form={form}
+                    i={i}
+                    taskPlaceholder="Isi Kerjaan Sore"
+                  />
+                );
+              })}
+            </div>{" "}
+            <div className="mb-4 flex items-center gap-1 font-bold">
+              {Night && <Night />}
               Malam
               <Button
                 variant={"outline"}
@@ -271,7 +203,7 @@ export const FormDailyJob = ({
                     id: crypto.randomUUID(),
                     text: "",
                     status: "Malam",
-                    time: dayjs().format("HH:00:00"),
+                    time: "19:00:00",
                   });
                 }}
               >
@@ -283,71 +215,15 @@ export const FormDailyJob = ({
               {fieldDailyJobs.map((daily, i) => {
                 if (daily.status !== "Malam") return null;
                 return (
-                  <div
-                    className="relative mb-4 grid grid-cols-1 gap-4 rounded-lg border px-3 py-4 sm:grid-cols-2"
+                  <DailyItem
                     key={`malam-${daily.id}`}
-                  >
-                    <Button
-                      size={"icon"}
-                      variant={"ghost"}
-                      type="button"
-                      className="absolute -top-4 right-2 rounded-full"
-                      onClick={() => {
-                        delDailyJobs(i);
-                      }}
-                    >
-                      <XCircle
-                        size={18}
-                        className="text-destructive-foreground"
-                      />
-                    </Button>
-                    <FormField
-                      control={form.control}
-                      name={`daily_jobs.${i}.text`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="Isi Kerjaan Malam"
-                              className="rounded-r-none"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`daily_jobs.${i}.time`}
-                      render={({ field }) => {
-                        return (
-                          <FormItem>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Pilih Waktu" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {optionsTime2().map((v) => {
-                                  return (
-                                    <SelectItem value={v.value}>
-                                      {v.label}
-                                    </SelectItem>
-                                  );
-                                })}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        );
-                      }}
-                    />
-                  </div>
+                    onDelete={() => {
+                      delDailyJobs(i);
+                    }}
+                    form={form}
+                    i={i}
+                    taskPlaceholder="Isi Kerjaan Malam"
+                  />
                 );
               })}
             </div>{" "}
@@ -365,3 +241,85 @@ export const FormDailyJob = ({
     </>
   );
 };
+
+const DailyItem = ({
+  i,
+  form,
+  onDelete,
+  taskPlaceholder,
+}: {
+  form: UseFormReturn<z.infer<typeof formSchema>>;
+  i: number;
+  onDelete: MouseEventHandler<HTMLButtonElement> | undefined;
+  taskPlaceholder?: string;
+}) => {
+  return (
+    <>
+      <div className="relative mb-4 grid grid-cols-1 gap-4 rounded-lg border px-3 py-4 sm:grid-cols-2">
+        <Button
+          size={"icon"}
+          variant={"ghost"}
+          type="button"
+          className="absolute -top-4 right-2 rounded-full"
+          /* onClick={() => {
+            delDailyJobs(i);
+          }} */
+          onClick={onDelete}
+        >
+          <XCircle size={18} className="text-destructive-foreground" />
+        </Button>
+        <FormField
+          control={form.control}
+          name={`daily_jobs.${i}.text`}
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder={taskPlaceholder ?? "Isi Kerjaan"}
+                  className="rounded-r-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={`daily_jobs.${i}.time`}
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Pilih Waktu" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {optionsTime2().map((v) => {
+                      return (
+                        <SelectItem
+                          key={`time-${v.label}-${i}`}
+                          value={v.value}
+                        >
+                          {v.label}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+      </div>
+    </>
+  );
+};
+
+export { DailyItem };

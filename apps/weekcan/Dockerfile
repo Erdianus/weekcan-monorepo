@@ -1,6 +1,6 @@
 ARG NODE_VERSION=20
-ARG APP_DIRNAME=nextjs
-ARG PROJECT=@acme/nextjs
+ARG APP_DIRNAME=weekcan
+ARG PROJECT=@hktekno/weekcan
 
 # 1. Alpine image
 FROM node:${NODE_VERSION}-alpine AS alpine
@@ -52,6 +52,9 @@ RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm install --frozen-lockfi
 
 # Copy source code of isolated subworkspace
 COPY --from=pruner /app/out/full/ .
+
+ARG NEXT_PUBLIC_BASE_API
+ARG NEXT_PUBLIC_BASE_URL
 
 RUN pnpm build --filter=${PROJECT}
 

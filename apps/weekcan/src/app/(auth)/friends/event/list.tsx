@@ -279,6 +279,7 @@ export default function ListEvent({ role }: { role?: string }) {
   );
 }
 
+const eventStatus = [{ label: "All", value: "All" }, ...optionsEventStatus()];
 const Filter = ({ isLoading }: { isLoading: boolean }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -325,7 +326,7 @@ const Filter = ({ isLoading }: { isLoading: boolean }) => {
       <Select
         instanceId={"event_status_filter"}
         className="w-auto"
-        options={optionsEventStatus()}
+        options={eventStatus}
         defaultValue={
           searchParams.get("status")
             ? {
