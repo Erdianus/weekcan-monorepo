@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CircleUserRound, KeyRound, LogOut } from "lucide-react";
+import { CircleUserRound, KeyRound, LogOut, Download } from "lucide-react";
 import { toast } from "sonner";
 
 import { k } from "@hktekno/api";
@@ -53,6 +53,12 @@ const UserMenu = () => {
           <DropdownMenuItem>
             <KeyRound className="mr-2 h-4 w-4" />
             <span>Ubah Password</span>
+          </DropdownMenuItem>
+        </Link>
+<Link href="/download">
+          <DropdownMenuItem>
+            <Download className="mr-2 h-4 w-4" />
+            <span>Download</span>
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />
