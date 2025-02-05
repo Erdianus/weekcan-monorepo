@@ -1,29 +1,32 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import axios, { AxiosError } from "axios";
 
 import { env } from "~/env";
 import ResetPassword from "./reset-password";
+
+export const metadata: Metadata = {
+  title: "Reset Password",
+};
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: { email: string; reset_token: string };
 }) {
-  const urlParams = new URLSearchParams(searchParams);
-  urlParams.set("email", searchParams.email);
-  urlParams.set("reset_token", searchParams.reset_token);
-
-  const res = await fetch(
-    `${env.NEXT_PUBLIC_BASE_API}/api/reset-pass?${urlParams.toString()}`,
-    {
+  try {
+    await axios(`${env.NEXT_PUBLIC_BASE_API}/api/reset-pass`, {
+      params: searchParams,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-    },
-  );
-
-  if (res.status !== 200) {
-    redirect("/login");
+    });
+  } catch (e: unknown) {
+    if (e instanceof AxiosError) {
+      redirect("/login");
+    }
+    throw "Terjadi Kesalahan";
   }
 
   return (
