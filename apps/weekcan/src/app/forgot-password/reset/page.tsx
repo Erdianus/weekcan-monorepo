@@ -23,10 +23,7 @@ export default async function Page({
       },
     });
   } catch (e: unknown) {
-    if (e instanceof AxiosError) {
-      redirect("/login");
-    }
-    throw "Terjadi Kesalahan";
+    redirect("/login");
   }
 
   return (
