@@ -12,18 +12,22 @@ export const metadata: Metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { email: string; reset_token: string };
+  searchParams: Promise<{ email: string; reset_token: string }>;
 }) {
+  const params = await searchParams;
   try {
     await axios(`${env.NEXT_PUBLIC_BASE_API}/api/reset-pass`, {
-      params: searchParams,
+      params,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
     });
   } catch (e: unknown) {
-    redirect("/login");
+    if (e instanceof AxiosError) {
+      console.log(e.message);
+      redirect("/login");
+    }
   }
 
   return (

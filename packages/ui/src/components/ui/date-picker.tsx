@@ -21,6 +21,7 @@ type DatePickerProps = CalendarProps & {
   onChange?: SelectSingleEventHandler;
   className?: string;
   defaultValue?: Date;
+  btnDisabled?: boolean;
 };
 
 function DatePicker(props: DatePickerProps) {
@@ -46,6 +47,7 @@ function DatePicker(props: DatePickerProps) {
     <Popover>
       <PopoverTrigger asChild>
         <Button
+          disabled={props.btnDisabled}
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",
