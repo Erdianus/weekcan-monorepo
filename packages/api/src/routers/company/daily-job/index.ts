@@ -16,6 +16,7 @@ const dailyJobSchema = z.object({
   role_id: z.string(),
   latitude: z.number(),
   longitude: z.number(),
+  point: z.number(),
   role: roleBaseSchema,
   job_type_id: z.string().nullish(),
   jobType: jobTypeBaseSchema.nullish(),
@@ -108,6 +109,15 @@ const daily_job = {
   update: router.mutation({
     mutationFn: async (variable: { id: string | number; data: Form }) => {
       const res = await Axios.put(`/daily-jobs/${variable.id}`, variable.data);
+
+      return res.data as { message: string };
+    },
+  }),
+  updatePoint: router.mutation({
+    mutationFn: async (variables: {
+      data: { user_id: string | number; point: number | string };
+    }) => {
+      const res = await Axios.put(`/daily-jobs/point/update`, variables.data);
 
       return res.data as { message: string };
     },

@@ -1,11 +1,10 @@
 "use client";
 
-import type { PropsWithChildren, ReactNode } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -17,13 +16,11 @@ import { DateRangePicker } from "@hktekno/ui/components/ui/date-picker";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogTitle,
 } from "@hktekno/ui/components/ui/dialog";
 import {
   Drawer,
   DrawerContent,
-  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
 } from "@hktekno/ui/components/ui/drawer";
@@ -525,8 +522,7 @@ export function FormEvent() {
           label: currEvent.status,
         },
         tax_type: {
-          // @ts-expect-error gapapa gan
-          label: taxes[currEvent?.tax_type - 1].label,
+          label: taxes[currEvent?.tax_type - 1]?.label ?? "",
           value: `${currEvent.tax_type}`,
         },
       });
@@ -536,7 +532,6 @@ export function FormEvent() {
         event_type: "",
         pic: [],
         pic_design: [],
-        // @ts-expect-error sengaja biar error
         date: undefined,
         venue: "",
         client: "",

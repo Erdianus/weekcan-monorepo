@@ -1,6 +1,7 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -31,6 +32,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
+import { Input } from "@hktekno/ui/components/ui/input";
 import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import {
   Table,
@@ -51,6 +53,47 @@ type DailyJobUser = inferData<typeof k.company.daily_job.users>["data"][number];
 const colHelper = createColumnHelper<DailyJobUser>();
 
 const stateAtom = atom<{ user?: DailyJobUser }>({ user: undefined });
+
+const Point = ({ getValue, row }: CellContext<DailyJobUser, number>) => {
+  const role = useUserStore((s) => s.role);
+  const isRoled = ["Admin", "Owner", "HRD", "Manager"].includes(role ?? "");
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const client = useQueryClient();
+  const update = k.company.daily_job.updatePoint.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.users.getKey(),
+      });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = `${getValue()}`;
+    }
+  }, [getValue()]);
+
+  return (
+    <Input
+      ref={inputRef}
+      defaultValue={getValue()}
+      disabled={!isRoled}
+      type="number"
+      className="w-min"
+      onBlur={(e) => {
+        const point = e.target.value;
+        if (isRoled && `${getValue()}` !== `${point}`) {
+          update.mutate({
+            data: { user_id: row.original.id, point },
+          });
+        }
+      }}
+    />
+  );
+};
 
 const Action = ({ row }: CellContext<DailyJobUser, unknown>) => {
   const user_id = useUserStore((s) => s.id);
@@ -141,14 +184,10 @@ const columns = [
       );
     },
   }),
-  /* colHelper.accessor("location_text", {
-    header: "Lokasi",
-    cell: ({ getValue }) => (getValue() ? getValue() : "-"),
-  }), */
-  /* colHelper.accessor("ket", {
-    header: "Keterangan",
-    cell: ({ getValue }) => (getValue() ? getValue() : "-"),
-  }), */
+  colHelper.accessor("point", {
+    header: "Point",
+    cell: Point,
+  }),
   colHelper.display({
     id: "actions",
     cell: Action,
@@ -219,7 +258,7 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
               defaultValues={state.user}
               onSubmitAction={(v) => {
                 const isUpdate =
-                  state.user?.dailyJob && state.user?.dailyJob?.length > 0;
+                  state.user?.dailyJob && state.user.dailyJob.length > 0;
 
                 const data: inferVariables<
                   typeof k.company.daily_job.create
