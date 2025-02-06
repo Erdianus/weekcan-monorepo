@@ -2,14 +2,20 @@
 
 import type { MouseEventHandler } from "react";
 import type { UseFormReturn } from "react-hook-form";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, XCircle } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { Check, CheckCheck, Plus, XCircle } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
 import { z } from "zod";
 
-import { inferData, k } from "@hktekno/api";
+import { k } from "@hktekno/api";
 import { dailyicon } from "@hktekno/ui/components/icon/daily-status-time";
 import { Button } from "@hktekno/ui/components/ui/button";
+import { DatePicker } from "@hktekno/ui/components/ui/date-picker";
 import {
   Form,
   FormControl,
@@ -27,6 +33,7 @@ import {
 } from "@hktekno/ui/components/ui/select";
 import { Separator } from "@hktekno/ui/components/ui/separator";
 import Spinner from "@hktekno/ui/components/ui/spinner";
+import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import { optionsTime2 } from "@hktekno/ui/lib/select";
 
 const formSchema = z.object({
@@ -41,29 +48,63 @@ const formSchema = z.object({
     .min(0),
 });
 
-type DailyJobUser = inferData<typeof k.company.daily_job.users>["data"][number];
+const Sunrise = dailyicon.Pagi;
+const Noon = dailyicon.Siang;
+const Sunset = dailyicon.Sore;
+const Night = dailyicon.Malam;
 
-const Sunrise = dailyicon["Pagi"];
-const Noon = dailyicon["Siang"];
-const Sunset = dailyicon["Sore"];
-const Night = dailyicon["Malam"];
+const defaultDate = dayjs().toDate();
+const maxDate = dayjs().add(1, "day").toDate();
+export const FormDailyJob = ({ user_id }: { user_id: string | number }) => {
+  const [date, setDate] = useState(defaultDate);
+  const [debounceDate] = useDebounce(date, 600);
+  const { data: daily } = k.company.daily_job.single.useQuery({
+    variables: { user_id, params: { date: date4Y2M2D(debounceDate) } },
+  });
 
-export const FormDailyJob = ({
-  onSubmitAction,
-  isPending,
-  defaultValues,
-}: {
-  onSubmitAction: (value: z.infer<typeof formSchema>) => void;
-  user_id: string | number;
-  isPending: boolean;
-  defaultValues?: DailyJobUser;
-}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      daily_jobs: defaultValues?.dailyJob ?? [],
+      daily_jobs: daily?.dailyJob ?? [],
     },
   });
+
+  const isUpdate = daily?.dailyJob && daily.dailyJob.length > 0;
+
+  const client = useQueryClient();
+  const create = k.company.daily_job.create.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.users.getKey(),
+      });
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.single.getKey({
+          user_id,
+          params: { date: date4Y2M2D(date) },
+        }),
+      });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+
+  const update = k.company.daily_job.update.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.users.getKey(),
+      });
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.single.getKey({
+          user_id,
+          params: { date: date4Y2M2D(date) },
+        }),
+      });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+
+  const isPending = create.isPending || update.isPending || !daily;
 
   const {
     fields: fieldDailyJobs,
@@ -76,8 +117,36 @@ export const FormDailyJob = ({
 
   return (
     <>
+      <div className="my-5">
+        <DatePicker
+          disabled={{ after: maxDate }}
+          value={date}
+          onChange={(d) => {
+            setDate(d ?? defaultDate);
+          }}
+        />
+      </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmitAction)} className="">
+        <form
+          onSubmit={form.handleSubmit((v) => {
+            const data = {
+              user_id,
+              date: dayjs(date).format("YYYY-MM-DD"),
+              daily_jobs: v.daily_jobs,
+            };
+            if (isUpdate) {
+              update.mutate({
+                data,
+              });
+              return;
+            }
+
+            create.mutate({
+              data,
+            });
+          })}
+          className=""
+        >
           <div className="max-h-96 overflow-y-auto">
             <div className="mb-4 flex items-center gap-1 font-bold">
               {Sunrise && <Sunrise />}
@@ -234,7 +303,14 @@ export const FormDailyJob = ({
           </p>
 
           <Button disabled={isPending}>
-            {isPending ? <Spinner /> : "Submit"}
+            <span className="mr-1">Submit</span>
+            {isPending ? (
+              <Spinner />
+            ) : isUpdate ? (
+              <CheckCheck size={16} />
+            ) : (
+              <Check size={16} />
+            )}
           </Button>
         </form>
       </Form>

@@ -1,6 +1,7 @@
 "use client";
 
 import type { CellContext } from "@tanstack/react-table";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +16,7 @@ import { atom, useAtom } from "jotai";
 import { MoreHorizontal, Pencil, Plus } from "lucide-react";
 import { toast } from "sonner";
 
-import type { inferData, inferVariables } from "@hktekno/api";
+import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import Flashlist from "@hktekno/ui/components/flashlist";
 import { dailyicon } from "@hktekno/ui/components/icon/daily-status-time";
@@ -31,6 +32,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
+import { Input } from "@hktekno/ui/components/ui/input";
 import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import {
   Table,
@@ -51,6 +53,47 @@ type DailyJobUser = inferData<typeof k.company.daily_job.users>["data"][number];
 const colHelper = createColumnHelper<DailyJobUser>();
 
 const stateAtom = atom<{ user?: DailyJobUser }>({ user: undefined });
+
+const Point = ({ getValue, row }: CellContext<DailyJobUser, number>) => {
+  const role = useUserStore((s) => s.role);
+  const isRoled = ["Admin", "Owner", "HRD", "Manager"].includes(role ?? "");
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const client = useQueryClient();
+  const update = k.company.daily_job.updatePoint.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.users.getKey(),
+      });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = `${getValue()}`;
+    }
+  }, [getValue()]);
+
+  return (
+    <Input
+      ref={inputRef}
+      defaultValue={getValue()}
+      disabled={!isRoled}
+      type="number"
+      className="w-min"
+      onBlur={(e) => {
+        const point = e.target.value;
+        if (isRoled && `${getValue()}` !== `${point}`) {
+          update.mutate({
+            data: { user_id: row.original.id, point },
+          });
+        }
+      }}
+    />
+  );
+};
 
 const Action = ({ row }: CellContext<DailyJobUser, unknown>) => {
   const user_id = useUserStore((s) => s.id);
@@ -109,16 +152,6 @@ const columns = [
     header: "Jabatan",
     cell: ({ getValue }) => (getValue() ? getValue() : "-"),
   }),
-  /* colHelper.accessor("status", {
-    header: "Status",
-    cell: ({ getValue, row }) => {
-      if (getValue() === "Hadir" && row.original.time)
-        return (
-          <p className="font-semibold text-green-500">{row.original.time}</p>
-        );
-      return <Badge variant={getValue()}>{getValue()}</Badge>;
-    },
-  }), */
   colHelper.accessor("dailyJob", {
     header: "Kerjaan",
     cell: ({ getValue }) => {
@@ -141,14 +174,10 @@ const columns = [
       );
     },
   }),
-  /* colHelper.accessor("location_text", {
-    header: "Lokasi",
-    cell: ({ getValue }) => (getValue() ? getValue() : "-"),
-  }), */
-  /* colHelper.accessor("ket", {
-    header: "Keterangan",
-    cell: ({ getValue }) => (getValue() ? getValue() : "-"),
-  }), */
+  colHelper.accessor("point", {
+    header: "Point",
+    cell: Point,
+  }),
   colHelper.display({
     id: "actions",
     cell: Action,
@@ -166,32 +195,6 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
 
   const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
     variables: { ...variables, company_id },
-  });
-
-  const { data: daily } = k.company.daily_job.single.useQuery({
-    variables: { user_id },
-  });
-
-  const client = useQueryClient();
-  const create = k.company.daily_job.create.useMutation({
-    onSuccess: async ({ message }) => {
-      toast.success(message);
-      await client.invalidateQueries({
-        queryKey: k.company.daily_job.users.getKey(),
-      });
-      setState({ user: undefined });
-    },
-    onError: ({ message }) => toast.error(message),
-  });
-
-  const update = k.company.daily_job.update.useMutation({
-    onSuccess: async ({ message }) => {
-      toast.success(message);
-      await client.invalidateQueries({
-        queryKey: k.company.daily_job.users.getKey(),
-      });
-    },
-    onError: ({ message }) => toast.error(message),
   });
 
   const table = useReactTable({
@@ -213,49 +216,15 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
             }
           }}
         >
-          {state.user && (
-            <FormDailyJob
-              user_id={state.user.id}
-              defaultValues={state.user}
-              onSubmitAction={(v) => {
-                const isUpdate =
-                  state.user?.dailyJob && state.user?.dailyJob?.length > 0;
-
-                const data: inferVariables<
-                  typeof k.company.daily_job.create
-                >["data"] = {
-                  user_id: `${state.user?.id}`,
-                  date: dayjs().format("YYYY-MM-DD"),
-                  daily_jobs: v.daily_jobs,
-                };
-
-                if (isUpdate) {
-                  update.mutate({
-                    id: `${state.user?.id}`,
-                    data,
-                  });
-                  return;
-                }
-
-                create.mutate({
-                  data,
-                });
-              }}
-              isPending={create.isPending || update.isPending}
-            />
-          )}
+          {state.user && <FormDailyJob user_id={state.user.id} />}
         </DrawerDialog>
       )}
       <div className="mb-4 flex w-full items-center justify-between">
         <H3 className="">Tugas Harian</H3>
-        <Button
-          type="button"
-          size={"icon"}
-          onClick={() => {
-            setState({ user: daily });
-          }}
-        >
-          <Plus />
+        <Button type="button" size={"icon"} asChild>
+          <Link href="/friends/daily-job/form">
+            <Plus />
+          </Link>
         </Button>
       </div>
       <PortalSearch placeholder="Cari Tugas Harian..." />
