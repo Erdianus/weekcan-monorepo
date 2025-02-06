@@ -93,8 +93,13 @@ const daily_job = {
     initialPageParam: 1,
   }),
   single: router.query({
-    fetcher: async (variables: { user_id: string | number }) => {
-      const res = await Axios.get(`/daily-jobs/user/${variables.user_id}`);
+    fetcher: async (variables: {
+      user_id: string | number;
+      params?: { date?: string };
+    }) => {
+      const res = await Axios.get(`/daily-jobs/user/${variables.user_id}`, {
+        params: variables.params,
+      });
 
       return res.data as z.infer<typeof dailyJobSchema>;
     },
@@ -107,8 +112,8 @@ const daily_job = {
     },
   }),
   update: router.mutation({
-    mutationFn: async (variable: { id: string | number; data: Form }) => {
-      const res = await Axios.put(`/daily-jobs/${variable.id}`, variable.data);
+    mutationFn: async (variable: { data: Form }) => {
+      const res = await Axios.put(`/daily-jobs/update`, variable.data);
 
       return res.data as { message: string };
     },

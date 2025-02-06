@@ -16,7 +16,7 @@ import { atom, useAtom } from "jotai";
 import { MoreHorizontal, Pencil, Plus } from "lucide-react";
 import { toast } from "sonner";
 
-import type { inferData, inferVariables } from "@hktekno/api";
+import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
 import Flashlist from "@hktekno/ui/components/flashlist";
 import { dailyicon } from "@hktekno/ui/components/icon/daily-status-time";
@@ -152,16 +152,6 @@ const columns = [
     header: "Jabatan",
     cell: ({ getValue }) => (getValue() ? getValue() : "-"),
   }),
-  /* colHelper.accessor("status", {
-    header: "Status",
-    cell: ({ getValue, row }) => {
-      if (getValue() === "Hadir" && row.original.time)
-        return (
-          <p className="font-semibold text-green-500">{row.original.time}</p>
-        );
-      return <Badge variant={getValue()}>{getValue()}</Badge>;
-    },
-  }), */
   colHelper.accessor("dailyJob", {
     header: "Kerjaan",
     cell: ({ getValue }) => {
@@ -207,32 +197,6 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
     variables: { ...variables, company_id },
   });
 
-  const { data: daily } = k.company.daily_job.single.useQuery({
-    variables: { user_id },
-  });
-
-  const client = useQueryClient();
-  const create = k.company.daily_job.create.useMutation({
-    onSuccess: async ({ message }) => {
-      toast.success(message);
-      await client.invalidateQueries({
-        queryKey: k.company.daily_job.users.getKey(),
-      });
-      setState({ user: undefined });
-    },
-    onError: ({ message }) => toast.error(message),
-  });
-
-  const update = k.company.daily_job.update.useMutation({
-    onSuccess: async ({ message }) => {
-      toast.success(message);
-      await client.invalidateQueries({
-        queryKey: k.company.daily_job.users.getKey(),
-      });
-    },
-    onError: ({ message }) => toast.error(message),
-  });
-
   const table = useReactTable({
     data: dailies?.data ?? [],
     columns,
@@ -252,49 +216,15 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
             }
           }}
         >
-          {state.user && (
-            <FormDailyJob
-              user_id={state.user.id}
-              defaultValues={state.user}
-              onSubmitAction={(v) => {
-                const isUpdate =
-                  state.user?.dailyJob && state.user.dailyJob.length > 0;
-
-                const data: inferVariables<
-                  typeof k.company.daily_job.create
-                >["data"] = {
-                  user_id: `${state.user?.id}`,
-                  date: dayjs().format("YYYY-MM-DD"),
-                  daily_jobs: v.daily_jobs,
-                };
-
-                if (isUpdate) {
-                  update.mutate({
-                    id: `${state.user?.id}`,
-                    data,
-                  });
-                  return;
-                }
-
-                create.mutate({
-                  data,
-                });
-              }}
-              isPending={create.isPending || update.isPending}
-            />
-          )}
+          {state.user && <FormDailyJob user_id={state.user.id} />}
         </DrawerDialog>
       )}
       <div className="mb-4 flex w-full items-center justify-between">
         <H3 className="">Tugas Harian</H3>
-        <Button
-          type="button"
-          size={"icon"}
-          onClick={() => {
-            setState({ user: daily });
-          }}
-        >
-          <Plus />
+        <Button type="button" size={"icon"} asChild>
+          <Link href="/friends/daily-job/form">
+            <Plus />
+          </Link>
         </Button>
       </div>
       <PortalSearch placeholder="Cari Tugas Harian..." />
