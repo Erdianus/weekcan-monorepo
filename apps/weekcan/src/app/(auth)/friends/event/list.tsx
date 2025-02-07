@@ -98,6 +98,14 @@ const columns = [
   }),
   colHelper.accessor("name", {
     header: "Nama Event",
+    cell: ({ getValue, row }) => {
+      const { slug } = row.original;
+      return (
+        <Link className="underline" href={`event/${slug}/list-jobs`}>
+          {getValue()}
+        </Link>
+      );
+    },
   }),
   colHelper.accessor("event_type", {
     header: "Tipe Event",

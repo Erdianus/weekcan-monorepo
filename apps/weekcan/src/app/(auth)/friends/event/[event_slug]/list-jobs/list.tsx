@@ -2,6 +2,7 @@
 
 import type { CellContext } from "@tanstack/react-table";
 import { useEffect } from "react";
+import Link from "next/link";
 import {
   useParams,
   usePathname,
@@ -150,9 +151,16 @@ const columns = [
     header: "No",
     cell: ({ row }) => row.index + 1,
   }),
-
   colHelper.accessor("name", {
     header: "Kerjaan",
+    cell: ({ getValue, row }) => {
+      const { id } = row.original;
+      return (
+        <Link className="underline" href={`list-jobs/${id}`}>
+          {getValue()}
+        </Link>
+      );
+    },
   }),
   colHelper.accessor("qty", {
     header: "Jumlah",
