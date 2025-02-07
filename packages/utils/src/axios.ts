@@ -17,6 +17,14 @@ const Axios = axios.create({
   },
 });
 
+const AxiosFinance = axios.create({
+  baseURL: `${env.NEXT_PUBLIC_FINANCE_API}/api`,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+});
+
 type UserSession = {
   id: string;
   name: string | null | undefined;
@@ -37,6 +45,32 @@ export async function headerAuth(
 }
 
 Axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const message: unknown = error.response.data.message;
+    if (error.response.data.errors) {
+      const errs = error.response.data.errors;
+
+      error.message = Object.keys(errs)
+        .slice(0, 1)
+        .map((e) => {
+          return errs[e].map((ee: any) => ee).join("\n");
+        })
+        .join("\n");
+    } else if (typeof message === "string") {
+      error.message = message;
+    } else if (typeof message === "object") {
+      error.message = Object.keys(message as any)
+        // @ts-expect-error gapapa gan error
+        .map((m: any) => message[m])
+        .join("\n");
+    }
+
+    throw error;
+  },
+);
+
+AxiosFinance.interceptors.response.use(
   (response) => response,
   (error) => {
     const message: unknown = error.response.data.message;
@@ -84,6 +118,6 @@ export const axiosError = (error: AxiosError) => {
   }
 };
 
-export { Axios, axios };
+export { Axios, axios, AxiosFinance };
 
 export default Axios;

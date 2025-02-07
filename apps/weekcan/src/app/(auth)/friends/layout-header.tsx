@@ -8,7 +8,6 @@ import {
   AvatarImage,
 } from "@hktekno/ui/components/ui/avatar";
 import { H2 } from "@hktekno/ui/components/ui/typograhpy";
-import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 import { shortName } from "@hktekno/ui/lib/utils";
 
 const links = [
@@ -16,9 +15,16 @@ const links = [
   { label: "Event", href: "/friends/event" },
   { label: "Tugas Harian", href: "/friends/daily-job" },
 ];
-export default function LayoutHeader() {
-  const id = useUserStore((s) => Number(s.friends_id));
-  const { data: friends } = k.company.single.useQuery({ variables: { id } });
+export default function LayoutHeader({
+  friends_id,
+}: {
+  friends_id?: string | number;
+}) {
+  // const id = useUserStore((s) => s.friends_id);
+  const { data: friends } = k.company.single.useQuery({
+    variables: { id: friends_id },
+    enabled: !!friends_id,
+  });
   return (
     <>
       <div className="mb-4 flex items-center gap-3">

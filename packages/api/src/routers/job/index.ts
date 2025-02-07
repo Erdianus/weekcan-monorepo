@@ -1,7 +1,7 @@
 import type { z } from "zod";
 import { router } from "react-query-kit";
 
-import Axios from "@hktekno/utils/axios";
+import Axios, { AxiosFinance } from "@hktekno/utils/axios";
 
 import type { Meta } from "../meta";
 import type jobBaseSchema from "./schema";
@@ -66,6 +66,72 @@ const job = router("job", {
       return res.data as { message: string };
     },
   }),
+  picture: {
+    list: router.query({
+      fetcher: async (variables: {
+        slug: string;
+        params?: {
+          status?: string;
+          paginate?: string | number;
+          page?: string | number;
+        };
+      }) => {
+        const res = await AxiosFinance(`/list-job/${variables.slug}/picture`, {
+          params: variables.params,
+        });
+
+        return res.data as {
+          data: {
+            id: number;
+            list_job_id: number;
+            picture_path: string;
+            image_url: string;
+          }[];
+        };
+      },
+    }),
+
+    upload: router.mutation({
+      mutationFn: async (variables: {
+        data: {
+          picture: File[];
+          /* picture: {
+            uri: string;
+            name: string;
+            type: string;
+          }[]; */
+        };
+        slug: string;
+      }) => {
+        // const formData = toFormData(variables.data);
+        const res = await AxiosFinance.post(
+          `/list-job/${variables.slug}/upload-picture`,
+          variables.data,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          },
+        );
+
+        return res.data as { message: string };
+      },
+    }),
+    delete: router.mutation({
+      mutationFn: async (variables: { id: string | number }) => {
+        const res = await AxiosFinance.delete(
+          `/list-job/delete-picture/${variables.id}`,
+          {
+            headers: {
+              Accept: "application/json",
+            },
+          },
+        );
+
+        return res.data as { message: string };
+      },
+    }),
+  },
 });
 
 export default job;

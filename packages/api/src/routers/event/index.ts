@@ -9,8 +9,8 @@ import type eventBaseSchema from "./schema";
 type Event = z.infer<typeof eventBaseSchema> & {
   all_pic: string;
   all_pic_design: string;
-  all_data_pic: {id: number; name: string}[];
-  all_data_pic_design: {id: number; name: string}[];
+  all_data_pic: { id: number; name: string }[];
+  all_data_pic_design: { id: number; name: string }[];
   all_pic_id: number[];
   all_pic_design_id: number[];
   event_type: string;
@@ -89,6 +89,7 @@ const eventRouter = {
         city: string;
         province: string;
         status: string;
+        company_id: string | number;
         tax_type: string | number;
       };
     }) => {
@@ -106,6 +107,7 @@ const eventRouter = {
         pic: (number | string)[];
         pic_design: (number | string)[];
         start_date: string;
+        company_id: string | number;
         end_date: string;
         venue: string;
         client: string;

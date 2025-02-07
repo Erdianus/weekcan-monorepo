@@ -14,6 +14,7 @@ const jobBaseSchema = z.object({
   name: z.string(),
   pic: z.string(),
   qty: z.string(),
+  slug: z.string(),
   unit_of_qty: z.string(),
   frq: z.string(),
   frq_of_use: z.string(),

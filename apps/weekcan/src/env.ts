@@ -24,6 +24,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_BASE_URL: z.string(),
     NEXT_PUBLIC_BASE_API: z.string().optional(),
+    NEXT_PUBLIC_FINANCE_API: z.string().optional(),
   },
   /**
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
@@ -32,6 +33,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     NEXT_PUBLIC_BASE_API: process.env.NEXT_PUBLIC_BASE_API,
+    NEXT_PUBLIC_FINANCE_API: process.env.NEXT_PUBLIC_FINANCE_API,
   },
   skipValidation:
     !!process.env.CI ||
