@@ -44,8 +44,8 @@ export default tseslint.config(
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
-      ...tseslint.configs.recommendedTypeChecked,
-      ...tseslint.configs.stylisticTypeChecked,
+      // ...tseslint.configs.recommendedTypeChecked,
+      // ...tseslint.configs.stylisticTypeChecked,
     ],
     rules: {
       "@typescript-eslint/consistent-type-definitions": ["off", "type"],

@@ -92,13 +92,6 @@ const formSchema = z.object({
     },
     { invalid_type_error: "Tolong Pilih Status" },
   ),
-  tax_type: z.object(
-    {
-      label: z.string(),
-      value: z.string(),
-    },
-    { invalid_type_error: "Tolong Pilih Tipe Pajak" },
-  ),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -129,7 +122,7 @@ const taxes = [
 
 const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
   const friends_id = useUserStore((s) => s.friends_id);
-  const [open, setOpen] = useAtom(openAtom);
+  const [, setOpen] = useAtom(openAtom);
   const [currEvent, setCurrEvent] = useAtom(currEventAtom);
   const client = useQueryClient();
   const create = k.event.create.useMutation({
@@ -160,7 +153,6 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((data) => {
-            console.log(data);
             if (currEvent) {
               update.mutate({
                 slug: currEvent.slug,
@@ -168,6 +160,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                   ...data,
                   status: data.status.value,
                   province: data.province.label,
+                  company_id: friends_id ?? 0,
                   city: data.city.label,
                   start_date: date4Y2M2D(data.date.from),
                   end_date: data.date.to
@@ -175,7 +168,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                     : date4Y2M2D(data.date.from),
                   pic: data.pic.map((c) => c.value),
                   pic_design: data.pic_design.map((c) => c.value),
-                  tax_type: data.tax_type.value,
+                  tax_type: 1,
                 },
               });
 
@@ -186,6 +179,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                 ...data,
                 status: data.status.value,
                 province: data.province.label,
+                company_id: friends_id ?? 0,
                 city: data.city.label,
                 start_date: date4Y2M2D(data.date.from),
                 end_date: data.date.to
@@ -193,7 +187,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                   : date4Y2M2D(data.date.from),
                 pic: data.pic.map((c) => c.value),
                 pic_design: data.pic_design.map((c) => c.value),
-                tax_type: data.tax_type.value,
+                tax_type: 1,
               },
             });
           })}
@@ -425,26 +419,6 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="tax_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipe Pajak</FormLabel>
-                    <FormControl>
-                      <Select
-                        {...field}
-                        menuPortalTarget={
-                          typeof window !== "undefined" ? document.body : null
-                        }
-                        options={taxes}
-                        placeholder="Pilih Tipe Pajak"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
           </div>
           <Button disabled={isload} type="submit">
@@ -457,7 +431,6 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
 };
 
 export function FormEvent() {
-  console.log("formevent");
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [open, onOpenChange] = useAtom(openAtom);
   const [currEvent, setCurrEvent] = useAtom(currEventAtom);
@@ -481,8 +454,6 @@ export function FormEvent() {
       city: null,
       // @ts-expect-error sengaja biar error
       status: null,
-      // @ts-expect-error sengaja biar error
-      tax_type: null,
     },
   });
 
@@ -521,10 +492,6 @@ export function FormEvent() {
           value: currEvent.status,
           label: currEvent.status,
         },
-        tax_type: {
-          label: taxes[currEvent?.tax_type - 1]?.label ?? "",
-          value: `${currEvent.tax_type}`,
-        },
       });
     } else {
       form.reset({
@@ -541,8 +508,6 @@ export function FormEvent() {
         city: null,
         // @ts-expect-error sengaja biar error
         status: null,
-        // @ts-expect-error sengaja biar error
-        tax_type: null,
       });
     }
   }, [currEvent]);

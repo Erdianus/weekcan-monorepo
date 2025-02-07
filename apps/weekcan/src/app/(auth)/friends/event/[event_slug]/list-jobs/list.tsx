@@ -181,10 +181,10 @@ const columns = [
   colHelper.accessor("pic", {
     header: "PIC",
   }),
-  colHelper.display({
+  /* colHelper.display({
     id: "Action",
     cell: Action,
-  }),
+  }), */
 ];
 
 const ListJobs = () => {
@@ -243,6 +243,7 @@ const Filter = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <>
       <SelectAsync
+        instanceId={'pic_filter'}
         className="w-auto"
         value={
           searchParams.get("pic_id")
@@ -278,6 +279,7 @@ const Filter = ({ isLoading }: { isLoading: boolean }) => {
         }}
       />
       <Select
+        instanceId={'status_filter'}
         className="w-auto"
         options={optionsJobStatus()}
         defaultValue={
