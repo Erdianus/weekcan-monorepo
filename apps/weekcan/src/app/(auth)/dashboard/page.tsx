@@ -17,7 +17,7 @@ export default async function DashboardPage() {
   return (
     <>
       {sesh && <HelloUser id={sesh.user.id} />}
-      <IphoneDownload />
+      {/* <IphoneDownload /> */}
       {!!sesh?.user.friends_id && (
         <div className="my-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
           <Link
