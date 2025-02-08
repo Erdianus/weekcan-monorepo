@@ -38,6 +38,7 @@ import { date4Y2M2D, dayjs } from "@hktekno/ui/lib/date";
 import useMediaQuery from "@hktekno/ui/lib/hooks/useMediaQuery";
 import {
   loadCityOptions,
+  loadCompanyFinanceOptions,
   loadProvinceOptions,
   loadUserOptions,
 } from "@hktekno/ui/lib/select";
@@ -92,6 +93,13 @@ const formSchema = z.object({
     },
     { invalid_type_error: "Tolong Pilih Status" },
   ),
+  company: z.object(
+    {
+      label: z.string(),
+      value: z.string(),
+    },
+    { invalid_type_error: "Tolong Pilih Perusahaan" },
+  ),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -105,26 +113,15 @@ const status = [
   "Cancel",
 ].map((v) => ({ label: v, value: v }));
 
-const taxes = [
-  {
-    label: "PPn 11%",
-    value: "1",
-  },
-  {
-    label: "PPn 11% + PPh 2%",
-    value: "2",
-  },
-  {
-    label: "Tidak Ada Pajak",
-    value: "3",
-  },
-];
-
 const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
   const friends_id = useUserStore((s) => s.friends_id);
   const [, setOpen] = useAtom(openAtom);
   const [currEvent, setCurrEvent] = useAtom(currEventAtom);
   const client = useQueryClient();
+  const { data: companies } = k.event.companyFinance.useQuery({
+    variables: { params: { search: "friend" } },
+  });
+
   const create = k.event.create.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
@@ -148,6 +145,14 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
   });
 
   const isload = create.isPending || update.isPending;
+
+  useEffect(() => {
+    if (companies && companies?.data[0]) {
+      const v = companies.data[0];
+      form.setValue("company", { label: v.name, value: `${v.id}` });
+    }
+  }, [companies]);
+
   return (
     <>
       <Form {...form}>
@@ -160,7 +165,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                   ...data,
                   status: data.status.value,
                   province: data.province.label,
-                  company_id: friends_id ?? 0,
+                  company_id: data.company.value,
                   city: data.city.label,
                   start_date: date4Y2M2D(data.date.from),
                   end_date: data.date.to
@@ -179,7 +184,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                 ...data,
                 status: data.status.value,
                 province: data.province.label,
-                company_id: friends_id ?? 0,
+                company_id: data.company.value,
                 city: data.city.label,
                 start_date: date4Y2M2D(data.date.from),
                 end_date: data.date.to
@@ -413,6 +418,31 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                         }
                         options={status}
                         placeholder="Pilih Status"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="company"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Perusahan</FormLabel>
+                    <FormControl isloading={!companies}>
+                      <SelectAsync
+                        loadOptions={loadCompanyFinanceOptions}
+                        menuPortalTarget={
+                          typeof window !== "undefined" ? document.body : null
+                        }
+                        placeholder="Pilih Perusahaan"
+                        selectRef={field.ref}
+                        value={field.value}
+                        onChange={field.onChange}
+                        additional={{
+                          page: 1,
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
