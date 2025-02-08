@@ -122,6 +122,24 @@ const eventRouter = {
       return res.data as { message: string };
     },
   }),
+  companyFinance: router.query({
+    fetcher: async ({
+      params,
+    }: {
+      params?: {
+        search?: string;
+        page?: number | string;
+        paginate?: string | number;
+      };
+    }) => {
+      const res = await Axios("/company-finance", { params });
+
+      return res.data as {
+        data: { id: number; name: string }[];
+        meta: Meta;
+      };
+    },
+  }),
 };
 
 const event = router("event", eventRouter);

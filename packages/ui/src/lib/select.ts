@@ -369,6 +369,31 @@ const loadCityOptions: LoadOptions<
   };
 };
 
+const loadCompanyFinanceOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.event.companyFinance>["params"]
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const datas = await k.event.companyFinance.fetcher({
+    params: { ...params, search },
+  });
+
+  const options = datas.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: datas.meta.current_page !== datas.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
 // HKDB = Archive
 const loadDBCategoryOptions: LoadOptions<
   OptionType,
@@ -492,10 +517,10 @@ function optionsYears(props?: { filterYear?: string }) {
 }
 
 function optionsTime2() {
-  const data: {label: string; value: string}[] = [];
+  const data: { label: string; value: string }[] = [];
   for (let i = 0; i <= 24; i++) {
     const format = i >= 10 ? `${i}:00:00` : `0${i}:00:00`;
-    data.push({label: format, value: format});
+    data.push({ label: format, value: format });
   }
 
   return data;
@@ -524,6 +549,7 @@ export {
   loadJobTypeOptions,
   loadProvinceOptions,
   loadCityOptions,
+  loadCompanyFinanceOptions,
   loadDBCategoryOptions,
   loadDBSkillOptions,
   loadDBTalentOptions,
@@ -538,5 +564,5 @@ export {
   optionsJobStatus,
   optionsEventStatus,
   optionsAbsentType,
-  optionsYears
+  optionsYears,
 };
