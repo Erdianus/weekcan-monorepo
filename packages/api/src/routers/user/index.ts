@@ -31,7 +31,7 @@ const userCreateForm = userCreateFormSchema.omit({
 const userUpdateForm = userUpdateFormSchema.omit({
   company: true,
   role: true,
-  company_id: true,
+  // company_id: true,
   jobType: true,
 });
 

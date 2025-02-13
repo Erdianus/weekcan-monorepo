@@ -101,10 +101,13 @@ const UpdateUser = ({ id }: { id: string | number }) => {
         <form
           className="space-y-4"
           onSubmit={form.handleSubmit((v) => {
+            // console.log(v);
+            // return;
             update.mutate({
               id,
               data: {
                 ...v,
+                company_id: v.company.map((vv) => vv.value),
                 role_id: v.role.value ?? "",
                 job_type_id: v.jobType?.value,
               },
@@ -168,7 +171,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
                   <FormControl isloading={isload}>
                     <SelectAsync
                       {...field}
-                      isDisabled
+                      // isDisabled
                       isMulti
                       loadOptions={loadCompanyOptions}
                       placeholder="Pilih Perusahaan"

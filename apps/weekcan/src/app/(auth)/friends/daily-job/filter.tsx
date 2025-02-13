@@ -1,8 +1,10 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import dayjs from "dayjs";
 
+import { SelectAsync } from "@hktekno/ui/components/select";
 import { DatePicker } from "@hktekno/ui/components/ui/date-picker";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
+import { loadJobTypeOptions } from "@hktekno/ui/lib/select";
 
 const date = dayjs().add(1, "day").toDate();
 const Filter = ({ isLoading }: { isLoading: boolean }) => {
@@ -35,6 +37,41 @@ const Filter = ({ isLoading }: { isLoading: boolean }) => {
           }
 
           if (!e) params.delete("date");
+
+          if (hasPage) params.delete("page");
+
+          router.replace(`${pathname}?${params.toString()}`);
+        }}
+      />
+      <SelectAsync
+        instanceId={"jobtype_filter"}
+        className="w-auto"
+        value={
+          searchParams.getAll("job_type").length > 0
+            ? searchParams.getAll("jobType_id").map((_, i) => ({
+                value: `${searchParams.getAll("jobType_id")[i]?.toString()}`,
+                label: `${searchParams.getAll("job_type")[i]?.toString()}`,
+              }))
+            : null
+        }
+        isClearable
+        isMulti
+        placeholder="Filter Jabatan"
+        loadOptions={loadJobTypeOptions}
+        additional={{
+          page: 1,
+        }}
+        onChange={(e) => {
+          const hasPage = !!searchParams.get("page");
+          const params = new URLSearchParams(searchParams);
+          params.delete(`job_type`);
+          params.delete(`jobType_id`);
+          if (e.length > 0) {
+            e.forEach((ee) => {
+              params.append(`job_type`, `${ee.label}`);
+              params.append(`jobType_id`, `${ee.value}`);
+            });
+          }
 
           if (hasPage) params.delete("page");
 
