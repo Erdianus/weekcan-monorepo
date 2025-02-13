@@ -13,6 +13,7 @@ const FilterUser = () => {
   return (
     <div className="flex items-center gap-4">
       <SelectAsync
+        instanceId={"filter_companyy"}
         isMulti
         defaultValue={
           searchParams.getAll("company_id").length > 0
@@ -32,15 +33,13 @@ const FilterUser = () => {
         onChange={(e) => {
           const hasPage = !!searchParams.get("page");
           const params = new URLSearchParams(searchParams);
-
+          params.delete(`company_name`);
+          params.delete(`company_id`);
           if (e.length > 0) {
             e.forEach((ee) => {
-              params.append("company_id", `${ee.value}`);
-              params.append("company_name", `${ee.label}`);
+              params.append(`company_id`, `${ee.value}`);
+              params.append(`company_name`, `${ee.label}`);
             });
-          } else {
-            params.delete("company_id");
-            params.delete("company_name");
           }
 
           if (hasPage) params.delete("page");

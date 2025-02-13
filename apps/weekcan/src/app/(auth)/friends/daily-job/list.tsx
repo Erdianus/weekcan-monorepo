@@ -161,12 +161,26 @@ const columns = [
           {getValue()?.map((v) => {
             const Icon = dailyicon[v.status];
             return (
-              <div className="mb-0.5 flex items-center gap-1">
-                {Icon && <Icon width={18} height={18} />}
+              <div
+                key={`dailyy-${v.id}`}
+                className={cn(
+                  "mb-2.5 flex items-start gap-1 rounded border p-0.5",
+                  v.status === "Pagi" && "dark:border-yellow-800",
+                  v.status === "Siang" && "dark:border-sky-800",
+                  v.status === "Sore" && "dark:border-orange-800",
+                  v.status === "Malam" && "dark:border-purple-800",
+                )}
+              >
+                <div className="flex flex-col items-center gap-1">
+                  {Icon && (
+                    <Icon width={24} height={24} className="min-h-6 min-w-6" />
+                  )}
+                  <p className="text-xs text-muted-foreground">
+                    {v.time.slice(0, 5)}
+                  </p>
+                </div>
+
                 <p className="">{v.text}</p>
-                <p className="text-xs text-muted-foreground">
-                  {v.time.slice(0, 5)}
-                </p>
               </div>
             );
           })}
@@ -191,10 +205,12 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
   const [state, setState] = useAtom(stateAtom);
   const company_id = useUserStore((s) => `${s.friends_id}`);
   const searchParams = useSearchParams();
+  const job_type = searchParams.getAll("job_type");
+  const job_types = job_type.length > 0 ? { job_type } : {};
   const variables = Object.fromEntries(searchParams.entries());
 
   const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
-    variables: { ...variables, company_id },
+    variables: { ...variables, ...job_types, company_id },
   });
 
   const table = useReactTable({
