@@ -58,7 +58,20 @@ const user = router("user", {
     fetcher: async (variables: { id: string | number }) => {
       const res = await Axios(`/user/${variables.id}`);
 
-      return res.data as { data: User };
+      return res.data as {
+        data: User & {
+          data_employee?: {
+            nik: string;
+            full_name: string;
+            age: number;
+            address: string;
+            date_of_birth: string;
+            gender: string;
+            no_telp: string;
+            religion: string;
+          };
+        };
+      };
     },
   }),
   profile: router.query({
@@ -141,6 +154,44 @@ const user = router("user", {
       return res.data as { message: string };
     },
   }),
+  data: {
+    create: router.mutation({
+      mutationFn: async (variables: {
+        data: {
+          nik: string;
+          full_name: string;
+          date_of_birth: string;
+          no_telp: string;
+          address: string;
+          gender: string; // L, P
+          religion: string;
+          user_id: string | number;
+        };
+      }) => {
+        const res = await Axios.post(`/employee`, variables.data);
+
+        return res.data as { message: string };
+      },
+    }),
+    update: router.mutation({
+      mutationFn: async (variables: {
+        data: {
+          nik: string;
+          full_name: string;
+          date_of_birth: string;
+          no_telp: string;
+          address: string;
+          gender: string; // L, P
+          religion: string;
+          user_id: string | number;
+        };
+      }) => {
+        const res = await Axios.put(`/employee`, variables.data);
+
+        return res.data as { message: string };
+      },
+    }),
+  },
 });
 
 export { type User };

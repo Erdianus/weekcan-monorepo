@@ -147,6 +147,13 @@ const columns = [
   }),
   colHelper.accessor("name", {
     header: "Nama",
+    cell: ({ getValue, row }) => {
+      return (
+        <Link className="underline" href={`/employee/${row.original.id}`}>
+          {getValue()}
+        </Link>
+      );
+    },
   }),
   colHelper.accessor("jobType.job_name", {
     header: "Jabatan",
@@ -165,10 +172,13 @@ const columns = [
                 key={`dailyy-${v.id}`}
                 className={cn(
                   "mb-2.5 flex items-start gap-1 rounded border p-0.5",
-                  v.status === "Pagi" && "dark:border-yellow-800",
-                  v.status === "Siang" && "dark:border-sky-800",
-                  v.status === "Sore" && "dark:border-orange-800",
-                  v.status === "Malam" && "dark:border-purple-800",
+                  v.status === "Pagi" &&
+                    "border-yellow-300 dark:border-yellow-800",
+                  v.status === "Siang" && "border-sky-300 dark:border-sky-800",
+                  v.status === "Sore" &&
+                    "border-orange-300 dark:border-orange-800",
+                  v.status === "Malam" &&
+                    "border-purple-300 dark:border-purple-800",
                 )}
               >
                 <div className="flex flex-col items-center gap-1">

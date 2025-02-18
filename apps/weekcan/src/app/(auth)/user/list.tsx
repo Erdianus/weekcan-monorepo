@@ -119,6 +119,11 @@ const columns = [
   }),
   colHelper.accessor("name", {
     header: "Nama",
+    cell: ({ getValue, row }) => (
+      <Link className="underline" href={`/employee/${row.original.id}`}>
+        {getValue()}
+      </Link>
+    ),
   }),
   colHelper.accessor("username", {
     header: "Username",

@@ -35,6 +35,7 @@ const companyBaseSchema = z.object({
       { message: "Nomor Telepon Tidak Sesuai" },
     ),
   picture_path: z.string(),
+  picture_link: z.string(),
   owner_id: z.string().min(1, "Tolong Pilih Pemilik Perusahaan"),
 });
 
