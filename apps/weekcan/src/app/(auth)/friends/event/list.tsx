@@ -117,7 +117,9 @@ const columns = [
   }),
   colHelper.accessor("venue", {
     header: "Tempat",
-    cell: ({ getValue }) => <div className="truncate">{`${getValue()}`}</div>,
+    cell: ({ getValue }) => (
+      <div className="max-w-xs truncate">{`${getValue()}`}</div>
+    ),
   }),
   colHelper.accessor("client", {
     header: "Client",

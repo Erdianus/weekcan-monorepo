@@ -5,35 +5,30 @@ import Axios from "@hktekno/utils/axios";
 
 import type { Meta } from "../meta";
 import companyBaseSchema from "../company/schema";
-import jobTypeBaseSchema from "../job-type/schema";
+import { JobType } from "../job-type/schema";
 import { roleBaseSchema } from "../role/schema";
-import userBaseSchema, {
-  userCreateFormSchema,
-  userUpdateFormSchema,
-} from "./schema";
+import { User as Userbase } from "./schema";
 
-const userSchema = userBaseSchema.extend({
-  role_name: z.string(),
-  role: roleBaseSchema,
-  job_type: jobTypeBaseSchema.nullish(),
-  company: companyBaseSchema.array(),
-  picture_link: z.string(),
-});
+type User = Userbase & {
+  role_name: string;
+  role: z.infer<typeof roleBaseSchema>;
+  job_type?: JobType;
+  job_types: JobType[];
+  company: z.infer<typeof companyBaseSchema>[];
+  picture_link: string;
+};
 
-type User = z.infer<typeof userSchema>;
+type CreateSchema = {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  company_id: (number | string)[];
+  job_types: (number | string)[];
+  role_id: number | string;
+};
 
-//--NOTE: FORM
-const userCreateForm = userCreateFormSchema.omit({
-  company: true,
-  role: true,
-  jobType: true,
-});
-const userUpdateForm = userUpdateFormSchema.omit({
-  company: true,
-  role: true,
-  // company_id: true,
-  jobType: true,
-});
+type UpdateSchema = Omit<CreateSchema, "password">;
 
 const user = router("user", {
   all: router.query({
@@ -82,8 +77,8 @@ const user = router("user", {
     },
   }),
   create: router.mutation({
-    mutationFn: async (variables: z.infer<typeof userCreateForm>) => {
-      const res = await Axios.post(`/user`, variables);
+    mutationFn: async (variables: { data: CreateSchema }) => {
+      const res = await Axios.post(`/user`, variables.data);
 
       return res.data as { message: string };
     },
@@ -91,7 +86,7 @@ const user = router("user", {
   update: router.mutation({
     mutationFn: async (variables: {
       id: string | number;
-      data: z.infer<typeof userUpdateForm>;
+      data: UpdateSchema;
     }) => {
       const res = await Axios.put(
         `/user/update/${variables.id}`,

@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+type User = {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  role_id: string;
+  job_type_id: string;
+  picture_path?: string;
+};
+
 const userBaseSchema = z.object({
   id: z.number(),
   name: z.string().min(1, "Tolong Isi Nama"),
@@ -72,6 +82,7 @@ export {
   userCreateFormSchema,
   userUpdateFormSchema,
   type UserBase,
+  type User,
 };
 
 export default userBaseSchema;

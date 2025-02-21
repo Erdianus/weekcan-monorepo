@@ -1,14 +1,13 @@
 "use client";
 
-import type z from "zod";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import z from "zod";
 
 import { k } from "@hktekno/api";
-import { userCreateFormSchema } from "@hktekno/api/routers/user/schema";
 import { SelectAsync } from "@hktekno/ui/components/select";
 import { Button } from "@hktekno/ui/components/ui/button";
 import {
@@ -28,24 +27,49 @@ import {
   loadRoleOptions,
 } from "@hktekno/ui/lib/select";
 
-const userFormSchema = userCreateFormSchema
-  .omit({ role_id: true, company_id: true, job_type_id: true })
+const formSchema = z
+  .object({
+    name: z.string().min(1, "Tolong Isi Name"),
+    username: z.string().min(1, "Tolong Isi Username"),
+    email: z.string().email("Bukan Format Email").min(1, "Tolong Isi Email"),
+    password: z.string().min(8, "Min. 8 Karakter"),
+    confirmation_password: z.string().min(8, "Min. 8 Karakter"),
+    // no_telp: z.string().min(1, "Tolong Isi No. Telpon/HP"),
+    company: z
+      .object({
+        label: z.string(),
+        value: z.string(),
+      })
+      .array()
+      .min(1, "Min. 1 Perusahaan"),
+    jobTypes: z
+      .object({
+        label: z.string(),
+        value: z.string(),
+      })
+      .array()
+      .min(1, "Min. 1 Jabatan"),
+    role: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Isi Role" },
+    ),
+  })
   .refine(
-    ({ confirmation_password, password }) => confirmation_password === password,
-    {
-      message: "Password dan Konfirmasi Password tidak sama",
-      path: ["confirmation_password"],
-    },
+    ({ password, confirmation_password }) => password === confirmation_password,
+    { message: "Password & Konfirmasi Password tidak sama" },
   );
 const CreateUser = () => {
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof userFormSchema>>({
-    resolver: zodResolver(userFormSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     values: {
       name: "",
       username: "",
-      email: undefined,
+      email: "",
       // @ts-expect-error gapapa error gan
       company: null,
       // @ts-expect-error gapapa error gan
@@ -73,10 +97,12 @@ const CreateUser = () => {
           className="space-y-4"
           onSubmit={form.handleSubmit((v) => {
             create.mutate({
-              ...v,
-              role_id: v.role.value ?? "",
-              job_type_id: v.jobType?.value,
-              company_id: v.company.map(({ value }) => value),
+              data: {
+                ...v,
+                company_id: v.company.map((vv) => vv.value),
+                role_id: v.role.value ?? "",
+                job_types: v.jobTypes.map((vv) => vv.value),
+              },
             });
           })}
         >
@@ -170,7 +196,7 @@ const CreateUser = () => {
             />
             <FormField
               control={form.control}
-              name="jobType"
+              name="jobTypes"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Jabatan</FormLabel>
@@ -179,6 +205,7 @@ const CreateUser = () => {
                       {...field}
                       cacheUniqs={[form.watch("company")]}
                       isClearable
+                      isMulti
                       loadOptions={loadJobTypeOptions}
                       placeholder="Pilih Jabatan"
                       additional={{ page: 1 }}

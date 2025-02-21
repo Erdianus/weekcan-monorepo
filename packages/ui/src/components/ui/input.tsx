@@ -1,4 +1,11 @@
 import * as React from "react";
+import { Props } from "react-phone-number-input";
+import PhoneInput from "react-phone-number-input/input";
+import {
+  getExampleNumber,
+  isValidPhoneNumber,
+  parsePhoneNumberWithError as parsePhoneNumber,
+} from "libphonenumber-js";
 
 import { cn } from "@hktekno/ui/lib/utils";
 
@@ -21,4 +28,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = "Input";
 
-export { Input };
+const InputPhone = React.forwardRef<HTMLInputElement, Props<InputProps>>(
+  (props, ref) => {
+    return (
+      <PhoneInput {...props} ref={ref} country={"ID"} inputComponent={Input} />
+    );
+  },
+);
+
+
+InputPhone.displayName = "InputPhone";
+export { Input, InputPhone, getExampleNumber, isValidPhoneNumber, parsePhoneNumber };

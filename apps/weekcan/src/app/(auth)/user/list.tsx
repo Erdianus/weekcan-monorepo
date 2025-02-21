@@ -134,8 +134,20 @@ const columns = [
   colHelper.accessor("role_name", {
     header: "Role",
   }),
-  colHelper.accessor("job_type.job_name", {
+  colHelper.accessor("job_types", {
     header: "Jabatan",
+    cell: ({ getValue }) => {
+      if (!getValue().length) return "-";
+      return (
+        <div className="flex max-w-52 flex-wrap items-center gap-4 text-xs">
+          {getValue().map((v) => (
+            <Badge key={`job--${v.id}`} variant={"secondary"}>
+              {v.job_name}
+            </Badge>
+          ))}
+        </div>
+      );
+    },
   }),
   colHelper.accessor("company", {
     header: "Perusahaan",

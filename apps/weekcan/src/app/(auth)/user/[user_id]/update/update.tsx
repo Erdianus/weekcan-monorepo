@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,7 +8,6 @@ import { toast } from "sonner";
 import z from "zod";
 
 import { k } from "@hktekno/api";
-import { userUpdateFormSchema } from "@hktekno/api/routers/user/schema";
 import { SelectAsync } from "@hktekno/ui/components/select";
 import { Button } from "@hktekno/ui/components/ui/button";
 import {
@@ -29,10 +27,32 @@ import {
   loadRoleOptions,
 } from "@hktekno/ui/lib/select";
 
-const userFormSchema = userUpdateFormSchema.omit({
-  role_id: true,
-  company_id: true,
-  job_type_id: true,
+const formSchema = z.object({
+  name: z.string().min(1, "Tolong Isi Name"),
+  username: z.string().min(1, "Tolong Isi Username"),
+  email: z.string().email("Bukan Format Email").min(1, "Tolong Isi Email"),
+  // no_telp: z.string().min(1, "Tolong Isi No. Telpon/HP"),
+  company: z
+    .object({
+      label: z.string(),
+      value: z.string(),
+    })
+    .array()
+    .min(1, "Min. 1 Perusahaan"),
+  jobTypes: z
+    .object({
+      label: z.string(),
+      value: z.string(),
+    })
+    .array()
+    .min(1, "Min. 1 Jabatan"),
+  role: z.object(
+    {
+      label: z.string(),
+      value: z.string(),
+    },
+    { invalid_type_error: "Tolong Isi Role" },
+  ),
 });
 
 const UpdateUser = ({ id }: { id: string | number }) => {
@@ -43,14 +63,24 @@ const UpdateUser = ({ id }: { id: string | number }) => {
     enabled: !!id,
   });
 
-  const form = useForm<z.infer<typeof userFormSchema>>({
-    resolver: zodResolver(userFormSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     values: {
-      name: "",
-      username: "",
-      email: undefined,
-      company: [],
-      role: {},
+      name: user?.data.name ?? "",
+      username: user?.data.username ?? "",
+      email: user?.data.email ?? "",
+      company:
+        user?.data.company.map((c) => ({
+          value: `${c.id}`,
+          label: c.company_name,
+        })) ?? [],
+      // @ts-expect-error gapapa gan
+      role: user
+        ? {
+            label: user.data.role_name,
+            value: `${user.data.role.id}`,
+          }
+        : null,
       jobType: null,
     },
   });
@@ -68,9 +98,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
     onError: async ({ message }) => toast.error(message),
   });
 
-  const isload = !user;
-
-  useEffect(() => {
+  /* useEffect(() => {
     if (user) {
       form.reset({
         username: user.data.username,
@@ -92,7 +120,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
           : null,
       });
     }
-  }, [user]);
+  }, [user]); */
 
   return (
     <>
@@ -109,7 +137,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
                 ...v,
                 company_id: v.company.map((vv) => vv.value),
                 role_id: v.role.value ?? "",
-                job_type_id: v.jobType?.value,
+                job_types: v.jobTypes.map((vv) => vv.value),
               },
             });
           })}
@@ -121,7 +149,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nama</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <Input {...field} placeholder="Masukkan Nama Lengkap" />
                   </FormControl>
                   <FormMessage />
@@ -134,7 +162,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <Input {...field} placeholder="Masukkan Nama Pengguna" />
                   </FormControl>
                   <FormMessage />
@@ -149,7 +177,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Email</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <Input
                       {...field}
                       type="email"
@@ -168,10 +196,9 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Perusahaan</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsync
                       {...field}
-                      // isDisabled
                       isMulti
                       loadOptions={loadCompanyOptions}
                       placeholder="Pilih Perusahaan"
@@ -190,7 +217,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsync
                       {...field}
                       loadOptions={loadRoleOptions}
@@ -204,14 +231,15 @@ const UpdateUser = ({ id }: { id: string | number }) => {
             />
             <FormField
               control={form.control}
-              name="jobType"
+              name="jobTypes"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Jabatan</FormLabel>
-                  <FormControl isloading={isload}>
+                  <FormControl>
                     <SelectAsync
                       {...field}
                       isClearable
+                      isMulti
                       loadOptions={loadJobTypeOptions}
                       placeholder="Pilih Jabatan"
                       additional={{ page: 1 }}

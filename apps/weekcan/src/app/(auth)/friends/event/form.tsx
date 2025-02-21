@@ -37,9 +37,7 @@ import Spinner from "@hktekno/ui/components/ui/spinner";
 import { date4Y2M2D, dayjs } from "@hktekno/ui/lib/date";
 import useMediaQuery from "@hktekno/ui/lib/hooks/useMediaQuery";
 import {
-  loadCityOptions,
   loadCompanyFinanceOptions,
-  loadProvinceOptions,
   loadUserOptions,
 } from "@hktekno/ui/lib/select";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
@@ -72,20 +70,8 @@ const formSchema = z.object({
   ),
   venue: z.string().min(1, "Tolong Isi Nama Venue"),
   client: z.string().min(1, "Tolong Isi Nama Client"),
-  province: z.object(
-    {
-      label: z.string(),
-      value: z.string(),
-    },
-    { invalid_type_error: "Tolong Pilih Provinsi" },
-  ),
-  city: z.object(
-    {
-      label: z.string(),
-      value: z.string(),
-    },
-    { invalid_type_error: "Tolong Pilih Kota" },
-  ),
+  province: z.string().min(1, "Tolong Isi Provinsi"),
+  city: z.string().min(1, "Tolong Isi Kota"),
   status: z.object(
     {
       label: z.string(),
@@ -164,9 +150,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                 data: {
                   ...data,
                   status: data.status.value,
-                  province: data.province.label,
                   company_id: data.company.value,
-                  city: data.city.label,
                   start_date: date4Y2M2D(data.date.from),
                   end_date: data.date.to
                     ? date4Y2M2D(data.date.to)
@@ -183,9 +167,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
               data: {
                 ...data,
                 status: data.status.value,
-                province: data.province.label,
                 company_id: data.company.value,
-                city: data.city.label,
                 start_date: date4Y2M2D(data.date.from),
                 end_date: data.date.to
                   ? date4Y2M2D(data.date.to)
@@ -343,25 +325,9 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                   <FormItem>
                     <FormLabel>Provinsi</FormLabel>
                     <FormControl>
-                      <SelectAsync
-                        menuPortalTarget={
-                          typeof window !== "undefined" ? document.body : null
-                        }
-                        loadOptions={loadProvinceOptions}
-                        selectRef={field.ref}
-                        value={field.value}
-                        additional={{
-                          page: 1,
-                        }}
-                        onChange={(e) => {
-                          field.onChange({
-                            label: e?.label,
-                            value: `${e?.value ?? ""}`,
-                          });
-                          // @ts-expect-error sengaja biar error
-                          form.setValue("city", null);
-                        }}
-                        placeholder="Pilih Provinsi"
+                      <Input
+                        {...field}
+                        placeholder="Contoh: Kalimantan Timur"
                       />
                     </FormControl>
                     <FormMessage />
@@ -375,28 +341,7 @@ const FormChild = ({ form }: { form: UseFormReturn<FormSchema> }) => {
                   <FormItem>
                     <FormLabel>Kota</FormLabel>
                     <FormControl>
-                      <SelectAsync
-                        menuPortalTarget={
-                          typeof window !== "undefined" ? document.body : null
-                        }
-                        cacheUniqs={[form.watch("province")]}
-                        loadOptions={loadCityOptions}
-                        placeholder="Pilih Kota"
-                        selectRef={field.ref}
-                        value={field.value}
-                        onChange={(e) => {
-                          field.onChange({
-                            label: e?.label,
-                            value: `${e?.value ?? ""}`,
-                          });
-                        }}
-                        isDisabled={!form.watch("province")}
-                        additional={{
-                          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                          province_id: form.watch("province")?.value ?? "",
-                          page: 1,
-                        }}
-                      />
+                      <Input {...field} placeholder="Contoh: Kota Samarinda" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -478,10 +423,8 @@ export function FormEvent() {
       date: undefined,
       venue: "",
       client: "",
-      // @ts-expect-error sengaja biar error
-      province: null,
-      // @ts-expect-error sengaja biar error
-      city: null,
+      province: "",
+      city: "",
       // @ts-expect-error sengaja biar error
       status: null,
     },
@@ -510,14 +453,8 @@ export function FormEvent() {
         },
         venue: currEvent.venue,
         client: currEvent.client,
-        province: {
-          value: `${currEvent.province}`,
-          label: `${currEvent.province}`,
-        },
-        city: {
-          value: `${currEvent.city}`,
-          label: `${currEvent.city}`,
-        },
+        province: currEvent.province,
+        city: currEvent.city,
         status: {
           value: currEvent.status,
           label: currEvent.status,
@@ -532,10 +469,8 @@ export function FormEvent() {
         date: undefined,
         venue: "",
         client: "",
-        // @ts-expect-error sengaja biar error
-        province: null,
-        // @ts-expect-error sengaja biar error
-        city: null,
+        province: "",
+        city: "",
         // @ts-expect-error sengaja biar error
         status: null,
       });

@@ -3,8 +3,10 @@
 import type { UrlObject } from "url";
 import { useMemo } from "react";
 import Link from "next/link";
+import dayjs from "dayjs";
 import {
   Building2,
+  Cake,
   CircleUserRound,
   Mail,
   MapPin,
@@ -143,7 +145,17 @@ export const DetailEmployee = ({
             ) : (
               <div className="">
                 <div className="text-xs text-muted-foreground">Jabatan</div>
-                <div className="">{user?.data.job_type?.job_name}</div>
+                <div className="flex items-center">
+                  {user?.data.job_types.map((jt, i) => {
+                    const last = i === user?.data.job_types.length - 1;
+                    return (
+                      <div key={`jtt-${jt.id}`} className="">
+                        {jt.job_name}
+                        {!last && ", "}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
@@ -235,6 +247,24 @@ export const DetailEmployee = ({
                     Nama Lengkap
                   </div>
                   <div className="">{user?.data.data_employee.full_name}</div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Cake />
+              {isLoading ? (
+                <Skeleton className="h-4 w-40" />
+              ) : (
+                <div>
+                  <div className="text-xs text-muted-foreground">
+                    Tanggal Lahir
+                  </div>
+                  <div className="">
+                    {dayjs(user?.data.data_employee.date_of_birth).format(
+                      "DD MMMM YYYY",
+                    )}
+                  </div>
                 </div>
               )}
             </div>
