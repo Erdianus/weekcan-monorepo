@@ -81,7 +81,11 @@ const UpdateUser = ({ id }: { id: string | number }) => {
             value: `${user.data.role.id}`,
           }
         : null,
-      jobType: null,
+      jobTypes:
+        user?.data.job_types.map((jt) => ({
+          label: jt.job_name,
+          value: `${jt.id}`,
+        })) ?? [],
     },
   });
 
@@ -97,30 +101,6 @@ const UpdateUser = ({ id }: { id: string | number }) => {
     },
     onError: async ({ message }) => toast.error(message),
   });
-
-  /* useEffect(() => {
-    if (user) {
-      form.reset({
-        username: user.data.username,
-        name: user.data.name,
-        email: user.data.email,
-        role: {
-          label: user.data.role.role_name,
-          value: `${user.data.role.id}`,
-        },
-        company: user.data.company.map((c) => ({
-          value: `${c.id}`,
-          label: c.company_name,
-        })),
-        jobType: user.data.job_type
-          ? {
-              label: user.data.job_type.job_name,
-              value: `${user.data.job_type.id}`,
-            }
-          : null,
-      });
-    }
-  }, [user]); */
 
   return (
     <>
@@ -199,6 +179,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
                   <FormControl>
                     <SelectAsync
                       {...field}
+                      instanceId={"company"}
                       isMulti
                       loadOptions={loadCompanyOptions}
                       placeholder="Pilih Perusahaan"
@@ -220,6 +201,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
                   <FormControl>
                     <SelectAsync
                       {...field}
+                      instanceId={"Role"}
                       loadOptions={loadRoleOptions}
                       placeholder="Pilih Role"
                       additional={{ page: 1 }}
@@ -238,6 +220,7 @@ const UpdateUser = ({ id }: { id: string | number }) => {
                   <FormControl>
                     <SelectAsync
                       {...field}
+                      instanceId={"job_types"}
                       isClearable
                       isMulti
                       loadOptions={loadJobTypeOptions}

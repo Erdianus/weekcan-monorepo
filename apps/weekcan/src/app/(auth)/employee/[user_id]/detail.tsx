@@ -22,6 +22,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@hktekno/ui/components/ui/avatar";
+import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
 import Spinner from "@hktekno/ui/components/ui/spinner";
@@ -143,16 +144,14 @@ export const DetailEmployee = ({
             {isLoading ? (
               <Skeleton className="h-4 w-40" />
             ) : (
-              <div className="">
+              <div className="space-y-2">
                 <div className="text-xs text-muted-foreground">Jabatan</div>
-                <div className="flex items-center">
-                  {user?.data.job_types.map((jt, i) => {
-                    const last = i === user?.data.job_types.length - 1;
+                <div className="flex items-center gap-2">
+                  {user?.data.job_types.map((jt) => {
                     return (
-                      <div key={`jtt-${jt.id}`} className="">
+                      <Badge variant={"secondary"} key={`jtt-${jt.id}`}>
                         {jt.job_name}
-                        {!last && ", "}
-                      </div>
+                      </Badge>
                     );
                   })}
                 </div>

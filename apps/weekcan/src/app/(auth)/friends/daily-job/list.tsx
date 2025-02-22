@@ -24,6 +24,7 @@ import Loading from "@hktekno/ui/components/loading";
 import Paginate from "@hktekno/ui/components/paginate";
 import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
+import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
 import { DrawerDialog } from "@hktekno/ui/components/ui/drawer";
 import {
@@ -155,10 +156,22 @@ const columns = [
       );
     },
   }),
-  colHelper.accessor("jobType.job_name", {
+  colHelper.accessor("jobTypes", {
     header: "Jabatan",
-    cell: ({ getValue }) => (getValue() ? getValue() : "-"),
+    cell: ({ getValue }) => {
+      if (!getValue().length) return "-";
+      return (
+        <div className="flex max-w-52 flex-wrap items-center gap-4 text-xs">
+          {getValue().map((v) => (
+            <Badge key={`job--${v.id}`} variant={"secondary"}>
+              {v.job_name}
+            </Badge>
+          ))}
+        </div>
+      );
+    },
   }),
+
   colHelper.accessor("dailyJob", {
     header: "Kerjaan",
     cell: ({ getValue }) => {

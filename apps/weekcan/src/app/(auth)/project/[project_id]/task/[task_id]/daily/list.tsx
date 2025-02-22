@@ -164,7 +164,7 @@ const ListTaskProject = ({ id }: { id: string }) => {
               const dailyList = dailys?.data[date];
               return (
                 <div key={`date-${date}`} className="mb-4">
-                  <div className="sticky top-16 z-10 flex w-full items-center justify-center pb-1 sm:justify-start">
+                  <div className="sticky top-0 z-10 flex w-full items-center justify-center pb-1 sm:justify-start">
                     <Badge>{dayjs(date).format("DD-MMMM-YYYY")}</Badge>
                   </div>
                   {dailyList?.map((daily, i) => {
@@ -179,6 +179,7 @@ const ListTaskProject = ({ id }: { id: string }) => {
 
                           return (
                             <button
+                              key={`buttonnnn-${f.id}`}
                               type="button"
                               data-index={index_for_image}
                               className="relative mb-2 block w-auto flex-1 rounded-lg bg-main-500 p-1 dark:bg-main-900 sm:max-w-sm sm:flex-none"
@@ -236,7 +237,13 @@ const ListTaskProject = ({ id }: { id: string }) => {
                               </div>
                             </div>
                             <DropdownMenu>
-                              <DropdownMenuTrigger disabled={!isItHim} asChild>
+                              <DropdownMenuTrigger
+                                asChild
+                                disabled={
+                                  !isItHim &&
+                                  !isValidHttpUrl(daily.desc_detail_task)
+                                }
+                              >
                                 <div className="cursor-pointer underline">
                                   {daily.desc_detail_task}{" "}
                                 </div>
@@ -255,31 +262,38 @@ const ListTaskProject = ({ id }: { id: string }) => {
                                     </DropdownMenuItem>
                                   </a>
                                 )}
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    setEdit({ open: true, id: `${daily.id}` })
-                                  }
-                                >
-                                  <Pencil className="mr-2 h-4 w-4" />
-                                  <span>Edit</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    alert.setData({
-                                      open: true,
-                                      confirmText: "Ya, Hapus",
-                                      header: `Yakin ingin mengapus Perihal?`,
-                                      desc: "Perihal yang dihapus tidak dapat dikembalikan lagi",
-                                      onConfirm: () => {
-                                        del.mutate({ id: `${daily.id}` });
-                                      },
-                                    })
-                                  }
-                                  className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
-                                >
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  <span>Hapus</span>
-                                </DropdownMenuItem>
+                                {isItHim && (
+                                  <>
+                                    <DropdownMenuItem
+                                      onClick={() =>
+                                        setEdit({
+                                          open: true,
+                                          id: `${daily.id}`,
+                                        })
+                                      }
+                                    >
+                                      <Pencil className="mr-2 h-4 w-4" />
+                                      <span>Edit</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() =>
+                                        alert.setData({
+                                          open: true,
+                                          confirmText: "Ya, Hapus",
+                                          header: `Yakin ingin mengapus Perihal?`,
+                                          desc: "Perihal yang dihapus tidak dapat dikembalikan lagi",
+                                          onConfirm: () => {
+                                            del.mutate({ id: `${daily.id}` });
+                                          },
+                                        })
+                                      }
+                                      className="hover:bg-red-500 dark:hover:bg-red-900 dark:hover:text-red-50"
+                                    >
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      <span>Hapus</span>
+                                    </DropdownMenuItem>
+                                  </>
+                                )}
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </div>

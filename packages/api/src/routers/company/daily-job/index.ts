@@ -20,6 +20,7 @@ const dailyJobSchema = z.object({
   role: roleBaseSchema,
   job_type_id: z.string().nullish(),
   jobType: jobTypeBaseSchema.nullish(),
+  jobTypes: jobTypeBaseSchema.array(),
   picture_path: z.string(),
   status: z.string(),
   location_text: z.string(),

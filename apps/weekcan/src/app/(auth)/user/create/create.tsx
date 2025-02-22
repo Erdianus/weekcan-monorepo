@@ -76,6 +76,7 @@ const CreateUser = () => {
       role: null,
       password: "password",
       confirmation_password: "password",
+      jobTypes: [],
     },
   });
 

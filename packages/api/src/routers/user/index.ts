@@ -14,6 +14,7 @@ type User = Userbase & {
   role: z.infer<typeof roleBaseSchema>;
   job_type?: JobType;
   job_types: JobType[];
+  jobTypes: JobType[];
   company: z.infer<typeof companyBaseSchema>[];
   picture_link: string;
 };
