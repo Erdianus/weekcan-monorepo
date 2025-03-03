@@ -20,6 +20,7 @@ import jobType from "./job-type";
 import project from "./project";
 import role from "./role";
 import user from "./user";
+import { vendor } from "./vendor";
 import venue from "./venue";
 
 const k = {
@@ -37,6 +38,7 @@ const k = {
   company,
   role,
   venue,
+  vendor,
   client,
   jobType,
 };

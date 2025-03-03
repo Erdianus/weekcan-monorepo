@@ -6,6 +6,7 @@ import {
   HeartHandshake,
   MapPin,
   Package,
+  Store,
   UserRoundCog,
   Users,
   Warehouse,
@@ -119,6 +120,12 @@ const data = {
             ></path>
           </svg>
         ),
+      },
+      {
+        icon: Store,
+        link: "/vendor",
+        title: "Vendor",
+        roles: ["Admin", "Owner", "HRD"],
       },
     ],
   },
