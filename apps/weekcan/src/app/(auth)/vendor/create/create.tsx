@@ -105,7 +105,6 @@ export const CreateVendor = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((data) => {
-            console.log(data);
             create.mutate({ data });
           })}
           className="space-y-5"

@@ -105,7 +105,6 @@ export const UpdateVendor = ({ slug }: { slug: string }) => {
 
   return (
     <>
-      {JSON.stringify(form.formState.errors)}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((data) => {
