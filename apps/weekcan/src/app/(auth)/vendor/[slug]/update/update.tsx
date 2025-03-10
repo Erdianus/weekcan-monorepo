@@ -235,7 +235,7 @@ export const UpdateVendor = ({ slug }: { slug: string }) => {
                             id: crypto.randomUUID(),
                             name: "",
                             qty: 0,
-                            unit_of_qty: "paket",
+                            unit_of_qty: "",
                             price: 0,
                             desc: "",
                           })
@@ -320,14 +320,14 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
           />
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label>Kuantitas</Label>
-            <div className="flex items-center">
-              <FormField
-                control={form.control}
-                name={`item_vendors.${i}.qty`}
-                render={({ field }) => {
-                  return (
+          <FormField
+            control={form.control}
+            name={`item_vendors.${i}.qty`}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Kuantitas</FormLabel>
+                  <FormControl>
                     <InputCurrency
                       ref={field.ref}
                       value={field.value}
@@ -338,67 +338,49 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
                       defaultValue={"0"}
                       placeholder="Isi Kuantitas"
                     />
-                  );
-                }}
-              />
-              <FormField
-                control={form.control}
-                name={`item_vendors.${i}.unit_of_qty`}
-                render={({ field }) => {
-                  return (
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="w-min rounded-l-none capitalize">
-                        <SelectValue
-                          placeholder="Pilih Tipe Unit"
-                          className="capitalize"
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {units.map((unit) => (
-                            <SelectItem
-                              key={`unit-${unit}`}
-                              value={unit}
-                              className="capitalize"
-                            >
-                              {unit}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  );
-                }}
-              />
-            </div>
-          </div>
+                  </FormControl>
+                </FormItem>
+              );
+            }}
+          />
           <FormField
             control={form.control}
-            name={`item_vendors.${i}.price`}
+            name={`item_vendors.${i}.unit_of_qty`}
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Harga</FormLabel>
+                  <FormLabel>Unit Kuantitas</FormLabel>
                   <FormControl>
-                    <InputCurrency
-                      ref={field.ref}
-                      value={field.value}
-                      onValueChange={(v) => {
-                        field.onChange(v);
-                      }}
-                      defaultValue={"0"}
-                      placeholder="Isi Harga"
-                    />
+                    <Input {...field} placeholder="Contoh: Paket, Lusin" />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               );
             }}
           />
         </div>
+        <FormField
+          control={form.control}
+          name={`item_vendors.${i}.price`}
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Harga</FormLabel>
+                <FormControl>
+                  <InputCurrency
+                    ref={field.ref}
+                    value={field.value}
+                    onValueChange={(v) => {
+                      field.onChange(v);
+                    }}
+                    defaultValue={"0"}
+                    placeholder="Isi Harga"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
       </div>
     </>
   );
