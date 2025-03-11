@@ -99,6 +99,50 @@ const vendor = router("vendor", {
       return res.data as { message: string };
     },
   }),
+  item: {
+    create: router.mutation({
+      mutationFn: async (variables: {
+        data: {
+          vendor_id: string | number;
+          name: string;
+          qty: number;
+          unit_of_qty: string;
+          price: number;
+          desc: string;
+        };
+      }) => {
+        const res = await Axios.post(`/vendor/item-vendor`, variables.data);
+
+        return res.data as { message: string };
+      },
+    }),
+    update: router.mutation({
+      mutationFn: async (variables: {
+        id: string | number;
+        data: {
+          name: string;
+          qty: number;
+          unit_of_qty: string;
+          price: number;
+          desc: string;
+        };
+      }) => {
+        const res = await Axios.put(
+          `/vendor/item-vendor/${variables.id}`,
+          variables.data,
+        );
+
+        return res.data as { message: string };
+      },
+    }),
+    delete: router.mutation({
+      mutationFn: async (variables: { id: string | number }) => {
+        const res = await Axios.delete(`/vendor/item-vendor/${variables.id}`);
+
+        return res.data as { message: string };
+      },
+    }),
+  },
 });
 
 export { vendor };

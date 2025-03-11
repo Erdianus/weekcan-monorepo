@@ -221,9 +221,9 @@ export const CreateVendor = () => {
                             id: crypto.randomUUID(),
                             name: "",
                             qty: 0,
-                            unit_of_qty: "",
+                            unit_of_qty: "paket",
                             price: 0,
-                            desc: "",
+                            desc: "-",
                           })
                         }
                       >

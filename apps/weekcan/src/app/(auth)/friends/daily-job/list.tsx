@@ -148,6 +148,8 @@ const ConfirmAttendance = ({
   getValue,
   row,
 }: CellContext<DailyJobUser, boolean | null>) => {
+  const role = useUserStore((s) => s.role);
+  const isRoled = ["Admin", "Owner", "HRD", "Manager"].includes(role ?? "");
   const params = useSearchParams();
   const date = date4Y2M2D(params.get("date"));
   const client = useQueryClient();
@@ -172,8 +174,9 @@ const ConfirmAttendance = ({
 
   return (
     <Checkbox
+      disabled={!isRoled || confirm.isPending}
       defaultChecked={getValue() ?? false}
-      onCheckedChange={onCheckedChange}
+      onCheckedChange={isRoled ? onCheckedChange : undefined}
     />
   );
 };

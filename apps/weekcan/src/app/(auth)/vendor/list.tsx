@@ -1,12 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
-    CellContext,
+  CellContext,
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+
+import { inferData, k } from "@hktekno/api";
+import Paginate from "@hktekno/ui/components/paginate";
+import PaginationParams from "@hktekno/ui/components/pagination-params";
+import PortalSearch from "@hktekno/ui/components/portal-search";
+import { Badge } from "@hktekno/ui/components/ui/badge";
+import { Button } from "@hktekno/ui/components/ui/button";
+import { DataTable } from "@hktekno/ui/components/ui/data-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,20 +26,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@hktekno/ui/components/ui/dropdown-menu";
-
-import { inferData, k } from "@hktekno/api";
-import Paginate from "@hktekno/ui/components/paginate";
-import PaginationParams from "@hktekno/ui/components/pagination-params";
-import PortalSearch from "@hktekno/ui/components/portal-search";
-import { Badge } from "@hktekno/ui/components/ui/badge";
-import { DataTable } from "@hktekno/ui/components/ui/data-table";
-import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Button } from "@hktekno/ui/components/ui/button";
-import Link from "next/link";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Spinner from "@hktekno/ui/components/ui/spinner";
+import useAlertStore from "@hktekno/ui/lib/store/useAlertStore";
 
 type Vendor = inferData<typeof k.vendor.all>["data"][0];
 
@@ -46,7 +46,6 @@ const Actions = ({ row }: CellContext<Vendor, unknown>) => {
     },
     onError: ({ message }) => toast.error(message),
   });
-
 
   const isload = del.isPending;
 
@@ -89,7 +88,6 @@ const Actions = ({ row }: CellContext<Vendor, unknown>) => {
   );
 };
 
-
 const columns = [
   colHelper.display({
     header: "No",
@@ -97,6 +95,11 @@ const columns = [
   }),
   colHelper.accessor("name", {
     header: "Nama",
+    cell: ({ getValue, row }) => (
+      <Link href={`vendor/${row.original.slug}`} className="underline">
+        {getValue()}
+      </Link>
+    ),
   }),
   colHelper.accessor("no_tlp", {
     header: "No. Telp/HP",
@@ -122,7 +125,7 @@ const columns = [
       );
     },
   }),
-    colHelper.display({
+  colHelper.display({
     id: "action",
     cell: Actions,
   }),
