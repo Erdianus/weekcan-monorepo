@@ -29,6 +29,7 @@ const dailyJobSchema = z.object({
   ket: z.string().nullish(),
   date: z.string().nullish(),
   time: z.string().nullish(),
+  confirm_attendance: z.boolean().nullable(),
   dailyJob: z
     .object({
       id: z.union([z.number(), z.string()]),
@@ -128,6 +129,15 @@ const daily_job = {
       return res.data as { message: string };
     },
   }),
+  confirmAttendance: router.mutation({
+    mutationFn: async (variables: {
+    data: {user_id: string | number; date: string; confirm_attendance: boolean; desc?: string }
+    } ) => {
+      const res = await Axios.post(`/daily-jobs/confirm-attendance`, variables.data);
+
+      return res.data as {message : string}
+    }
+  })
 };
 
 export default daily_job;

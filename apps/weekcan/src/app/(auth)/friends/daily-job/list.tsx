@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import { atom, useAtom } from "jotai";
 import { MoreHorizontal, Pencil, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useDebouncedCallback } from "use-debounce";
 
 import type { inferData } from "@hktekno/api";
 import { k } from "@hktekno/api";
@@ -26,6 +27,7 @@ import PaginationParams from "@hktekno/ui/components/pagination-params";
 import PortalSearch from "@hktekno/ui/components/portal-search";
 import { Badge } from "@hktekno/ui/components/ui/badge";
 import { Button } from "@hktekno/ui/components/ui/button";
+import { Checkbox } from "@hktekno/ui/components/ui/checkbox";
 import { DrawerDialog } from "@hktekno/ui/components/ui/drawer";
 import {
   DropdownMenu,
@@ -44,6 +46,7 @@ import {
   TableRow,
 } from "@hktekno/ui/components/ui/table";
 import { H3 } from "@hktekno/ui/components/ui/typograhpy";
+import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import useUserStore from "@hktekno/ui/lib/store/useUserStore";
 import { cn } from "@hktekno/ui/lib/utils";
 
@@ -141,10 +144,48 @@ const Action = ({ row }: CellContext<DailyJobUser, unknown>) => {
   );
 };
 
+const ConfirmAttendance = ({
+  getValue,
+  row,
+}: CellContext<DailyJobUser, boolean | null>) => {
+  const params = useSearchParams();
+  const date = date4Y2M2D(params.get("date"));
+  const client = useQueryClient();
+  const confirm = k.company.daily_job.confirmAttendance.useMutation({
+    onSuccess: async ({ message }) => {
+      toast.success(message);
+      await client.invalidateQueries({
+        queryKey: k.company.daily_job.users.getKey(),
+      });
+    },
+    onError: ({ message }) => toast.error(message),
+  });
+  const onCheckedChange = useDebouncedCallback((e: boolean) => {
+    confirm.mutate({
+      data: {
+        user_id: row.original.id,
+        confirm_attendance: e ?? false,
+        date,
+      },
+    });
+  }, 500);
+
+  return (
+    <Checkbox
+      defaultChecked={getValue() ?? false}
+      onCheckedChange={onCheckedChange}
+    />
+  );
+};
+
 const columns = [
   colHelper.display({
     header: "No",
     cell: ({ row }) => row.index + 1,
+  }),
+  colHelper.accessor("confirm_attendance", {
+    header: "Zoom?",
+    cell: ConfirmAttendance,
   }),
   colHelper.accessor("name", {
     header: "Nama",

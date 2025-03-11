@@ -29,6 +29,9 @@ const dateRange = (
 };
 
 const date4Y2M2D = (date?: string | Date | null) => {
+  if (!dayjs(date).isValid()) {
+    return dayjs().format("YYYY-MM-DD");
+  }
   return dayjs(date).format("YYYY-MM-DD");
 };
 
