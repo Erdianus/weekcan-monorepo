@@ -209,9 +209,12 @@ export const CreateVendor = () => {
               name="item_vendors"
               render={() => {
                 return (
-                  <FormItem>
+                  <FormItem className="sticky -top-4 z-10 bg-background py-2">
                     <div className="flex items-center gap-2">
-                      <FormLabel>Item Vendor</FormLabel>
+                      <FormLabel>
+                        Item Vendor{" "}
+                        {fields.length > 0 && <span>({fields.length})</span>}{" "}
+                      </FormLabel>
                       <Button
                         type="button"
                         size={"icon"}
@@ -231,22 +234,22 @@ export const CreateVendor = () => {
                       </Button>
                     </div>
                     <FormMessage />
-                    <div className="space-y-4">
-                      {fields.map((f, i) => {
-                        return (
-                          <Item
-                            key={f.id}
-                            form={form}
-                            i={i}
-                            onRemove={() => remove(i)}
-                          />
-                        );
-                      })}
-                    </div>
                   </FormItem>
                 );
               }}
             />
+            <div className="space-y-4">
+              {fields.map((f, i) => {
+                return (
+                  <Item
+                    key={f.id}
+                    form={form}
+                    i={i}
+                    onRemove={() => remove(i)}
+                  />
+                );
+              })}
+            </div>
           </div>
           <Button disabled={create.isPending}>
             Submit {create.isPending && <Spinner />}
@@ -265,7 +268,10 @@ type ItemProps = {
 const Item = ({ form, i, onRemove }: ItemProps) => {
   return (
     <>
-      <div className="relative space-y-4 rounded-lg border px-2 py-1">
+      <div className="relative rounded-lg border px-2 py-3 lg:py-4">
+        <p className="absolute left-1 top-1 text-xs text-muted-foreground">
+          {i + 1}
+        </p>
         <Button
           type="button"
           onClick={onRemove}
@@ -273,9 +279,9 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
           size={"icon"}
           className="absolute right-0 top-0"
         >
-          <XCircle className="text-destructive-foreground" />
+          <XCircle className="text-red-500" />
         </Button>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name={`item_vendors.${i}.name`}
@@ -305,7 +311,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
             }}
           />
         </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name={`item_vendors.${i}.qty`}
