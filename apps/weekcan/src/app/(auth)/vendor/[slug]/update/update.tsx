@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { k } from "@hktekno/api";
+import { SelectAsync } from "@hktekno/ui/components/select";
 import { Button } from "@hktekno/ui/components/ui/button";
 import {
   Form,
@@ -24,18 +25,8 @@ import {
   InputPhone,
   isValidPhoneNumber,
 } from "@hktekno/ui/components/ui/input";
-import { Label } from "@hktekno/ui/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@hktekno/ui/components/ui/select";
 import Spinner from "@hktekno/ui/components/ui/spinner";
-
-const units = ["lusin", "paket"];
+import { loadCityOptions, loadProvinceOptions } from "@hktekno/ui/lib/select";
 
 const formSchema = z
   .object({
@@ -48,6 +39,21 @@ const formSchema = z
       .min(1, "Tolong Isi Email")
       .email("Bukan Format Email"),
     address: z.string().min(1, "Tolong Isi Alamat"),
+    province: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Pilih Provinsi" },
+    ),
+    city: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Pilih Kota" },
+    ),
+
     instagram: z.string().optional(),
     tiktok: z.string().optional(),
     facebook: z.string().optional(),
@@ -85,6 +91,14 @@ export const UpdateVendor = ({ slug }: { slug: string }) => {
       instagram: vendor?.data.instagram ?? "",
       facebook: vendor?.data.facebook ?? "",
       item_vendors: vendor?.data.item_vendors ?? [],
+      // @ts-expect-error sengaja biar error
+      province: vendor?.data.province
+        ? { label: vendor?.data.province, value: vendor?.data.province }
+        : null,
+      // @ts-expect-error sengaja biar error
+      city: vendor?.data.city
+        ? { label: vendor?.data.city, value: vendor?.data.city }
+        : null,
     },
   });
 
@@ -108,7 +122,14 @@ export const UpdateVendor = ({ slug }: { slug: string }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((data) => {
-            update.mutate({ data, slug });
+            update.mutate({
+              data: {
+                ...data,
+                province: data.province.label,
+                city: data.city.label,
+              },
+              slug,
+            });
           })}
           className="space-y-5"
         >
@@ -170,6 +191,71 @@ export const UpdateVendor = ({ slug }: { slug: string }) => {
               )}
             />
           </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="province"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Provinsi</FormLabel>
+                  <FormControl>
+                    <SelectAsync
+                      instanceId={"province"}
+                      loadOptions={loadProvinceOptions}
+                      selectRef={field.ref}
+                      value={field.value}
+                      additional={{
+                        page: 1,
+                      }}
+                      onChange={(e) => {
+                        field.onChange({
+                          label: e?.label,
+                          value: `${e?.value ?? ""}`,
+                        });
+                        // @ts-expect-error sengaja biar error
+                        form.setValue("city", null);
+                      }}
+                      placeholder="Pilih Provinsi"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kota</FormLabel>
+                  <FormControl>
+                    <SelectAsync
+                      instanceId={"city"}
+                      cacheUniqs={[form.watch("province")]}
+                      loadOptions={loadCityOptions}
+                      placeholder="Pilih Kota"
+                      selectRef={field.ref}
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange({
+                          label: e?.label,
+                          value: `${e?.value ?? ""}`,
+                        });
+                      }}
+                      isDisabled={!form.watch("province")}
+                      additional={{
+                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                        province_id: form.watch("province")?.value ?? "",
+                        page: 1,
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <FormField
               control={form.control}

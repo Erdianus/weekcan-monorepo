@@ -20,6 +20,8 @@ type Vendor = {
   slug: string;
   no_tlp: string;
   email: string;
+  province?: string | null;
+  city?: string | null;
   address: string;
   instagram?: string | null;
   tiktok?: string | null;
@@ -30,7 +32,12 @@ type Vendor = {
 
 const vendor = router("vendor", {
   all: router.query({
-    fetcher: async (variables: { search?: string }) => {
+    fetcher: async (variables: {
+      search?: string;
+      page?: string | number;
+      paginate?: string;
+      city?: string;
+    }) => {
       const res = await Axios(`/vendor`, { params: variables });
 
       return res.data as { data: Vendor[]; meta: Meta };
@@ -50,6 +57,8 @@ const vendor = router("vendor", {
         no_tlp: string;
         email: string;
         address: string;
+        province?: string;
+        city?: string;
         instagram?: string;
         tiktok?: string;
         facebook?: string;
@@ -75,6 +84,8 @@ const vendor = router("vendor", {
         no_tlp: string;
         email: string;
         address: string;
+        province?: string;
+        city?: string;
         instagram?: string;
         tiktok?: string;
         facebook?: string;

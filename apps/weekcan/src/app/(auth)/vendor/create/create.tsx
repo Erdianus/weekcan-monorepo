@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { k } from "@hktekno/api";
+import { SelectAsync } from "@hktekno/ui/components/select";
 import { Button } from "@hktekno/ui/components/ui/button";
 import {
   Form,
@@ -25,6 +26,7 @@ import {
   isValidPhoneNumber,
 } from "@hktekno/ui/components/ui/input";
 import Spinner from "@hktekno/ui/components/ui/spinner";
+import { loadCityOptions, loadProvinceOptions } from "@hktekno/ui/lib/select";
 
 const formSchema = z
   .object({
@@ -40,6 +42,20 @@ const formSchema = z
     instagram: z.string().optional(),
     tiktok: z.string().optional(),
     facebook: z.string().optional(),
+    province: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Pilih Provinsi" },
+    ),
+    city: z.object(
+      {
+        label: z.string(),
+        value: z.string(),
+      },
+      { invalid_type_error: "Tolong Pilih Kota" },
+    ),
     item_vendors: z
       .object({
         id: z.string(),
@@ -71,6 +87,10 @@ export const CreateVendor = () => {
       instagram: "",
       facebook: "",
       item_vendors: [],
+      // @ts-expect-error sengaja biar error
+      province: null,
+      // @ts-expect-error sengaja biar error
+      city: null,
     },
   });
 
@@ -83,7 +103,7 @@ export const CreateVendor = () => {
   const create = k.vendor.create.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
-      router.back();
+      router.push("/vendor");
       await client.invalidateQueries({ queryKey: k.vendor.all.getKey() });
     },
     onError: ({ message }) => toast.error(message),
@@ -94,7 +114,13 @@ export const CreateVendor = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((data) => {
-            create.mutate({ data });
+            create.mutate({
+              data: {
+                ...data,
+                province: data.province.label,
+                city: data.city.label,
+              },
+            });
           })}
           className="space-y-5"
         >
@@ -156,6 +182,71 @@ export const CreateVendor = () => {
               )}
             />
           </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="province"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Provinsi</FormLabel>
+                  <FormControl>
+                    <SelectAsync
+                      instanceId={"province"}
+                      loadOptions={loadProvinceOptions}
+                      selectRef={field.ref}
+                      value={field.value}
+                      additional={{
+                        page: 1,
+                      }}
+                      onChange={(e) => {
+                        field.onChange({
+                          label: e?.label,
+                          value: `${e?.value ?? ""}`,
+                        });
+                        // @ts-expect-error sengaja biar error
+                        form.setValue("city", null);
+                      }}
+                      placeholder="Pilih Provinsi"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kota</FormLabel>
+                  <FormControl>
+                    <SelectAsync
+                      instanceId={"city"}
+                      cacheUniqs={[form.watch("province")]}
+                      loadOptions={loadCityOptions}
+                      placeholder="Pilih Kota"
+                      selectRef={field.ref}
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange({
+                          label: e?.label,
+                          value: `${e?.value ?? ""}`,
+                        });
+                      }}
+                      isDisabled={!form.watch("province")}
+                      additional={{
+                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                        province_id: form.watch("province")?.value ?? "",
+                        page: 1,
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <FormField
               control={form.control}
