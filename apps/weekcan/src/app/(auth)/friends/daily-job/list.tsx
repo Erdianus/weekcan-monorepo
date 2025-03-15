@@ -37,6 +37,7 @@ import {
 } from "@hktekno/ui/components/ui/dropdown-menu";
 import { Input } from "@hktekno/ui/components/ui/input";
 import { Skeleton } from "@hktekno/ui/components/ui/skeleton";
+import Spinner from "@hktekno/ui/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -173,11 +174,17 @@ const ConfirmAttendance = ({
   }, 500);
 
   return (
-    <Checkbox
-      disabled={!isRoled || confirm.isPending}
-      defaultChecked={getValue() ?? false}
-      onCheckedChange={isRoled ? onCheckedChange : undefined}
-    />
+    <div className="relative w-max">
+      <Checkbox
+        disabled={!isRoled || confirm.isPending}
+        defaultChecked={getValue() ? true : false}
+        // checked={getValue() ? true : false}
+        onCheckedChange={isRoled ? onCheckedChange : undefined}
+      />
+      {confirm.isPending && (
+        <Spinner className="absolute inset-y-1/2 -right-3" />
+      )}
+    </div>
   );
 };
 
