@@ -287,7 +287,7 @@ export function DetailVendor({ slug }: { slug: string }) {
           ) : (
             <div>
               <div className="text-xs text-muted-foreground">Email</div>
-              <div className="">{data?.data.email}</div>
+              <div className="">{data?.data.email ?? "-"}</div>
             </div>
           )}
         </div>
@@ -298,7 +298,7 @@ export function DetailVendor({ slug }: { slug: string }) {
           ) : (
             <div>
               <div className="text-xs text-muted-foreground">Alamat</div>
-              <div className="">{data?.data.address}</div>
+              <div className="">{data?.data.address ?? "-"}</div>
             </div>
           )}
         </div>

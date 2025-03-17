@@ -36,9 +36,8 @@ const formSchema = z
       .min(1, "Tolong Isi No. Telp/HP"),
     email: z
       .string({ required_error: "Tolong Isi Email" })
-      .min(1, "Tolong Isi Email")
       .email("Bukan Format Email"),
-    address: z.string().min(1, "Tolong Isi Alamat"),
+    address: z.string(),
     instagram: z.string().optional(),
     tiktok: z.string().optional(),
     facebook: z.string().optional(),
@@ -130,7 +129,7 @@ export const CreateVendor = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nama</FormLabel>
+                  <FormLabel required>Nama</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Isi Nama Vendor" />
                   </FormControl>
@@ -145,7 +144,7 @@ export const CreateVendor = () => {
               name="no_tlp"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>No. Telp/HP</FormLabel>
+                  <FormLabel required>No. Telp/HP</FormLabel>
                   <FormControl>
                     <InputPhone {...field} placeholder="Isi No. Telp/HP" />
                   </FormControl>
@@ -379,7 +378,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Nama Item</FormLabel>
+                  <FormLabel required>Nama Item</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Isi Nama Item" />
                   </FormControl>
@@ -393,7 +392,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Deskripsi Item</FormLabel>
+                  <FormLabel required>Deskripsi Item</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Isi Deskripsi Item" />
                   </FormControl>
@@ -409,7 +408,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Kuantitas</FormLabel>
+                  <FormLabel required>Kuantitas</FormLabel>
                   <FormControl>
                     <InputCurrency
                       ref={field.ref}
@@ -432,7 +431,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Unit Kuantitas</FormLabel>
+                  <FormLabel required>Unit Kuantitas</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Contoh: Paket, Lusin" />
                   </FormControl>
@@ -447,7 +446,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
           render={({ field }) => {
             return (
               <FormItem>
-                <FormLabel>Harga</FormLabel>
+                <FormLabel required>Harga</FormLabel>
                 <FormControl>
                   <InputCurrency
                     ref={field.ref}

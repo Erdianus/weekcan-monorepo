@@ -19,10 +19,10 @@ type Vendor = {
   name: string;
   slug: string;
   no_tlp: string;
-  email: string;
+  email?: string;
   province?: string | null;
   city?: string | null;
-  address: string;
+  address?: string;
   instagram?: string | null;
   tiktok?: string | null;
   facebook?: string | null;
@@ -55,8 +55,8 @@ const vendor = router("vendor", {
       data: {
         name: string;
         no_tlp: string;
-        email: string;
-        address: string;
+        email?: string;
+        address?: string;
         province?: string;
         city?: string;
         instagram?: string;
@@ -82,8 +82,8 @@ const vendor = router("vendor", {
       data: {
         name: string;
         no_tlp: string;
-        email: string;
-        address: string;
+        email?: string;
+        address?: string;
         province?: string;
         city?: string;
         instagram?: string;
