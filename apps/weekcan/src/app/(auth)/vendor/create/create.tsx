@@ -34,27 +34,29 @@ const formSchema = z
     no_tlp: z
       .string({ required_error: "Tolong Isi No. Telp/HP" })
       .min(1, "Tolong Isi No. Telp/HP"),
-    email: z
-      .string({ required_error: "Tolong Isi Email" })
-      .email("Bukan Format Email"),
-    address: z.string(),
+    email: z.string(),
+    address: z.string().optional(),
     instagram: z.string().optional(),
     tiktok: z.string().optional(),
     facebook: z.string().optional(),
-    province: z.object(
-      {
-        label: z.string(),
-        value: z.string(),
-      },
-      { invalid_type_error: "Tolong Pilih Provinsi" },
-    ),
-    city: z.object(
-      {
-        label: z.string(),
-        value: z.string(),
-      },
-      { invalid_type_error: "Tolong Pilih Kota" },
-    ),
+    province: z
+      .object(
+        {
+          label: z.string(),
+          value: z.string(),
+        },
+        { invalid_type_error: "Tolong Pilih Provinsi" },
+      )
+      .nullish(),
+    city: z
+      .object(
+        {
+          label: z.string(),
+          value: z.string(),
+        },
+        { invalid_type_error: "Tolong Pilih Kota" },
+      )
+      .nullish(),
     item_vendors: z
       .object({
         id: z.string(),
@@ -66,10 +68,27 @@ const formSchema = z
       })
       .array(),
   })
-  .refine(({ no_tlp }) => isValidPhoneNumber(no_tlp, "ID"), {
+  .superRefine((val, ctx) => {
+    if (!isValidPhoneNumber(val.no_tlp, "ID")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Bukan Format No. Telp/HP",
+        path: ["no_tlp"],
+      });
+    }
+
+    if (val.email && !z.string().email().safeParse(val.email).success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Bukan Format Email",
+        path: ["email"],
+      });
+    }
+  });
+/* .refine(({ no_tlp }) => isValidPhoneNumber(no_tlp, "ID"), {
     message: "Bukan Format No. Telp/HP",
     path: ["no_tlp"],
-  });
+  }); */
 
 type FormSchema = z.infer<typeof formSchema>;
 
@@ -86,9 +105,7 @@ export const CreateVendor = () => {
       instagram: "",
       facebook: "",
       item_vendors: [],
-      // @ts-expect-error sengaja biar error
       province: null,
-      // @ts-expect-error sengaja biar error
       city: null,
     },
   });
@@ -116,8 +133,8 @@ export const CreateVendor = () => {
             create.mutate({
               data: {
                 ...data,
-                province: data.province.label,
-                city: data.city.label,
+                province: data.province?.label ?? "",
+                city: data.city?.label ?? "",
               },
             });
           })}
@@ -202,7 +219,6 @@ export const CreateVendor = () => {
                           label: e?.label,
                           value: `${e?.value ?? ""}`,
                         });
-                        // @ts-expect-error sengaja biar error
                         form.setValue("city", null);
                       }}
                       placeholder="Pilih Provinsi"
