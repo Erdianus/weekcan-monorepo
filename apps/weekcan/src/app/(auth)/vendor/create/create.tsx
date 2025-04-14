@@ -61,10 +61,10 @@ const formSchema = z
       .object({
         id: z.string(),
         name: z.string().min(1, "Tolong Isi Nama Item"),
-        qty: z.coerce.number(),
-        unit_of_qty: z.string().min(1, "Tolong Isi Unit Kuantitas"),
+        qty: z.coerce.number().optional(),
+        unit_of_qty: z.string().optional()
         price: z.coerce.number(),
-        desc: z.string().min(1, "Tolong Isi Deskripsi Item"),
+        desc: z.string().optional(),
       })
       .array(),
   })
