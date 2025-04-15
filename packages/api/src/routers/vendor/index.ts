@@ -2,7 +2,7 @@ import { router } from "react-query-kit";
 
 import Axios from "@hktekno/utils/axios";
 
-import { Meta } from "../meta";
+import type { Meta } from "../meta";
 
 type ItemVendor = {
   id: number;
@@ -64,10 +64,10 @@ const vendor = router("vendor", {
         facebook?: string;
         item_vendors: {
           name: string;
-          qty: number;
-          unit_of_qty: string;
+          qty?: number;
+          unit_of_qty?: string;
           price: number;
-          desc: string;
+          desc?: string;
         }[];
       };
     }) => {
@@ -91,10 +91,10 @@ const vendor = router("vendor", {
         facebook?: string;
         item_vendors: {
           name: string;
-          qty: number;
-          unit_of_qty: string;
+          qty?: number;
+          unit_of_qty?: string;
           price: number;
-          desc: string;
+          desc?: string;
         }[];
       };
     }) => {

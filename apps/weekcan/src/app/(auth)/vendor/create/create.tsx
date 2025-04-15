@@ -1,10 +1,11 @@
 "use client";
 
+import type { UseFormReturn } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, XCircle } from "lucide-react";
-import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -62,7 +63,7 @@ const formSchema = z
         id: z.string(),
         name: z.string().min(1, "Tolong Isi Nama Item"),
         qty: z.coerce.number().optional(),
-        unit_of_qty: z.string().optional()
+        unit_of_qty: z.string().optional(),
         price: z.coerce.number(),
         desc: z.string().optional(),
       })
@@ -367,6 +368,7 @@ export const CreateVendor = () => {
 };
 
 type ItemProps = {
+  // @ts-ignore
   form: UseFormReturn<FormSchema, any, undefined>;
   i: number;
   onRemove: () => void;
@@ -408,7 +410,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel required>Deskripsi Item</FormLabel>
+                  <FormLabel>Deskripsi Item</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Isi Deskripsi Item" />
                   </FormControl>
@@ -424,7 +426,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel required>Kuantitas</FormLabel>
+                  <FormLabel>Kuantitas</FormLabel>
                   <FormControl>
                     <InputCurrency
                       ref={field.ref}
@@ -447,7 +449,7 @@ const Item = ({ form, i, onRemove }: ItemProps) => {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel required>Unit Kuantitas</FormLabel>
+                  <FormLabel>Unit Kuantitas</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Contoh: Paket, Lusin" />
                   </FormControl>

@@ -192,6 +192,9 @@ const ListWarehouse = () => {
                     <div>
                       <Label>Perusahaan</Label>
                       <SelectAsync
+                        menuPortalTarget={
+                          typeof window !== "undefined" ? document.body : null
+                        }
                         value={field.value}
                         onChange={field.onChange}
                         selectRef={field.ref}

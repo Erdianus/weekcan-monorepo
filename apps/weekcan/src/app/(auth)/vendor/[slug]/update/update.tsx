@@ -1,10 +1,11 @@
 "use client";
 
+import type { UseFormReturn } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, XCircle } from "lucide-react";
-import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -64,7 +65,7 @@ const formSchema = z
         qty: z.coerce.number().optional(),
         unit_of_qty: z.string().optional(),
         price: z.coerce.number(),
-        desc: z.string().optional()
+        desc: z.string().optional(),
       })
       .array(),
   })
@@ -92,10 +93,10 @@ export const UpdateVendor = ({ slug }: { slug: string }) => {
       facebook: vendor?.data.facebook ?? "",
       item_vendors: vendor?.data.item_vendors ?? [],
       province: vendor?.data.province
-        ? { label: vendor?.data.province, value: vendor?.data.province }
+        ? { label: vendor.data.province, value: vendor.data.province }
         : null,
       city: vendor?.data.city
-        ? { label: vendor?.data.city, value: vendor?.data.city }
+        ? { label: vendor.data.city, value: vendor.data.city }
         : null,
     },
   });
@@ -241,7 +242,6 @@ export const UpdateVendor = ({ slug }: { slug: string }) => {
                       }}
                       isDisabled={!form.watch("province")}
                       additional={{
-                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                         province_id: form.watch("province")?.value ?? "",
                         page: 1,
                       }}
