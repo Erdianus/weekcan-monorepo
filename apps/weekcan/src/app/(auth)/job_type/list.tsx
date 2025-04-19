@@ -189,6 +189,9 @@ const ListJobTypes = () => {
                       <div>
                         <Label className="mb-1">Perusahaan</Label>
                         <SelectAsync
+                          menuPortalTarget={
+                            typeof window !== "undefined" ? document.body : null
+                          }
                           loadOptions={loadCompanyOptions}
                           value={field.value}
                           onChange={field.onChange}
