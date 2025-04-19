@@ -15,3 +15,4 @@ docker build --build-arg NEXT_PUBLIC_BASE_API=https://base_api --build-arg NEXT_
 docker run -p 3000:3000 --env-file .env hktekno/weekcan
 ```
 
+:)
