@@ -38,6 +38,7 @@ import { shortName } from "@hktekno/ui/lib/utils";
 
 const warehouseForm = z.object({
   name: z.string().min(1, "Tolong Isi Nama Gudang"),
+  code: z.string().min(1, "Tolong Isi Kode"),
   company: z.object(
     {
       label: z.string(),
@@ -76,6 +77,7 @@ const EditWarehouse = (props: {
           data: {
             name: data.name,
             company_id: data.company.value,
+            code: data.code,
           },
         });
       }}
@@ -85,6 +87,11 @@ const EditWarehouse = (props: {
         <Input
           value={data.name}
           onChange={(e) => setData((o) => ({ ...o, name: e.target.value }))}
+        />
+        <Label>Kode Gudang</Label>
+        <Input
+          value={data.code}
+          onChange={(e) => setData((o) => ({ ...o, code: e.target.value }))}
         />
         <Label>Perusahaan</Label>
         <SelectAsync
@@ -185,6 +192,13 @@ const ListWarehouse = () => {
                     placeholder="Contoh: Gudang A"
                   />
                 </div>
+                <div>
+                  <Label>Kode</Label>
+                  <Input
+                    {...form.register("code")}
+                    placeholder="Isi Kode Gudang"
+                  />
+                </div>
                 <Controller
                   control={form.control}
                   name="company"
@@ -235,6 +249,7 @@ const ListWarehouse = () => {
                 data={{
                   name: warehouse.name,
                   id: warehouse.id,
+                  code: warehouse.code ?? "",
                   company: {
                     label: warehouse.company.company_name,
                     value: `${warehouse.company.id}`,

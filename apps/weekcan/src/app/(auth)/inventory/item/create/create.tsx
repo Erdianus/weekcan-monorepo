@@ -43,10 +43,7 @@ import { useImageCropStore } from "@hktekno/ui/lib/store/useImageCropStore";
 
 const itemFormSchema = z.object({
   name: z.string().min(1, "Tolong Isi Nama Barang"),
-  unit: z.object({
-    label: z.string(),
-    value: z.string(),
-  }),
+  unit: z.string().min(1, "Tolong Isi Unit"),
   date: z.date({
     required_error: "Tolong Pilih Tanggal Barang Ditambahkan",
     invalid_type_error: "Tolong Isi Tanggal Barang Masuk",
@@ -55,6 +52,7 @@ const itemFormSchema = z.object({
     label: z.string(),
     value: z.string(),
   }),
+  code: z.string().min(1, "Tolong Isi Kode"),
   picture: z.object(
     {
       file: z.instanceof(File, { message: "Tolong Pilih Gambar" }),
@@ -73,17 +71,18 @@ const itemFormSchema = z.object({
         { invalid_type_error: "Tolong Pilih Gudang" },
       ),
       qty: z.coerce.number().min(1, "Tolong Isi Jumlah"),
-      ket: z.string().min(1, "Tolong Isi Keterangan"),
-      date: z.date({
-        required_error: "Tolong Pilih Tanggal Barang Kadaluarsa",
-        invalid_type_error: "Tolong Isi Tanggal Barang Expired",
-      }),
+      ket: z.string(),
+      date: z
+        .date({
+          required_error: "Tolong Pilih Tanggal Barang Kadaluarsa",
+          invalid_type_error: "Tolong Isi Tanggal Barang Expired",
+        })
+        .optional(),
     })
     .array()
     .min(1, "Tolong Isi Stock Gudang Min. 1"),
 });
 
-const units = ["pcs", "box"].map((v) => ({ label: v, value: v }));
 const categories = ["Barang", "Server"].map((v) => ({ label: v, value: v }));
 const date = new Date();
 
@@ -98,10 +97,7 @@ const CreateItem = () => {
     resolver: zodResolver(itemFormSchema),
     values: {
       name: "",
-      unit: {
-        label: "Pcs",
-        value: "pcs",
-      },
+      unit: "",
       date,
       category: {
         label: "Barang",
@@ -165,8 +161,9 @@ const CreateItem = () => {
             create.mutate({
               data: {
                 name: v.name,
-                unit: v.unit.value,
+                unit: v.unit,
                 category: v.category.value,
+                code: v.code,
                 date: date4Y2M2D(v.date),
                 picture_path: v.picture.file,
                 warehouse_stock: v.warehouse_stock.map((vv) => ({
@@ -218,13 +215,9 @@ const CreateItem = () => {
               name="unit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Unit</FormLabel>
+                  <FormLabel>Unit Barang</FormLabel>
                   <FormControl>
-                    <Select
-                      {...field}
-                      options={units}
-                      placeholder="Pilih Unit"
-                    />
+                    <Input {...field} placeholder="Contoh: Pcs" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

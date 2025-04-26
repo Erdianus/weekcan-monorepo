@@ -39,10 +39,8 @@ import { useImageCropStore } from "@hktekno/ui/lib/store/useImageCropStore";
 
 const itemFormSchema = z.object({
   name: z.string().min(1, "Tolong Isi Nama Barang"),
-  unit: z.object({
-    label: z.string(),
-    value: z.string(),
-  }),
+  unit: z.string().min(1, "Tolong Isi Unit"),
+  code: z.string().min(1, "Tolong Isi Kode"),
   picture: z.object(
     {
       file: z.instanceof(File, { message: "Tolong Pilih Gambar" }).optional(),
@@ -93,10 +91,7 @@ const UpdateItem = ({ id }: { id: string }) => {
     if (item) {
       form.reset({
         name: item.data.name,
-        unit: {
-          label: item.data.unit,
-          value: item.data.unit,
-        },
+        unit: item.data?.unit ?? "",
         picture: {
           file: undefined,
           src: item.data.picture_link,
@@ -144,7 +139,7 @@ const UpdateItem = ({ id }: { id: string }) => {
               id,
               data: {
                 name: v.name,
-                unit: v.unit.value,
+                unit: v.unit ?? "",
                 picture_path: v.picture.file,
               },
             });
@@ -169,13 +164,9 @@ const UpdateItem = ({ id }: { id: string }) => {
               name="unit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Unit</FormLabel>
+                  <FormLabel>Unit Barang</FormLabel>
                   <FormControl isloading={!!isLoading}>
-                    <Select
-                      {...field}
-                      options={units}
-                      placeholder="Pilih Unit"
-                    />
+                    <Input {...field} placeholder="Contoh: Pcs" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

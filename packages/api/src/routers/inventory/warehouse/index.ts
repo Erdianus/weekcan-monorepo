@@ -36,7 +36,7 @@ const warehouse = {
   }),
   create: router.mutation({
     mutationFn: async (variables: {
-      data: { name: string; company_id: string | number };
+      data: { name: string; company_id: string | number; code: string };
     }) => {
       const res = await Axios.post(`/warehouse`, variables.data);
 
@@ -46,7 +46,7 @@ const warehouse = {
   update: router.mutation({
     mutationFn: async (variables: {
       id: string;
-      data: { name: string; company_id: string | number };
+      data: { name: string; company_id: string | number; code: string };
     }) => {
       const res = await Axios.put(`/warehouse/${variables.id}`, variables.data);
 

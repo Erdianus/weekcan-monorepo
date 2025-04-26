@@ -25,6 +25,7 @@ const itemSchema = itemBaseSchema.extend({
 type FormCreate = {
   name: string;
   unit: string;
+  code: string;
   date: string;
   category: string;
   picture_path: File;
