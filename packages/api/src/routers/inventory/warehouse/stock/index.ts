@@ -16,7 +16,8 @@ type Form = {
   item_id: string;
   qty: number;
   ket: string;
-  expired_date: string;
+  expired_date?: string;
+  date?: string;
 };
 
 const stock = {

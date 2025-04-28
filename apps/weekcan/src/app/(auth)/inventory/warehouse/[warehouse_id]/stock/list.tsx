@@ -12,6 +12,7 @@ import {
   MoreHorizontal,
   Package,
   Pencil,
+  Plus,
   Trash2,
   X,
 } from "lucide-react";
@@ -200,7 +201,7 @@ const ListStock = ({ warehouse_id }: { warehouse_id: string }) => {
       <Flashlist
         isloading={isLoading}
         loading={
-          <Loading>
+          <Loading keyname="loadingstock">
             <div className="mb-2 rounded-lg border p-2">
               <div className="mb-2 flex items-center gap-1">
                 <Skeleton className="h-10 w-10 rounded-lg" />
@@ -224,8 +225,11 @@ const ListStock = ({ warehouse_id }: { warehouse_id: string }) => {
         {stocks?.data.map((stock) => {
           if (editID === stock.id) return <EditStock data={stock} />;
           return (
-            <div className="mb-4 rounded-lg border p-2">
-              <div className="flex items-start justify-between">
+            <div
+              key={`stock-${stock.id}`}
+              className="mb-4 rounded-lg border p-2"
+            >
+              <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-center gap-1 text-lg">
                   <Avatar className="h-14 w-14 rounded">
                     <AvatarImage src={stock.picture_path} />

@@ -154,6 +154,7 @@ const CreateItem = () => {
           </Button>
         </DialogContent>
       </Dialog>
+      {JSON.stringify(form.formState.errors)}
       <H3 className="mb-4">Tambahkan Barang Baru</H3>
       <Form {...form}>
         <form
@@ -244,6 +245,21 @@ const CreateItem = () => {
           <div>
             <FormField
               control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kode Barang</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Isi Kode Barang" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
               name="picture.src"
               render={({ field }) => (
                 <FormItem>
@@ -298,7 +314,7 @@ const CreateItem = () => {
                     {
                       id,
                       date,
-                      ket: "",
+                      ket: "-",
                       qty: 1,
                       // @ts-expect-error gapapa error gan
                       warehouse: null,

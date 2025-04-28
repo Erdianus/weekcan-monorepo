@@ -56,6 +56,33 @@ const loadWarehouseOptions: LoadOptions<
   };
 };
 
+const loadItemOptions: LoadOptions<
+  OptionType,
+  GroupBase<OptionType>,
+  inferVariables<typeof k.inventory.item.all>
+> = async (search, _, params) => {
+  const page = params?.page ?? 1;
+  const warehouses = await k.inventory.item.all.fetcher({
+    ...params,
+    page,
+    search,
+  });
+
+  const options = warehouses.data.map((d) => ({
+    label: `${d.name}`,
+    value: `${d.id}`,
+  }));
+
+  return {
+    options,
+    hasMore: warehouses.meta.current_page !== warehouses.meta.last_page,
+    additional: {
+      ...params,
+      page: Number(page) + 1,
+    },
+  };
+};
+
 const loadProjectOptions: LoadOptions<
   OptionType,
   GroupBase<OptionType>,
@@ -537,6 +564,7 @@ const loadOptions = Object.freeze({
 export {
   loadOptions,
   loadWarehouseOptions,
+  loadItemOptions,
   loadProjectOptions,
   loadProjectJSONOptions,
   loadProjectSprintOptions,
