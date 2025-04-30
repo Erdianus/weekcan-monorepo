@@ -236,6 +236,7 @@ const ListStock = ({ warehouse_id }: { warehouse_id: string }) => {
                     <AvatarFallback>{shortName(stock.name)}</AvatarFallback>
                   </Avatar>
                   <div>{stock.name}</div>
+                  <div className="text-sm text-muted-foreground">{stock.code}</div>
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger disabled={del.isPending} asChild>

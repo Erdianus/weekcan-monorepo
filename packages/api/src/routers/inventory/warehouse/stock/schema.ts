@@ -4,6 +4,7 @@ const stockBaseSchema = z.object({
   id: z.number(),
   name: z.string(),
   picture_path: z.string(),
+  code: z.string(),
   unit: z.string(),
   category: z.string(),
   warehouse_id: z.string(),
