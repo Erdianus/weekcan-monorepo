@@ -64,7 +64,7 @@ const EditStock = ({
   const imgCrop = useImageCropStore();
   const [field, setField] = useState<Form>({
     ...data,
-    expired_date: dayjs(data.expired_date).toDate(),
+    expired_date: dayjs(data.expired_date ?? undefined).toDate(),
   });
 
   const client = useQueryClient();
@@ -97,7 +97,7 @@ const EditStock = ({
             data: {
               warehouse_id: data.warehouse_id,
               item_id: data.item_id,
-              expired_date: date4Y2M2D(field.expired_date),
+              expired_date:  field.expired_date ? date4Y2M2D(field.expired_date) : undefined,
               qty: Number(field.qty),
               ket: field.ket,
             },
@@ -285,7 +285,7 @@ const ListStock = ({ warehouse_id }: { warehouse_id: string }) => {
               <ItemDetail
                 icon={CalendarOff}
                 label="Tanggal Kadaluarsa"
-                value={dayjs(stock.expired_date).format("DD MMMM YYYY")}
+                value={dayjs(stock.expired_date ?? undefined).format("DD MMMM YYYY")}
               />
               <ItemDetail
                 icon={Package}

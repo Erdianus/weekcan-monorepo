@@ -154,7 +154,6 @@ const CreateItem = () => {
           </Button>
         </DialogContent>
       </Dialog>
-      {JSON.stringify(form.formState.errors)}
       <H3 className="mb-4">Tambahkan Barang Baru</H3>
       <Form {...form}>
         <form
