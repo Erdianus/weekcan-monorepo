@@ -43,6 +43,7 @@ const item = {
       page?: number | string;
       paginate?: number | string;
       search?: string;
+      not_in_warehouse?: string;
     }) => {
       const res = await Axios("/item", { params: variables });
 

@@ -124,7 +124,7 @@ const AddStock = ({ warehouse_id }: { warehouse_id: string }) => {
                           onChange={field.onChange}
                           loadOptions={loadItemOptions}
                           placeholder="Pilih Item"
-                          additional={{ page: 1 }}
+                          additional={{ page: 1, not_in_warehouse: warehouse_id }}
                         />
                       </FormControl>
                       <FormMessage />
