@@ -40,6 +40,7 @@ import { H3 } from "@hktekno/ui/components/ui/typograhpy";
 import { date4Y2M2D } from "@hktekno/ui/lib/date";
 import { loadItemOptions } from "@hktekno/ui/lib/select";
 import { shortName } from "@hktekno/ui/lib/utils";
+import { useState } from "react";
 
 const stockFormSchema = z.object({
   item: z.object(
@@ -60,6 +61,7 @@ const stockFormSchema = z.object({
 });
 
 const AddStock = ({ warehouse_id }: { warehouse_id: string }) => {
+  const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof stockFormSchema>>({
     resolver: zodResolver(stockFormSchema),
     values: {
@@ -74,6 +76,8 @@ const AddStock = ({ warehouse_id }: { warehouse_id: string }) => {
   const add = k.inventory.warehouse.stock.create.useMutation({
     onSuccess: async ({ message }) => {
       toast.success(message);
+      setOpen(false);
+      form.reset();
       await client.invalidateQueries({
         queryKey: k.inventory.warehouse.stock.all.getKey(),
       });
@@ -82,7 +86,7 @@ const AddStock = ({ warehouse_id }: { warehouse_id: string }) => {
   });
   return (
     <>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button size={"icon"}>
             <Plus />
