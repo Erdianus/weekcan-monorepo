@@ -43,11 +43,11 @@ const itemFormSchema = z.object({
   code: z.string().min(1, "Tolong Isi Kode"),
   picture: z.object(
     {
-      file: z.instanceof(File, { message: "Tolong Pilih Gambar" }).optional(),
-      src: z.string().min(1, "Tolong Pilih Gambar"),
+      file: z.instanceof(File, { message: "Tolong Pilih Gambar" }).nullish(),
+      src: z.string() /* .min(1, "Tolong Pilih Gambar"), */,
     },
     { message: "Tolong Pilih Gambar" },
-  ).nullish(),
+  ),
 });
 
 const units = ["pcs", "box"].map((v) => ({ label: v, value: v }));

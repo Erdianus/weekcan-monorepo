@@ -55,11 +55,11 @@ const itemFormSchema = z.object({
   code: z.string().min(1, "Tolong Isi Kode"),
   picture: z.object(
     {
-      file: z.instanceof(File, { message: "Tolong Pilih Gambar" }),
-      src: z.string().min(1, "Tolong Pilih Gambar"),
+      file: z.instanceof(File, { message: "Tolong Pilih Gambar" }).nullish(),
+      src: z.string() /* .min(1, "Tolong Pilih Gambar"), */,
     },
     { message: "Tolong Pilih Gambar" },
-  ).nullish(),
+  ),
   warehouse_stock: z
     .object({
       id: z.number(),
@@ -79,8 +79,8 @@ const itemFormSchema = z.object({
         })
         .optional(),
     })
-    .array()
-    // .min(1, "Tolong Isi Stock Gudang Min. 1"),
+    .array(),
+  // .min(1, "Tolong Isi Stock Gudang Min. 1"),
 });
 
 const categories = ["Barang", "Server"].map((v) => ({ label: v, value: v }));
@@ -98,13 +98,13 @@ const CreateItem = () => {
     values: {
       name: "",
       unit: "",
+      code: "",
       date,
       category: {
         label: "Barang",
         value: "Barang",
       },
       picture: {
-        // @ts-expect-error sengaja biar error
         file: undefined,
         src: "",
       },

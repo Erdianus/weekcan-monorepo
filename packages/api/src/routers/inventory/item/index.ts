@@ -28,7 +28,7 @@ type FormCreate = {
   code: string;
   date: string;
   category: string;
-  picture_path: File;
+  picture_path?: File | null;
   warehouse_stock: {
     warehouse_id: string;
     qty: number;
@@ -74,7 +74,7 @@ const item = {
       data: {
         name: string;
         unit: string;
-        picture_path?: File;
+        picture_path?: File | null;
       };
     }) => {
       const res = await Axios.post(
