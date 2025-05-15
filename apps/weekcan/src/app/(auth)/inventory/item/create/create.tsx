@@ -59,7 +59,7 @@ const itemFormSchema = z.object({
       src: z.string().min(1, "Tolong Pilih Gambar"),
     },
     { message: "Tolong Pilih Gambar" },
-  ),
+  ).nullish(),
   warehouse_stock: z
     .object({
       id: z.number(),
@@ -80,7 +80,7 @@ const itemFormSchema = z.object({
         .optional(),
     })
     .array()
-    .min(1, "Tolong Isi Stock Gudang Min. 1"),
+    // .min(1, "Tolong Isi Stock Gudang Min. 1"),
 });
 
 const categories = ["Barang", "Server"].map((v) => ({ label: v, value: v }));

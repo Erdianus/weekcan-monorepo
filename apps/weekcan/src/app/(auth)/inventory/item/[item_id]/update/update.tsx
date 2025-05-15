@@ -47,7 +47,7 @@ const itemFormSchema = z.object({
       src: z.string().min(1, "Tolong Pilih Gambar"),
     },
     { message: "Tolong Pilih Gambar" },
-  ),
+  ).nullish(),
 });
 
 const units = ["pcs", "box"].map((v) => ({ label: v, value: v }));
