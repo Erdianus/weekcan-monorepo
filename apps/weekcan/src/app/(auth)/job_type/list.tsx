@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -38,6 +38,7 @@ const jobTypeForm = z.object({
     },
     { invalid_type_error: "Tolong Pilih Perusahaan" },
   ),
+  company_id: z.union([z.string(), z.number()]).nullish(),
   job_name: z.string().min(1, "Tolong Isi Nama Job Type"),
 });
 
@@ -46,6 +47,11 @@ const EditJobType = (props: {
   onClose: () => void;
 }) => {
   const [data, setData] = useState<z.infer<typeof jobTypeForm>>(props.data);
+
+  const { data: company, isLoading } = k.company.single.useQuery({
+    variables: { id: data.company_id ?? 0 },
+    enabled: !!data.company_id,
+  });
 
   const client = useQueryClient();
   const update = k.jobType.update.useMutation({
@@ -56,21 +62,44 @@ const EditJobType = (props: {
     },
     onError: ({ message }) => toast.error(message),
   });
+
+  useEffect(() => {
+    if (company) {
+      setData((old) => ({
+        ...old,
+        company: {
+          label: company.data.company_name,
+          value: `${company.data.id}`,
+        },
+      }));
+    }
+  }, [company]);
+
   return (
     <>
-      <div>
-        <SelectAsync
-          loadOptions={loadCompanyOptions}
-          value={data.company}
-          onChange={(company) => {
-            // @ts-expect-error gapapa error gan
-            setData((o) => ({ ...o, company }));
-          }}
-        />
-        <Input
-          value={data.job_name}
-          onChange={(e) => setData((o) => ({ ...o, job_name: e.target.value }))}
-        />
+      <div className="flex w-full items-center gap-2">
+        <div className="basis-1/2">
+          <Label>Nama Jabatan</Label>
+          <Input
+            value={data.job_name}
+            onChange={(e) =>
+              setData((o) => ({ ...o, job_name: e.target.value }))
+            }
+          />
+        </div>
+        <div className="w-full basis-1/2">
+          <Label>Perusahaan</Label>
+          <SelectAsync
+            isLoading={isLoading}
+            className="w-full"
+            loadOptions={loadCompanyOptions}
+            value={data.company}
+            onChange={(company) => {
+              // @ts-expect-error gapapa error gan
+              setData((o) => ({ ...o, company }));
+            }}
+          />
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
@@ -116,7 +145,6 @@ const ListJobTypes = () => {
   const form = useForm<z.infer<typeof jobTypeForm>>({
     resolver: zodResolver(jobTypeForm),
     values: {
-      // @ts-expect-error gapapa error gan
       company: null,
       job_name: "",
     },
@@ -227,6 +255,10 @@ const ListJobTypes = () => {
             key={`job-${job.id}`}
             className="flex items-center justify-between gap-4 border-b border-border p-4"
           >
+            {editID === job.id && (
+              <EditJobType data={job} onClose={() => setEditID(0)} />
+            )}
+
             {editID !== job.id && (
               <>
                 <div>{job.job_name}</div>
