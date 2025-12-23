@@ -277,14 +277,16 @@ const ListDailyJobUser = ({ role }: { role?: string }) => {
   const isRoled = ["Admin", "Owner", "HRD", "Manager"].includes(role ?? "");
 
   const [state, setState] = useAtom(stateAtom);
-  const company_id = useUserStore((s) => `${s.friends_id}`);
+  // const company_id = useUserStore((s) => `${s.friends_id}`);
   const searchParams = useSearchParams();
+  const company_id = searchParams.getAll("company_id");
+  const company_ids = company_id.length > 0 ? { company_id } : {};
   const job_type = searchParams.getAll("job_type");
   const job_types = job_type.length > 0 ? { job_type } : {};
   const variables = Object.fromEntries(searchParams.entries());
 
   const { data: dailies, isLoading } = k.company.daily_job.users.useQuery({
-    variables: { ...variables, ...job_types, company_id },
+    variables: { ...variables, ...job_types, ...company_ids },
   });
 
   const table = useReactTable({
