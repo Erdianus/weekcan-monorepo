@@ -11,7 +11,7 @@ const withPWA = withPWAInit({
 
 /** @type {import("next").NextConfig} */
 const config = {
-  turbopack: false, // ⬅️ WAJIB
+  // turbopack: false, // ⬅️ WAJIB
   reactStrictMode: true,
 
   transpilePackages: [
@@ -21,7 +21,7 @@ const config = {
     "@hktekno/utils",
   ],
 
-  eslint: { ignoreDuringBuilds: true },
+  // eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 };
 
