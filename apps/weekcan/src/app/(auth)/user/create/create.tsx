@@ -92,7 +92,7 @@ const CreateUser = () => {
 
   return (
     <>
-      <H3 className="mb-4">Buat User Baru</H3>
+      <H3 className="mb-4">Buat User Baru +</H3>
       <Form {...form}>
         <form
           className="space-y-4"
