@@ -18,7 +18,7 @@
     "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
     "lint:fix": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
     "lint:ws": "pnpm dlx sherif@latest",
-    "postinstall": "pnpm lint:ws",
+    "postinstall": "echo 'skip postinstall'",
     "typecheck": "turbo typecheck",
     "ui-add": "pnpm -F ui ui-add"
   },
@@ -29,5 +29,11 @@
     "turbo": "^2.3.4",
     "typescript": "^5.4.5"
   },
-  "prettier": "@hktekno/prettier-config"
+  "prettier": "@hktekno/prettier-config",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.0.2",
+      "@types/react-dom": "19.0.2"
+    }
+  }
 }

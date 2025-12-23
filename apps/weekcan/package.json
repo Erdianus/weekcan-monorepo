@@ -6,7 +6,7 @@
   "scripts": {
     "build": "pnpm with-env next build",
     "clean": "git clean -xdf .next .turbo node_modules",
-    "dev": "pnpm with-env next dev",
+    "dev": "pnpm with-env next dev --webpack",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "start": "pnpm with-env next start",
@@ -69,11 +69,5 @@
     "typescript": "^5.4.5",
     "webpack": "^5.91.0"
   },
-  "prettier": "@hktekno/prettier-config",
-  "pnpm": {
-    "overrides": {
-      "@types/react": "19.0.2",
-      "@types/react-dom": "19.0.2"
-    }
-  }
+  "prettier": "@hktekno/prettier-config"
 }

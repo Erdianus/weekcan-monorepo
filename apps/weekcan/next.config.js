@@ -2,7 +2,6 @@ import { fileURLToPath } from "url";
 import withPWAInit from "@ducanh2912/next-pwa";
 import createJiti from "jiti";
 
-// Import env files to validate at build time. Use jiti so we can load .ts files in here.
 createJiti(fileURLToPath(import.meta.url))("./src/env");
 
 const withPWA = withPWAInit({
@@ -12,9 +11,9 @@ const withPWA = withPWAInit({
 
 /** @type {import("next").NextConfig} */
 const config = {
+  turbopack: false, // ⬅️ WAJIB
   reactStrictMode: true,
 
-  /** Enables hot reloading for local packages without a build step */
   transpilePackages: [
     "@hktekno/api",
     "@hktekno/auth",
@@ -22,7 +21,6 @@ const config = {
     "@hktekno/utils",
   ],
 
-  /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 };
