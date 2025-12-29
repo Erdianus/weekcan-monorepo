@@ -6,10 +6,11 @@ export const metadata: Metadata = {
   title: "Update Perusahaan",
 };
 
-export default function CompanyPage({
+export default async function CompanyPage({
   params,
 }: {
-  params: { company_id: string | number };
+  params: Promise<{ company_id: string | number }>;
 }) {
-  return <UpdateCompany id={params.company_id} />;
+  const { company_id } = await params;
+  return <UpdateCompany id={company_id} />;
 }

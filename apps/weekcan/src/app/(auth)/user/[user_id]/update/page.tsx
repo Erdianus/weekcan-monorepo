@@ -6,10 +6,11 @@ export const metadata: Metadata = {
   title: "Update User",
 };
 
-export default function UpdateUserPage({
+export default async function UpdateUserPage({
   params,
 }: {
-  params: { user_id: string | number };
+  params: Promise<{ user_id: string | number }>;
 }) {
-  return <UpdateUser id={params.user_id} />;
+  const { user_id } = await params;
+  return <UpdateUser id={user_id} />;
 }
