@@ -10,11 +10,12 @@ export default async function Layout({
   params,
 }: {
   children: ReactNode;
-  params: { project_id: string | number };
+  params: Promise<{ project_id: string }>;
 }) {
+  const { project_id } = await params;
   const sesh = await auth();
   const res = await fetch(
-    `${env.NEXT_PUBLIC_BASE_API}/api/project/${params.project_id}`,
+    `${env.NEXT_PUBLIC_BASE_API}/api/project/${project_id}`,
     {
       headers: {
         Authorization: `Bearer ${sesh?.user.token}`,
@@ -27,7 +28,7 @@ export default async function Layout({
   if (res.status === 401) throw Error("Kamu Punya Gak Punya Akses");
   return (
     <>
-      <SingleProject id={params.project_id} />
+      <SingleProject id={project_id} />
       {children}
     </>
   );

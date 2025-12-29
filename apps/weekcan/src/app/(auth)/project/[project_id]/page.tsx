@@ -6,14 +6,15 @@ export const metadata: Metadata = {
   title: "Project Single",
 };
 
-export default function Page({
+export default async function Page({
   params,
 }: {
-  params: { project_id: string | number };
+  params: Promise<{ project_id: string | number }>;
 }) {
+  const { project_id } = await params;
   return (
     <>
-      <DetailProject id={params.project_id} />
+      <DetailProject id={project_id} />
     </>
   );
 }

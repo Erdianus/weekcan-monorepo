@@ -6,14 +6,15 @@ export const metadata: Metadata = {
   title: "Kerjaan Proyek",
 };
 
-export default function TaskProjectPage({
+export default async function TaskProjectPage({
   params,
 }: {
-  params: { project_id: string };
+  params: Promise<{ project_id: string }>;
 }) {
+  const { project_id } = await params;
   return (
     <>
-      <ListTaskProject project_id={params.project_id} />
+      <ListTaskProject project_id={project_id} />
     </>
   );
 }
