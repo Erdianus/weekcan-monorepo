@@ -8,7 +8,9 @@ export default async function Layout({ children }: PropsWithChildren) {
   const sesh = await auth();
   return (
     <>
-      <LayoutHeader friends_id={sesh?.user.friends_id} />
+      {sesh?.user.friends_id && (
+        <LayoutHeader friends_id={sesh?.user.friends_id} />
+      )}
       {children}
     </>
   );

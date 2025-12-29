@@ -31,6 +31,28 @@ import {
 
 // This is sample data.
 const data = {
+  hkgroup: {
+    title: "HK Group",
+    menus: [
+      {
+        icon: () => (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={24}
+            height={24}
+            viewBox="-2 -2 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M6 0h8a6 6 0 0 1 6 6v8a6 6 0 0 1-6 6H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6m0 2a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V6a4 4 0 0 0-4-4zm6 7h3a1 1 0 0 1 0 2h-3a1 1 0 0 1 0-2m-2 4h5a1 1 0 0 1 0 2h-5a1 1 0 0 1 0-2m0-8h5a1 1 0 0 1 0 2h-5a1 1 0 1 1 0-2m-4.172 5.243L7.95 8.12a1 1 0 1 1 1.414 1.415l-2.828 2.828a1 1 0 0 1-1.415 0L3.707 10.95a1 1 0 0 1 1.414-1.414z"
+            ></path>
+          </svg>
+        ),
+        link: "/friends/daily-job",
+        title: "Kerjaan Harian",
+      },
+    ],
+  },
   friends: {
     title: "Friends Productions",
     menus: [
@@ -48,23 +70,6 @@ const data = {
         ),
         link: "/friends/event",
         title: "Event",
-      },
-      {
-        icon: () => (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={24}
-            height={24}
-            viewBox="-2 -2 24 24"
-          >
-            <path
-              fill="currentColor"
-              d="M6 0h8a6 6 0 0 1 6 6v8a6 6 0 0 1-6 6H6a6 6 0 0 1-6-6V6a6 6 0 0 1 6-6m0 2a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V6a4 4 0 0 0-4-4zm6 7h3a1 1 0 0 1 0 2h-3a1 1 0 0 1 0-2m-2 4h5a1 1 0 0 1 0 2h-5a1 1 0 0 1 0-2m0-8h5a1 1 0 0 1 0 2h-5a1 1 0 1 1 0-2m-4.172 5.243L7.95 8.12a1 1 0 1 1 1.414 1.415l-2.828 2.828a1 1 0 0 1-1.415 0L3.707 10.95a1 1 0 0 1 1.414-1.414z"
-            ></path>
-          </svg>
-        ),
-        link: "/friends/daily-job",
-        title: "Kerjaan Harian",
       },
     ],
   },
@@ -240,6 +245,25 @@ export async function AppSidebar({
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup className="space-y-1">
+          <SidebarGroupLabel>{data.hkgroup.title}</SidebarGroupLabel>
+          {data.hkgroup.menus.map((menu) => (
+            <SidebarMenu key={menu.link}>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={menu.title}
+                  link={menu.link}
+                >
+                  <Link href={menu.link}>
+                    <menu.icon />
+                    <span>{menu.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          ))}
+        </SidebarGroup>
         {sesh?.user.friends_id && (
           <SidebarGroup className="space-y-1">
             <SidebarGroupLabel>{data.friends.title}</SidebarGroupLabel>
