@@ -6,14 +6,16 @@ export const metadata: Metadata = {
   title: "Buat Kerjaan Baru",
 };
 
-export default function CreateTaskPage({
+export default async function CreateTaskPage({
   params,
 }: {
-  params: { project_id: string };
+  params: Promise<{ project_id: string }>;
 }) {
+  const { project_id } = await params;
+
   return (
     <>
-      <CreateTask project_id={params.project_id} />
+      <CreateTask project_id={project_id} />
     </>
   );
 }

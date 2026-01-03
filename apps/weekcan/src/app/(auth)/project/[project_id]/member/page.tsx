@@ -6,10 +6,11 @@ export const metadata: Metadata = {
   title: "Member Proyek",
 };
 
-export default function MemberProjectPage({
+export default async function MemberProjectPage({
   params,
 }: {
-  params: { project_id: string };
+  params: Promise<{ project_id: string }>;
 }) {
-  return <ListMemberProject id={params.project_id} />;
+  const { project_id } = await params;
+  return <ListMemberProject id={project_id} />;
 }

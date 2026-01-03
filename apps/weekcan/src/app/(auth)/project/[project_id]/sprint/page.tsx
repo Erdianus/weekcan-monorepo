@@ -6,10 +6,11 @@ export const metadata: Metadata = {
   title: "Jadwal Proyek",
 };
 
-export default function SprintProjectPage({
+export default async function SprintProjectPage({
   params,
 }: {
-  params: { project_id: string };
+  params: Promise<{ project_id: string }>;
 }) {
-  return <ListSprint project_id={params.project_id} />;
+  const { project_id } = await params;
+  return <ListSprint project_id={project_id} />;
 }

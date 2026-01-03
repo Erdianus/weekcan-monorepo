@@ -83,7 +83,9 @@ FormItem.displayName = "FormItem";
 
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & {required?: boolean }
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & {
+    required?: boolean;
+  }
 >(({ className, ...props }, ref) => {
   const { error, formItemId } = useFormField();
 
@@ -93,7 +95,9 @@ const FormLabel = React.forwardRef<
       className={cn(error && "text-destructive", className)}
       htmlFor={formItemId}
       {...props}
-    >{props.children} {props.required && '*'} </Label>
+    >
+      {props.children} {props.required && "*"}{" "}
+    </Label>
   );
 });
 FormLabel.displayName = "FormLabel";
@@ -101,11 +105,11 @@ FormLabel.displayName = "FormLabel";
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot> & { isloading?: boolean }
->(({ ...props }, ref) => {
+>(({ isloading, ...props }, ref) => {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
 
-  if (props.isloading) return <Skeleton className="h-10 w-full" />;
+  if (isloading) return <Skeleton className="h-10 w-full" />;
 
   return (
     <Slot

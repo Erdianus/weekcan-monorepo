@@ -6,10 +6,11 @@ export const metadata: Metadata = {
   title: "File Proyek",
 };
 
-export default function CustomProjectPage({
+export default async function CustomProjectPage({
   params,
 }: {
-  params: { project_id: string | number };
+  params: Promise<{ project_id: string | number }>;
 }) {
-  return <ListFileProject id={params.project_id} />;
+  const { project_id } = await params;
+  return <ListFileProject id={project_id} />;
 }

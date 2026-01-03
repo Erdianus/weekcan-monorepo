@@ -2,13 +2,18 @@ import type { Metadata } from "next";
 import ListTaskProject from "./list";
 
 export const metadata: Metadata = {
-  title: 'Perihal',
-}
+  title: "Perihal",
+};
 
-export default function Page({ params }: { params: { task_id: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ task_id: string }>;
+}) {
+  const { task_id } = await params;
   return (
     <>
-      <ListTaskProject id={params.task_id} />
+      <ListTaskProject id={task_id} />
     </>
   );
 }

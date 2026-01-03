@@ -2,13 +2,15 @@ import type { PropsWithChildren } from "react";
 
 import SingleTaskProject from "./single";
 
-export default function Layout({
+export default async function Layout({
   params,
   children,
-}: { params: { task_id: string } } & PropsWithChildren) {
+}: { params: Promise<{ task_id: string }> } & PropsWithChildren) {
+  const { task_id } = await params;
+
   return (
     <>
-      <SingleTaskProject id={params.task_id} />
+      <SingleTaskProject id={task_id} />
       {children}
     </>
   );
