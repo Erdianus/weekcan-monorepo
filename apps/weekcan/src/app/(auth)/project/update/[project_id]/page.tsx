@@ -13,11 +13,12 @@ export const metadata: Metadata = {
 export default async function UpdateProjectPage({
   params,
 }: {
-  params: { project_id: string | number };
+  params: Promise<{ project_id: string | number }>;
 }) {
   const sesh = await auth();
+  const { project_id } = await params;
   const res = await fetch(
-    `${env.NEXT_PUBLIC_BASE_API}/api/project/${params.project_id}`,
+    `${env.NEXT_PUBLIC_BASE_API}/api/project/${project_id}`,
     {
       headers: {
         Authorization: `Bearer ${sesh?.user.token}`,
@@ -34,5 +35,5 @@ export default async function UpdateProjectPage({
 
   if (!hasAccess) throw Error("Kayaknya Sih Gak punya Akses nih");
 
-  return <UpdateProject id={params.project_id} />;
+  return <UpdateProject id={project_id} />;
 }
